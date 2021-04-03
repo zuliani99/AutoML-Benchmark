@@ -1,3 +1,9 @@
+#sudo apt-get install swig -y
+#pip3 install Cython numpy
+#pip3 install pipelineprofiler
+#pip3 install auto-sklearn
+#pip3 install dask[complete] distributed --upgrade
+
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import accuracy_score
 import autosklearn.classification
