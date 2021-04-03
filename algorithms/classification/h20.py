@@ -1,7 +1,3 @@
-#pip3 install requests
-#pip3 install tabulate
-#pip3 install "colorama>=0.3.8"
-#pip3 install future
 #pip3 install -f http://h2o-release.s3.amazonaws.com/h2o/latest_stable_Py.html h2o
 
 import h2o

@@ -42,14 +42,15 @@ def autokeras_class(df):
 
   X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=1)
 
-  y_train = y_train.to_frame() 
+  #y_train = y_train.to_frame() 
   target = y_train.columns[0]
   X_train[target] = y_train
   train = X_train
 
-  y_test = y_test.to_frame() 
+  #y_test = y_test.to_frame() 
   X_test[target] = y_test
   test = X_test
+
   train.to_csv("../train.csv", index=False, header=True)
   test.to_csv("../test.csv", index=False, header=True)
 
