@@ -37,8 +37,8 @@ def prepare_and_test(train_file_path, test_file_path, target):
 
 
 def autokeras_class(df):
-  y = df.iloc[:, -1:]
-  X = df.iloc[:, 0:df.shape[1]-1]
+  y = df.iloc[:, -1]
+  X = df.iloc[:, :-1]
 
   X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=1)
 
