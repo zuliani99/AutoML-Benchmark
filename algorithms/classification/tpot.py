@@ -22,13 +22,17 @@ def tpot_class(df):
   for col in df.columns:
     t = pd.api.types.infer_dtype(df[col])
     if t == "string" or t == 'object':
-      df[col] = df[col].astype('category')
+      df[col] = df[col].astype('category').cat.codes
 
   print(df.info())
   print(df.head())
   
   y = df.iloc[:, -1]
   X = df.iloc[:, :-1]
+
+  #y = y.to_frame()
+
+  #y[y.columns[0]] = y[y.columns[0]].cat.codes
 
   #print(X.info())
   #print(y.info())

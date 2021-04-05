@@ -82,7 +82,7 @@ if __name__ == '__main__':
         df = pd.read_csv('./datasets/classification/mv.csv')
         print(tpot_class(df))
     else:
-
+        #CLASSIFICAZIONE
         for d in list_calss:
             df = pd.read_csv(d)
             res_class.update({d: []})
@@ -96,9 +96,12 @@ if __name__ == '__main__':
             #print(autokeras_class(df)) # ritorna l'accuracy
             #print(h20_class(df)) 
             #print(mlbox_class(df)) 
-            #print(tpot_class(df)) # ritorna l'accuracy
+            #print(tpot_class(df)) # ritorna l'accuracy -> funziona
 
-    print(res_class)
+    #print(res_class)
+
+
+        #REGRESSIONE
         #datasets = [f for f in listdir('../dataset/regression/') if isfile(join('../dataset/clasification/', f))]
         #for dt in datasets:
         #    df = pd.read_csv(dt)
