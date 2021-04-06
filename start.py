@@ -91,7 +91,8 @@ if __name__ == '__main__':
             #res_class.update({d: []})
             print("1--------------------------------" + d + "--------------------------------1")
             print(df.info())
-            print("Accuracy: " + ludwig_class(df))
+            #print("Accuracy: " + ludwig_class(df))
+            print("Beat epoch: " + res[0] + "   Validation accuracy: " + res[1] + "     train accuracy: " + res[2])
             #res_class[d].append({"auto-sklearn": tpot_class(df)})
             print("2--------------------------------" + d + "--------------------------------2")
 
