@@ -66,7 +66,7 @@ def get_results(target):
     validation = train_stats['validation'][target]['last_accuracy'][index]
     test = train_stats['test'][target]['last_accuracy'][index]
 
-    return (str(index+1), str(validation), sr(test))
+    return (index+1, validation, test)
 
 
 
