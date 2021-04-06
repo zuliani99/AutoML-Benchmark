@@ -1,5 +1,4 @@
 #pip3 install deap update_checker tqdm stopit xgboost
-#pip3 install dask[delayed] dask[dataframe] dask-ml fsspec>=0.3.3 distributed>=2.10.0
 #pip3 install scikit-mdr skrebate
 #pip3 install tpot
 

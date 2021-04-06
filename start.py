@@ -1,28 +1,29 @@
 #pip3 install openml
 
-#from algorithms.classification.auto_sklearn import autoSklearn_class
-from algorithms.classification.auto_keras import autokeras_class
-#from algorithms.classification.h2o import h2o_class
-#from algorithms.classification.mlbox import mlbox_class
-from algorithms.classification.tpot import tpot_class
-
 import openml
 import os.path
-from os import path
+import os
 import pandas as pd
+import numpy as np
 from openml.datasets import edit_dataset, fork_dataset, get_dataset
 from sklearn.datasets import fetch_openml
 from os import listdir
 from os.path import isfile, join
 
 
-from sklearn.model_selection import train_test_split
-from sklearn.metrics import accuracy_score
-import autosklearn.classification
+
+from algorithms.classification.auto_sklearn import autoSklearn_class
+from algorithms.classification.auto_keras import autokeras_class
+#from algorithms.classification.h2o import h2o_class
+#from algorithms.classification.mlbox import mlbox_class
+from algorithms.classification.tpot import tpot_class
+from algorithms.classification.ludwig import ludwig_class
+
+
 
 if __name__ == '__main__':   
 
-    print("--------------------start------------------")
+    print("--------------------START--------------------")
     
     openml_list = openml.datasets.list_datasets()  # returns a dict
     datalist = pd.DataFrame.from_dict(openml_list, orient="index")
@@ -32,7 +33,7 @@ if __name__ == '__main__':
     df_good = 0
     df_bad = 0
 
-    list_calss = []
+    list_class = []
     list_reg = []
 
     res_class = {}
@@ -40,57 +41,60 @@ if __name__ == '__main__':
 
     test = False
 
-    print(df_id_name.info())
-
-    for index, row in df_id_name.iterrows():
-        df_id = row['did']
-        df_name = row['name']
-
-        print('Dataset ID: ' + str(df_id) + ' name: ' + df_name)
-        try:
-            X, y = fetch_openml(data_id=df_id, as_frame=True, return_X_y=True)
-            y = y.to_frame()
-
-            if pd.api.types.infer_dtype(y[y.columns[0]]) != "categorical":
-                file_dir =  './datasets/regression/'
-            else:
-                file_dir =  './datasets/classification/'
-            
-            if not os.path.exists(file_dir):
-                os.makedirs(file_dir)
-            fullname = os.path.join(file_dir, row['name'] + '.csv')
-
-            print("good df\n")
-            df_good+=1
-
-            if not os.path.exists(fullname):
-                X[y.columns[0]] = y
-                X.to_csv(fullname, index=False, header=True)
-
-            if(file_dir == './datasets/regression/'):
-                list_reg.append(fullname)
-            else:
-                list_calss.append(fullname)
-
-        except:
-            print("bad df\n")
-            df_bad+=1
-
-    print('Good df: ' + str(df_good) + '    baad df: ' + str(df_bad) + '\n')
+    #print(df_id_name.info())
 
     if test == False:
-        df = pd.read_csv('./datasets/classification/mv.csv')
-        print(tpot_class(df))
-    else:
+
+        for index, row in df_id_name.iterrows():
+            print('------------------Dataset ID: ' + str(row['did']) + ' name: ' + row['name'] + '------------------')
+            try:
+                X, y = fetch_openml(data_id=row['did'], as_frame=True, return_X_y=True)
+                y = y.to_frame()
+
+                print(y.head())
+                print(y.info())
+
+                if pd.api.types.infer_dtype(y[y.columns[0]]) == "categorical" or pd.api.types.infer_dtype(y[y.columns[0]]) == "boolean":
+                    file_dir =  './datasets/classification/'
+                else:
+                    file_dir =  './datasets/regression/'
+                    
+                if not os.path.exists(file_dir):
+                    os.makedirs(file_dir)
+                fullname = os.path.join(file_dir, str(row['did']) + '.csv')
+
+                print("good df " + fullname + '\n')
+                df_good+=1
+
+                if not os.path.exists(fullname):
+                    X[y.columns[0]] = y
+                    X.to_csv(fullname, index=False, header=True)
+
+                if(file_dir == './datasets/regression/'):
+                    list_reg.append(fullname)
+                else:
+                    list_class.append(fullname)
+
+            except:
+                print("bad df\n")
+                df_bad+=1
+            print('------------------------------------')
+
+        print('Good df: ' + str(df_good) + '    bad df: ' + str(df_bad) + '\n')
+
+        print(list_class)
+        print(list_reg)
+
         #CLASSIFICAZIONE
-        for d in list_calss:
+        for d in list_class:
             df = pd.read_csv(d)
-            res_class.update({d: []})
+            #res_class.update({d: []})
             print("1--------------------------------" + d + "--------------------------------1")
             print(df.info())
-            print("Accuracy: " + tpot_class(df))
+            print("Accuracy: " + ludwig_class(df))
             #res_class[d].append({"auto-sklearn": tpot_class(df)})
             print("2--------------------------------" + d + "--------------------------------2")
+
 
             #print(autoSklearn_class(df)) # ritorna l'accuracy -> funziona
             #print(autokeras_class(df)) # ritorna l'accuracy
@@ -98,18 +102,13 @@ if __name__ == '__main__':
             #print(mlbox_class(df)) 
             #print(tpot_class(df)) # ritorna l'accuracy -> funziona
 
-    #print(res_class)
 
 
-        #REGRESSIONE
-        #datasets = [f for f in listdir('../dataset/regression/') if isfile(join('../dataset/clasification/', f))]
-        #for dt in datasets:
-        #    df = pd.read_csv(dt)
-        #    print(autoSklearn(df))
-        #    print(autokeras(df))
-        #    print(h20(df))
-        #    print(mlbox(df))
-        #    print(tpot(df))
+    else:
 
-
-        #stampo i grafici per confrontare i risultati
+        X, y = fetch_openml(data_id=727, as_frame=True, return_X_y=True, cache=True)
+        y = y.to_frame()
+        X[y.columns[0]] = y
+        df = X
+        #df = pd.read_csv('./datasets/classification/mv.csv')
+        print(ludwig_class(df))
