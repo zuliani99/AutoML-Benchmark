@@ -1,0 +1,22 @@
+opneml
+ludwig
+ludwig[viz]
+deap
+update_checker
+tqdm
+stopit
+xgboost
+scikit-mdr
+skrebate
+tpot
+autokeras
+Cython
+numpy
+pipelineprofiler
+auto-sklearn
+dask[complete] distributed --upgrade
+torch
+mlbox
+-f http://h2o-release.s3.amazonaws.com/h2o/latest_stable_Py.html
+h2o
+default-jre
