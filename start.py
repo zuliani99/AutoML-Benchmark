@@ -12,11 +12,11 @@ from os.path import isfile, join
 
 
 
-from algorithms.classification.auto_sklearn import autoSklearn_class
-from algorithms.classification.auto_keras import autokeras_class
+#from algorithms.classification.auto_sklearn import autoSklearn_class
+#from algorithms.classification.auto_keras import autokeras_class
 #from algorithms.classification.h2o import h2o_class
 #from algorithms.classification.mlbox import mlbox_class
-from algorithms.classification.tpot import tpot_class
+#from algorithms.classification.tpot import tpot_class
 from algorithms.classification.ludwig import ludwig_class
 
 
@@ -93,7 +93,7 @@ if __name__ == '__main__':
             print(df.info())
             #print("Accuracy: " + ludwig_class(df))
             res = ludwig_class(df)
-            print("Beat epoch: " + str(res[0]) + "   Validation accuracy: " + str(res[1]) + "     train accuracy: " + str(res[2]))
+            print("Beat epoch: " + str(res[0]) + "   Validation accuracy: " + str(res[1]) + "     train accuracy: " + str(res[2])
             #res_class[d].append({"auto-sklearn": tpot_class(df)})
             print("2--------------------------------" + d + "--------------------------------2")
 
