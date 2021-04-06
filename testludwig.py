@@ -34,13 +34,13 @@ def create_dict(label, target):
         model['output_features'].append({ 'name': target.columns[0], 'type': 'text' })
     
     #, 'epochs': 10
-    model['training'] = ({'validation_field': target.columns[0], 'validation_metric': 'last_accuracy', 'epochs': 10})
+    model['training'] = ({'validation_field': target.columns[0], 'validation_metric': 'last_accuracy', 'epochs': 5})
     print(model)
     return model
 
 
 def get_results(target):
-    experiment_model_dir = './results/api_experiment_run_2'
+    experiment_model_dir = './results/api_experiment_run'
     train_stats = load_json(os.path.join(experiment_model_dir,'training_statistics.json'))
     print(train_stats)
     
@@ -54,11 +54,12 @@ def get_results(target):
 
 def delete_folder():
     dir_path = './results/api_experiment_run'
-    try:
-        os.rmdir(dir_path)
-        print("Delete ------------------------------> DONE")
-    except OSError as e:
-        print("Error:                   %s : %s" % (dir_path, e.strerror))
+    if os.path.exists(dir_path):
+        try:
+            os.rmdir(dir_path)
+            print("Delete ------------------------------> DONE")
+        except OSError as e:
+            print("Error:                   %s : %s" % (dir_path, e.strerror))
 
 
 def ludwig(df):
@@ -107,4 +108,4 @@ if __name__ == '__main__':
     X[y.columns[0]] = y
     df = X
     res = ludwig(df)
-    print(res)
+    print("Beat epoch: " + res[0] + "   Validation accuracy: " + res[1] + "     train accuracy: " + res[2])

@@ -1,13 +1,15 @@
 #!pip3 install ludwig
 
 from ludwig.api import LudwigModel
+import pandas as pd
 from sklearn.model_selection import train_test_split
+from sklearn.datasets import fetch_openml
 import logging
 from ludwig.visualize import compare_performance
 from ludwig.visualize import learning_curves
 from ludwig.utils.data_utils import load_json
 import os
-import pandas as pd
+import numpy as np
 
 
 
@@ -37,7 +39,7 @@ def create_dict(label, target):
         model['output_features'].append({ 'name': target.columns[0], 'type': 'text' })
     
     #, 'epochs': 10
-    model['training'] = ({'validation_field': target.columns[0], 'validation_metric': 'last_accuracy', 'epochs': 10})
+    model['training'] = ({'validation_field': target.columns[0], 'validation_metric': 'last_accuracy', 'epochs': 5})
     print(model)
     return model
 
@@ -45,17 +47,18 @@ def create_dict(label, target):
 
 def delete_folder():
     dir_path = './results/api_experiment_run'
-    try:
-        os.rmdir(dir_path)
-        print("Delete ------------------------------> DONE")
-    except OSError as e:
-        print("Error:                   %s : %s" % (dir_path, e.strerror))
+    if os.path.exists(dir_path):
+        try:
+            os.rmdir(dir_path)
+            print("Delete ------------------------------> DONE")
+        except OSError as e:
+            print("Error:                   %s : %s" % (dir_path, e.strerror))
 
 
 
 
 def get_results(target):
-    experiment_model_dir = './results/api_experiment_run_2'
+    experiment_model_dir = './results/api_experiment_run'
     train_stats = load_json(os.path.join(experiment_model_dir,'training_statistics.json'))
     print(train_stats)
     
@@ -69,7 +72,7 @@ def get_results(target):
 
 
 def ludwig_class(df):
-    #delete_folder()
+    delete_folder()
 
 
     for col in df.columns:
@@ -103,7 +106,6 @@ def ludwig_class(df):
 
     test_stats = model.predict(X_test)
 
-    #visualize()
 
 
     return get_results(y.columns[0])

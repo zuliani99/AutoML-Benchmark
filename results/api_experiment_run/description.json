@@ -1,6 +1,6 @@
 {
     "command": "testludwig.py",
-    "commit_hash": "6aa822bfb6cf",
+    "commit_hash": "083aaf0aaac5",
     "config": {
         "combiner": {
             "type": "concat"
@@ -215,7 +215,7 @@
             "decay_rate": 0.96,
             "decay_steps": 10000,
             "early_stop": 5,
-            "epochs": 10,
+            "epochs": 5,
             "eval_batch_size": 0,
             "gradient_clipping": null,
             "increase_batch_size_on_plateau": 0,
