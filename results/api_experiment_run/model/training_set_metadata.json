@@ -1,0 +1,149 @@
+{
+    "binaryClass": {
+        "char_idx2str": [
+            "<PAD>",
+            "<UNK>",
+            "p",
+            "n"
+        ],
+        "char_max_sequence_length": 1,
+        "char_pad_idx": 0,
+        "char_pad_symbol": "<PAD>",
+        "char_str2freq": {
+            "<PAD>": 0,
+            "<UNK>": 0,
+            "n": 16305,
+            "p": 16309
+        },
+        "char_str2idx": {
+            "<PAD>": 0,
+            "<UNK>": 1,
+            "n": 3,
+            "p": 2
+        },
+        "char_unk_symbol": "<UNK>",
+        "char_vocab_size": 4,
+        "preprocessing": {
+            "char_most_common": 70,
+            "char_sequence_length_limit": 1024,
+            "char_tokenizer": "characters",
+            "char_vocab_file": null,
+            "computed_fill_value": "<UNK>",
+            "fill_value": "<UNK>",
+            "lowercase": true,
+            "missing_value_strategy": "fill_with_const",
+            "padding": "right",
+            "padding_symbol": "<PAD>",
+            "pretrained_model_name_or_path": null,
+            "unknown_symbol": "<UNK>",
+            "word_most_common": 20000,
+            "word_sequence_length_limit": 256,
+            "word_tokenizer": "space_punct",
+            "word_vocab_file": null
+        },
+        "word_idx2str": [
+            "<PAD>",
+            "<UNK>",
+            "p",
+            "n"
+        ],
+        "word_max_sequence_length": 1,
+        "word_pad_idx": 0,
+        "word_pad_symbol": "<PAD>",
+        "word_str2freq": {
+            "<PAD>": 0,
+            "<UNK>": 0,
+            "n": 16305,
+            "p": 16309
+        },
+        "word_str2idx": {
+            "<PAD>": 0,
+            "<UNK>": 1,
+            "n": 3,
+            "p": 2
+        },
+        "word_unk_symbol": "<UNK>",
+        "word_vocab_size": 4
+    },
+    "data_processed_cache_dir": "/tmp/tmpxnq8jgie/0d749a64-970a-11eb-95d0-00155d91141a",
+    "x1": {
+        "preprocessing": {
+            "computed_fill_value": 0,
+            "fill_value": 0,
+            "missing_value_strategy": "fill_with_const",
+            "normalization": null
+        }
+    },
+    "x10": {
+        "preprocessing": {
+            "computed_fill_value": 0,
+            "fill_value": 0,
+            "missing_value_strategy": "fill_with_const",
+            "normalization": null
+        }
+    },
+    "x2": {
+        "preprocessing": {
+            "computed_fill_value": 0,
+            "fill_value": 0,
+            "missing_value_strategy": "fill_with_const",
+            "normalization": null
+        }
+    },
+    "x3": {
+        "preprocessing": {
+            "computed_fill_value": 0,
+            "fill_value": 0,
+            "missing_value_strategy": "fill_with_const",
+            "normalization": null
+        }
+    },
+    "x4": {
+        "preprocessing": {
+            "computed_fill_value": 0,
+            "fill_value": 0,
+            "missing_value_strategy": "fill_with_const",
+            "normalization": null
+        }
+    },
+    "x5": {
+        "preprocessing": {
+            "computed_fill_value": 0,
+            "fill_value": 0,
+            "missing_value_strategy": "fill_with_const",
+            "normalization": null
+        }
+    },
+    "x6": {
+        "preprocessing": {
+            "computed_fill_value": 0,
+            "fill_value": 0,
+            "missing_value_strategy": "fill_with_const",
+            "normalization": null
+        }
+    },
+    "x7": {
+        "preprocessing": {
+            "computed_fill_value": 0,
+            "fill_value": 0,
+            "missing_value_strategy": "fill_with_const",
+            "normalization": null
+        }
+    },
+    "x8": {
+        "preprocessing": {
+            "computed_fill_value": 0,
+            "fill_value": 0,
+            "missing_value_strategy": "fill_with_const",
+            "normalization": null
+        }
+    },
+    "x9": {
+        "preprocessing": {
+            "computed_fill_value": 0,
+            "fill_value": 0,
+            "missing_value_strategy": "fill_with_const",
+            "normalization": null
+        }
+    }
+}

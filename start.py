@@ -39,7 +39,7 @@ if __name__ == '__main__':
     res_class = {}
     res_res = {}
 
-    test = False
+    test = True
 
     #print(df_id_name.info())
 
