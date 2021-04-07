@@ -1,34 +1,34 @@
-#pip3 install openml
+#!/usr/bin/env python3
 
 import openml
 import os.path
 import os
 import pandas as pd
-import numpy as np
 from openml.datasets import edit_dataset, fork_dataset, get_dataset
 from sklearn.datasets import fetch_openml
 from os import listdir
-from os.path import isfile, join
+from os.path import isfile
 
 
-
+#from algorithms.classification.ludwig import ludwig_class
 #from algorithms.classification.auto_sklearn import autoSklearn_class
 #from algorithms.classification.auto_keras import autokeras_class
 #from algorithms.classification.h2o import h2o_class
 #from algorithms.classification.mlbox import mlbox_class
 #from algorithms.classification.tpot import tpot_class
-from algorithms.classification.ludwig import ludwig_class
+
 
 
 
 if __name__ == '__main__':   
 
     print("--------------------START--------------------")
+
     
     openml_list = openml.datasets.list_datasets()  # returns a dict
     datalist = pd.DataFrame.from_dict(openml_list, orient="index")
     datalist = datalist[["did", "name", "NumberOfInstances"]]
-    df_id_name = datalist[datalist.NumberOfInstances > 40000].sort_values(["NumberOfInstances"]).head(5)
+    df_id_name = datalist[datalist.NumberOfInstances > 40000].sort_values(["NumberOfInstances"]).head(3)
 
     df_good = 0
     df_bad = 0
@@ -39,7 +39,7 @@ if __name__ == '__main__':
     res_class = {}
     res_res = {}
 
-    test = True
+    test = False
 
     #print(df_id_name.info())
 
@@ -85,17 +85,26 @@ if __name__ == '__main__':
         print(list_class)
         print(list_reg)
 
+
+
         #CLASSIFICAZIONE
         for d in list_class:
             df = pd.read_csv(d)
-            #res_class.update({d: []})
-            print("1--------------------------------" + d + "--------------------------------1")
-            print(df.info())
-            #print("Accuracy: " + ludwig_class(df))
+
+
+
+            print("2--------------------------------LUDWIG--------------------------------2")
+            
             res = ludwig_class(df)
             print("Beat epoch: " + str(res[0]) + "   Validation accuracy: " + str(res[1]) + "     train accuracy: " + str(res[2]))
-            #res_class[d].append({"auto-sklearn": tpot_class(df)})
-            print("2--------------------------------" + d + "--------------------------------2")
+            print("2--------------------------------LUDWIG--------------------------------2")
+
+
+            print("1--------------------------------AUTOSKLEARN--------------------------------1")
+            
+            print("Accuracy: " + str(autoSklearn_class(df)))
+            print("1--------------------------------AUTOSKLEARN--------------------------------1\n\n")
+
 
 
             #print(autoSklearn_class(df)) # ritorna l'accuracy -> funziona
@@ -113,4 +122,4 @@ if __name__ == '__main__':
         X[y.columns[0]] = y
         df = X
         #df = pd.read_csv('./datasets/classification/mv.csv')
-        print(ludwig_class(df))
+        print(autoSklearn_class(df))

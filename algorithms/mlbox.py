@@ -33,7 +33,7 @@ def prepare_and_test():
     prd = Predictor()
     return (prd.fit_predict(best, data))
 
-def mlbx_class (df):
+def mlbox_class (df):
     y = df.iloc[:, -1:]
     X = df.iloc[:, 0:df.shape[1]-1]
 

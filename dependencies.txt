@@ -1,6 +1,5 @@
 openml
 ludwig
-ludwig[viz]
 deap
 update_checker
 tqdm
@@ -17,5 +16,4 @@ pipelineprofiler
 auto-sklearn
 torch
 mlbox
--f http://h2o-release.s3.amazonaws.com/h2o/latest_stable_Py.html
 h2o

@@ -5,8 +5,6 @@ import pandas as pd
 from sklearn.model_selection import train_test_split
 from sklearn.datasets import fetch_openml
 import logging
-from ludwig.visualize import compare_performance
-from ludwig.visualize import learning_curves
 from ludwig.utils.data_utils import load_json
 import os
 import numpy as np
