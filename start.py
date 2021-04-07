@@ -10,12 +10,12 @@ from os import listdir
 from os.path import isfile
 
 
-#from algorithms.classification.ludwig import ludwig_class
-#from algorithms.classification.auto_sklearn import autoSklearn_class
-#from algorithms.classification.auto_keras import autokeras_class
-#from algorithms.classification.h2o import h2o_class
-#from algorithms.classification.mlbox import mlbox_class
-#from algorithms.classification.tpot import tpot_class
+from algorithms.auto_sklearn import autoSklearn_class
+from algorithms.tpot import tpot_class
+from algorithms.auto_keras import autokeras_class 
+from algorithms.ludwig import ludwig_class 
+from algorithms.auto_sklearn import autoSklearn_class
+#from algorithms.h2o import h2o_class 
 
 
 
@@ -23,7 +23,6 @@ from os.path import isfile
 if __name__ == '__main__':   
 
     print("--------------------START--------------------")
-
     
     openml_list = openml.datasets.list_datasets()  # returns a dict
     datalist = pd.DataFrame.from_dict(openml_list, orient="index")
@@ -39,9 +38,7 @@ if __name__ == '__main__':
     res_class = {}
     res_res = {}
 
-    test = False
-
-    #print(df_id_name.info())
+    test = True
 
     if test == False:
 
@@ -91,35 +88,28 @@ if __name__ == '__main__':
         for d in list_class:
             df = pd.read_csv(d)
 
+            print("--------------------------------AUTOSKLEARN--------------------------------")
+            print(autoSklearn_class(df))
+            print("--------------------------------AUTOSKLEARN--------------------------------\n\n")
 
 
-            print("2--------------------------------LUDWIG--------------------------------2")
-            
-            res = ludwig_class(df)
-            print("Beat epoch: " + str(res[0]) + "   Validation accuracy: " + str(res[1]) + "     train accuracy: " + str(res[2]))
-            print("2--------------------------------LUDWIG--------------------------------2")
-
-
-            print("1--------------------------------AUTOSKLEARN--------------------------------1")
-            
-            print("Accuracy: " + str(autoSklearn_class(df)))
-            print("1--------------------------------AUTOSKLEARN--------------------------------1\n\n")
-
-
-
-            #print(autoSklearn_class(df)) # ritorna l'accuracy -> funziona
-            #print(autokeras_class(df)) # ritorna l'accuracy
-            #print(h20_class(df)) 
-            #print(mlbox_class(df)) 
-            #print(tpot_class(df)) # ritorna l'accuracy -> funziona
+            print("--------------------------------LUDWIG--------------------------------")
+            print(ludwig_class(df))
+            print("--------------------------------LUDWIG--------------------------------\n\n")
 
 
 
     else:
-
         X, y = fetch_openml(data_id=727, as_frame=True, return_X_y=True, cache=True)
         y = y.to_frame()
         X[y.columns[0]] = y
         df = X
-        #df = pd.read_csv('./datasets/classification/mv.csv')
-        print(autoSklearn_class(df))
+
+        #print("--------------------------------AUTOSKLEARN--------------------------------")
+        #print(autoSklearn_class(df))
+        #print("--------------------------------AUTOSKLEARN--------------------------------\n\n")
+
+
+        print("--------------------------------LUDWIG--------------------------------")
+        print(ludwig_class(df))
+        print("--------------------------------LUDWIG--------------------------------\n\n")

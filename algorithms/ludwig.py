@@ -1,5 +1,3 @@
-#!pip3 install ludwig
-
 from ludwig.api import LudwigModel
 import pandas as pd
 from sklearn.model_selection import train_test_split
@@ -8,7 +6,6 @@ import logging
 from ludwig.utils.data_utils import load_json
 import os
 import numpy as np
-
 
 
 
@@ -72,7 +69,7 @@ def get_results(target):
 def ludwig_class(df):
     delete_folder()
 
-
+    
     for col in df.columns:
         t = pd.api.types.infer_dtype(df[col])
         if t == "categorical":
