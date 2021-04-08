@@ -17,3 +17,5 @@ auto-sklearn
 torch
 mlbox
 h2o
+emcee
+scikit-optimize

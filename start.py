@@ -10,11 +10,7 @@ from os import listdir
 from os.path import isfile
 
 
-from algorithms.auto_sklearn import autoSklearn_class
-from algorithms.tpot import tpot_class
-from algorithms.auto_keras import autokeras_class 
-from algorithms.ludwig import ludwig_class 
-from algorithms.auto_sklearn import autoSklearn_class
+
 #from algorithms.h2o import h2o_class 
 
 
@@ -85,6 +81,7 @@ if __name__ == '__main__':
 
 
         #CLASSIFICAZIONE
+        '''
         for d in list_class:
             df = pd.read_csv(d)
 
@@ -96,7 +93,7 @@ if __name__ == '__main__':
             print("--------------------------------LUDWIG--------------------------------")
             print(ludwig_class(df))
             print("--------------------------------LUDWIG--------------------------------\n\n")
-
+'''
 
 
     else:
@@ -105,11 +102,32 @@ if __name__ == '__main__':
         X[y.columns[0]] = y
         df = X
 
-        #print("--------------------------------AUTOSKLEARN--------------------------------")
-        #print(autoSklearn_class(df))
-        #print("--------------------------------AUTOSKLEARN--------------------------------\n\n")
-
 
         print("--------------------------------LUDWIG--------------------------------")
+        from algorithms.ludwig import ludwig_class 
         print(ludwig_class(df))
         print("--------------------------------LUDWIG--------------------------------\n\n")
+
+
+        print("--------------------------------TPOT--------------------------------")
+        from algorithms.tpot import tpot_class
+        print(tpot_class(df))
+        print("--------------------------------TPOT--------------------------------\n\n")
+
+
+        print("--------------------------------AUTOKERAS--------------------------------")
+        from algorithms.auto_keras import autokeras_class 
+        print(autokeras_class(df))
+        print("--------------------------------AUTOKERAS--------------------------------\n\n")
+
+
+        print("--------------------------------AUTOSKLEARN--------------------------------")
+        from algorithms.auto_sklearn import autoSklearn_class
+        print(autoSklearn_class(df))
+        print("--------------------------------AUTOSKLEARN--------------------------------\n\n")
+
+
+        
+        
+        
+        
