@@ -3,23 +3,54 @@
 
 import h2o
 from h2o.automl import H2OAutoML
+import numpy as np
 from sklearn.model_selection import train_test_split
 h2o.init()
 
-def prepare_and_test(X, y):
-  x = X.columns
-  target_str = y.columns[0]
-  X[target_str] = y[target_str]
+def prepare_and_test(train, test):
+  x = train.columns
+  y = train.columns[train.shape[1]-1]
+  x.remove(y)
+
+  target = train[y]
+
+  train[y] = train[y].asfactor()
+  test[y] = test[y].asfactor()
+
   aml = H2OAutoML(max_runtime_secs=1*60, nfolds=15, max_models=20, seed=1)
-  aml.train(x, target_str, training_frame=X)
+  aml.train(x, y, training_frame=train)
   lb = aml.leaderboard
   lb.head(rows=lb.nrows)
-  print(h2o.automl.get_leaderboard(aml, extra_columns = 'ALL'))
-  return (aml.predict(y))
+
+  pred = aml.predict(test)
+
+  pred = h2o.as_list(pred)
+  target = h2o.as_list(test[y])
+
+  pred = pred.drop(pred.columns[-2:].astype(str), 1)
+
+  temp = pred
+  temp['true'] = target
+
+  temp['predict'] = temp['predict'].astype(str)
+  temp['true'] = temp['true'].astype(str)
+  temp['ver'] = np.where(temp['predict'] == temp['true'], 1, 0)
+
+  return (temp['ver'].sum()/pred.shape[0])
 
 def h2o_class(df):
-  y = df.iloc[:, -1:]
-  X = df.iloc[:, 0:df.shape[1]-1]
-  X = h2o.H2OFrame(X)
-  y = h2o.H2OFrame(y)
-  return(prepare_and_test(X, y))
+  y = df.iloc[:, -1].to_frame()
+  X = df.iloc[:, :-1]
+
+  X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=1)
+
+  X_train[y_train.columns[0]] = y_train
+  train = X_train
+
+  X_test[y_test.columns[0]] = y_test
+  test = X_test
+
+  train = h2o.H2OFrame(train)
+  test = h2o.H2OFrame(test)
+  return(prepare_and_test(train, test))
+

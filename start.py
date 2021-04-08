@@ -11,7 +11,7 @@ from os.path import isfile
 
 
 
-#from algorithms.h2o import h2o_class 
+from algorithms.h2o import h2o_class 
 
 
 
@@ -103,28 +103,11 @@ if __name__ == '__main__':
         df = X
 
 
-        print("--------------------------------LUDWIG--------------------------------")
-        from algorithms.ludwig import ludwig_class 
-        print(ludwig_class(df))
-        print("--------------------------------LUDWIG--------------------------------\n\n")
+        print("--------------------------------H2O--------------------------------") 
+        print(h2o_class(df))
+        print("--------------------------------H2O--------------------------------\n\n")
 
 
-        print("--------------------------------TPOT--------------------------------")
-        from algorithms.tpot import tpot_class
-        print(tpot_class(df))
-        print("--------------------------------TPOT--------------------------------\n\n")
-
-
-        print("--------------------------------AUTOKERAS--------------------------------")
-        from algorithms.auto_keras import autokeras_class 
-        print(autokeras_class(df))
-        print("--------------------------------AUTOKERAS--------------------------------\n\n")
-
-
-        print("--------------------------------AUTOSKLEARN--------------------------------")
-        from algorithms.auto_sklearn import autoSklearn_class
-        print(autoSklearn_class(df))
-        print("--------------------------------AUTOSKLEARN--------------------------------\n\n")
 
 
         
