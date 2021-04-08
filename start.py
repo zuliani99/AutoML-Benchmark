@@ -13,7 +13,7 @@ from os.path import isfile
 def autosklearn_function(df):
     print("--------------------------------AUTOSKLEARN--------------------------------")
     from algorithms.auto_sklearn import autoSklearn_class
-    c(autoSklearn_class(df))
+    res = (autoSklearn_class(df))
     print("--------------------------------AUTOSKLEARN--------------------------------\n\n")
     return res
 
@@ -62,7 +62,7 @@ if __name__ == '__main__':
     list_reg = []
 
     res_class = {}
-    res_res = {}
+    res_reg = {}
 
     test = True
 
@@ -79,10 +79,10 @@ if __name__ == '__main__':
 
                 if pd.api.types.infer_dtype(y[y.columns[0]]) == "categorical" or pd.api.types.infer_dtype(y[y.columns[0]]) == "boolean":
                     file_dir =  './datasets/classification/'
-                    res_class.append(row['did']: {})
+                    res_class[row['did']] = []
                 else:
                     file_dir =  './datasets/regression/'
-                    res_res.append(row['did']: {})
+                    res_reg[row['did']] = []
                     
                 if not os.path.exists(file_dir):
                     os.makedirs(file_dir)
@@ -132,13 +132,19 @@ if __name__ == '__main__':
         X[y.columns[0]] = y
         df = X
 
+        d = str(727)
 
-        res_class[d].append({'autosklearn': autosklearn_function(df)})
-        res_class[d].append({'tpot': tpot_function(df)})
-        res_class[d].append({'autokeras': autokeras_function(df)})
-        res_class[d].append({'h2o': h2o_function(df)})
-        res_class[d].append({'ludwig': ludwig_function(df)})
+        #res_class[d].append({'autosklearn': autosklearn_function(df)})
+        #res_class[d].append({'tpot': tpot_function(df)})
+        #res_class[d].append({'autokeras': autokeras_function(df)})
+        #res_class[d].append({'h2o': h2o_function(df)})
+        #res_class[d].append({'ludwig': ludwig_function(df)})
 
+        print(autosklearn_function(df))
+        print(tpot_function(df))
+        print(autokeras_function(df))
+        print(h2o_function(df))
+        print(ludwig_function(df))
 
 
         
