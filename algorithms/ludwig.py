@@ -35,7 +35,7 @@ def create_dict(label, target):
     
     #, 'epochs': 10
     model['training'] = ({'validation_field': target.columns[0], 'validation_metric': 'last_accuracy', 'epochs': 5})
-    print(model)
+    #print(model)
     return model
 
 
@@ -55,7 +55,7 @@ def delete_folder():
 def get_results(target):
     experiment_model_dir = './results/api_experiment_run'
     train_stats = load_json(os.path.join(experiment_model_dir,'training_statistics.json'))
-    print(train_stats)
+    #print(train_stats)
     
     index = np.argmax(train_stats['validation'][target]['last_accuracy'])
     validation = train_stats['validation'][target]['last_accuracy'][index]
@@ -84,16 +84,6 @@ def ludwig_class(df):
     X_train[y_train.columns[0]] = y_train
     #train = X_train.convert_dtypes()
 
-
-    print(X_train.dtypes)
-    print("-----------------------------------")
-    print(X_train.head())
-
-    print("----------------------------------------------------------------------")
-
-    print(X_test.info())
-    print("-----------------------------------")
-    print(X_test.head())
     
     model = LudwigModel(create_dict(X, y), logging_level=logging.INFO)
     

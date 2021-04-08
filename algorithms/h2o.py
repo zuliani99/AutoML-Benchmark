@@ -5,7 +5,6 @@ import h2o
 from h2o.automl import H2OAutoML
 import numpy as np
 from sklearn.model_selection import train_test_split
-h2o.init()
 
 def prepare_and_test(train, test):
   x = train.columns
@@ -35,10 +34,11 @@ def prepare_and_test(train, test):
   temp['predict'] = temp['predict'].astype(str)
   temp['true'] = temp['true'].astype(str)
   temp['ver'] = np.where(temp['predict'] == temp['true'], 1, 0)
-
+  
   return (temp['ver'].sum()/pred.shape[0])
 
 def h2o_class(df):
+  h2o.init()
   y = df.iloc[:, -1].to_frame()
   X = df.iloc[:, :-1]
 

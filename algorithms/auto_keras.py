@@ -9,17 +9,12 @@ def prepare_and_test(train_file_path, test_file_path, target):
   # x_train as pandas.DataFrame, y_train as pandas.Series
   x_train = pd.read_csv(train_file_path)
 
-  print(type(x_train))  # pandas.DataFrame
   y_train = x_train.pop(target)
-  print(type(y_train))  # pandas.Series
 
   y_train = pd.DataFrame(y_train)
-  print(type(y_train))  # pandas.DataFrame
 
   x_train = x_train.to_numpy()
   y_train = y_train.to_numpy()
-  print(type(x_train))  # numpy.ndarray
-  print(type(y_train))  # numpy.ndarray
 
   # Preparing testing data.
   x_test = pd.read_csv(test_file_path)

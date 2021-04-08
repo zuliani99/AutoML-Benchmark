@@ -10,14 +10,44 @@ from os import listdir
 from os.path import isfile
 
 
+def autosklearn_function(df):
+    print("--------------------------------AUTOSKLEARN--------------------------------")
+    from algorithms.auto_sklearn import autoSklearn_class
+    c(autoSklearn_class(df))
+    print("--------------------------------AUTOSKLEARN--------------------------------\n\n")
+    return res
 
-from algorithms.h2o import h2o_class 
+def tpot_function(df):
+    print("--------------------------------TPOT--------------------------------")
+    from algorithms.tpot import tpot_class
+    res = (tpot_class(df))
+    print("--------------------------------TPOT--------------------------------\n\n")
+    return res
 
+def autokeras_function(df):
+    print("--------------------------------AUTOKERAS--------------------------------")
+    from algorithms.auto_keras import autokeras_class
+    res = (autokeras_class(df))
+    print("--------------------------------AUTOKERAS--------------------------------\n\n")
+    return res
+
+def h2o_function(df):
+    print("--------------------------------H2O--------------------------------") 
+    from algorithms.h2o import h2o_class
+    res = (h2o_class(df))
+    print("--------------------------------H2O--------------------------------\n\n")
+    return res
+
+def ludwig_function(df):
+    print("--------------------------------LUDWIG--------------------------------")
+    from algorithms.ludwig import ludwig_class
+    res = (ludwig_class(df))
+    print("--------------------------------LUDWIG--------------------------------\n\n")
+    return res
 
 
 
 if __name__ == '__main__':   
-
     print("--------------------START--------------------")
     
     openml_list = openml.datasets.list_datasets()  # returns a dict
@@ -49,8 +79,10 @@ if __name__ == '__main__':
 
                 if pd.api.types.infer_dtype(y[y.columns[0]]) == "categorical" or pd.api.types.infer_dtype(y[y.columns[0]]) == "boolean":
                     file_dir =  './datasets/classification/'
+                    res_class.append(row['did']: {})
                 else:
                     file_dir =  './datasets/regression/'
+                    res_res.append(row['did']: {})
                     
                 if not os.path.exists(file_dir):
                     os.makedirs(file_dir)
@@ -79,21 +111,19 @@ if __name__ == '__main__':
         print(list_reg)
 
 
-
         #CLASSIFICAZIONE
-        '''
         for d in list_class:
             df = pd.read_csv(d)
 
-            print("--------------------------------AUTOSKLEARN--------------------------------")
-            print(autoSklearn_class(df))
-            print("--------------------------------AUTOSKLEARN--------------------------------\n\n")
+            res_class[d].append({'autosklearn': autosklearn_function(df)})
+            res_class[d].append({'tpot': tpot_function(df)})
+            res_class[d].append({'autokeras': autokeras_function(df)})
+            res_class[d].append({'h2o': h2o_function(df)})
+            res_class[d].append({'ludwig': ludwig_function(df)})
 
+            
+            
 
-            print("--------------------------------LUDWIG--------------------------------")
-            print(ludwig_class(df))
-            print("--------------------------------LUDWIG--------------------------------\n\n")
-'''
 
 
     else:
@@ -103,14 +133,13 @@ if __name__ == '__main__':
         df = X
 
 
-        print("--------------------------------H2O--------------------------------") 
-        print(h2o_class(df))
-        print("--------------------------------H2O--------------------------------\n\n")
+        res_class[d].append({'autosklearn': autosklearn_function(df)})
+        res_class[d].append({'tpot': tpot_function(df)})
+        res_class[d].append({'autokeras': autokeras_function(df)})
+        res_class[d].append({'h2o': h2o_function(df)})
+        res_class[d].append({'ludwig': ludwig_function(df)})
 
 
 
-
-        
-        
         
         
