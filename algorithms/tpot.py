@@ -13,18 +13,18 @@ def prepare_and_test(X, y):
 
 #devo fare datacleaning: pulizia nel senso nan -> fill_nan
 def tpot_class(df):
-  le = preprocessing.LabelEncoder()
 
   for col in df.columns:
     t = pd.api.types.infer_dtype(df[col])
     if t == "string" or t == 'object':
+      print(col)
       df[col] = df[col].astype('category').cat.codes
+    if t == 'categorical':
+      print(col)
+      df[col] = df[col].cat.codes
 
     
   y = df.iloc[:, -1]
-
-
-  y = le.fit_transform(y)
   X = df.iloc[:, :-1]
 
   return prepare_and_test(X, y)

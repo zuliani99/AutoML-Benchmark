@@ -55,7 +55,6 @@ def delete_folder():
 def get_results(target):
     experiment_model_dir = './results/api_experiment_run'
     train_stats = load_json(os.path.join(experiment_model_dir,'training_statistics.json'))
-    #print(train_stats)
     
     index = np.argmax(train_stats['validation'][target]['last_accuracy'])
     validation = train_stats['validation'][target]['last_accuracy'][index]
@@ -80,17 +79,11 @@ def ludwig_class(df):
 
 
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=1)
-    
     X_train[y_train.columns[0]] = y_train
-    #train = X_train.convert_dtypes()
 
     
-    model = LudwigModel(create_dict(X, y), logging_level=logging.INFO)
-    
-    train_stats = model.train(dataset=X_train, logging_level=logging.INFO)
-
-    test_stats = model.predict(X_test)
-
-
+    model = LudwigModel(create_dict(X, y), logging_level=logging.INFO, allow_parallel_threads=True) # False da provar per vedere se l'errore di RuntimeError viene evitato
+    model.train(dataset=X_train, logging_level=logging.INFO)
+    model.predict(X_test)
 
     return get_results(y.columns[0])
