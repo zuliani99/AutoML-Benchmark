@@ -10,46 +10,17 @@ from os import listdir
 from os.path import isfile
 
 
-def autosklearn_function(df):
-    print("--------------------------------AUTOSKLEARN--------------------------------")
-    from algorithms.auto_sklearn import autoSklearn_class
-    res = (autoSklearn_class(df))
-    print("--------------------------------AUTOSKLEARN--------------------------------\n\n")
-    return res
-
-def tpot_function(df):
-    print("--------------------------------TPOT--------------------------------")
-    from algorithms.tpot import tpot_class
-    res = (tpot_class(df))
-    print("--------------------------------TPOT--------------------------------\n\n")
-    return res
-
-def autokeras_function(df):
-    print("--------------------------------AUTOKERAS--------------------------------")
-    from algorithms.auto_keras import autokeras_class
-    res = (autokeras_class(df))
-    print("--------------------------------AUTOKERAS--------------------------------\n\n")
-    return res
-
-def h2o_function(df):
-    print("--------------------------------H2O--------------------------------") 
-    from algorithms.h2o import h2o_class
-    res = (h2o_class(df))
-    print("--------------------------------H2O--------------------------------\n\n")
-    return res
-
-def ludwig_function(df):
-    print("--------------------------------LUDWIG--------------------------------")
-    from algorithms.ludwig import ludwig_class
-    res = (ludwig_class(df))
-    print("--------------------------------LUDWIG--------------------------------\n\n")
-    return res
+from algorithms.auto_sklearn import autoSklearn_class
+from algorithms.tpot import tpot_class
+from algorithms.auto_keras import autokeras_class
+from algorithms.h2o import h2o_class
+from algorithms.ludwig import ludwig_class
 
 
 
-if __name__ == '__main__':   
+def main():
     print("--------------------START--------------------")
-    
+      
     openml_list = openml.datasets.list_datasets()  # returns a dict
     datalist = pd.DataFrame.from_dict(openml_list, orient="index")
     datalist = datalist[["did", "name", "NumberOfInstances"]]
@@ -61,14 +32,17 @@ if __name__ == '__main__':
     list_class = []
     list_reg = []
 
-    res_class = {}
-    res_reg = {}
+    res_class = {'dataset': [], 'autosklearn': [], 'tpot': [], 'autokeras': [], 'h2o': [], 'ludwig': []}
+    res_reg = {'dataset': [], 'autosklearn': [], 'tpot': [], 'autokeras': [], 'h2o': [], 'ludwig': []}
+
+    res_class = pd.DataFrame(res_class)
+    res_reg = pd.DataFrame(res_reg)
 
     test = True
 
     if test == False:
 
-        for index, row in df_id_name.iterrows():
+        for row in df_id_name.iterrows():
             print('------------------Dataset ID: ' + str(row['did']) + ' name: ' + row['name'] + '------------------')
             try:
                 X, y = fetch_openml(data_id=row['did'], as_frame=True, return_X_y=True)
@@ -115,37 +89,57 @@ if __name__ == '__main__':
         for d in list_class:
             df = pd.read_csv(d)
 
-            res_class[d].append({'autosklearn': autosklearn_function(df)})
-            res_class[d].append({'tpot': tpot_function(df)})
-            res_class[d].append({'autokeras': autokeras_function(df)})
-            res_class[d].append({'h2o': h2o_function(df)})
-            res_class[d].append({'ludwig': ludwig_function(df)})
+            new_row = {'dataset': d, 
+                        'autosklearn': autoSklearn_class(df), 
+                        'tpot': tpot_class(df), 
+                        'autokeras': autokeras_class(df)[1], 
+                        'h2o': h2o_class(df), 
+                        'ludwig': ludwig_class(df)[2] }
+
+            res_calss = res_calss.append(new_row, ignore_index=True)
 
             
-            
-
-
-
+        
     else:
-        X, y = fetch_openml(data_id=727, as_frame=True, return_X_y=True, cache=True)
+        id = 727
+        X, y = fetch_openml(data_id=id, as_frame=True, return_X_y=True, cache=True)
         y = y.to_frame()
         X[y.columns[0]] = y
         df = X
 
-        d = str(727)
 
-        #res_class[d].append({'autosklearn': autosklearn_function(df)})
-        #res_class[d].append({'tpot': tpot_function(df)})
-        #res_class[d].append({'autokeras': autokeras_function(df)})
-        #res_class[d].append({'h2o': h2o_function(df)})
-        #res_class[d].append({'ludwig': ludwig_function(df)})
-
-        print(autosklearn_function(df))
-        print(tpot_function(df))
-        print(autokeras_function(df))
-        print(h2o_function(df))
-        print(ludwig_function(df))
+        print("--------------------------------AUTOSKLEARN--------------------------------")
+        res_autosklearn = (autoSklearn_class(df))# -> non da errore di tensorflow
+        print("--------------------------------AUTOSKLEARN--------------------------------\n\n")
 
 
+        print("-----------------------------------TPOT------------------------------------")
+        res_tpot = (tpot_class(df)) # non da errore di tensorflow, con gli import fino a qui
+        print("-----------------------------------TPOT------------------------------------\n\n")
+
+
+        print("---------------------------------AUTOKERAS---------------------------------")
+        res_autokeras = (autokeras_class(df))[1] # dc qua lo darà sicuramente 
+        print("---------------------------------AUTOKERAS---------------------------------\n\n")
+
+
+        print("------------------------------------H2O------------------------------------")
+        res_h2o = (h2o_class(df))
+        print("------------------------------------H2O------------------------------------\n\n")
+
+
+        print("-----------------------------------LUDWIG----------------------------------")
+        res_ludwig = (ludwig_class(df))[2]
+        print("-----------------------------------LUDWIG----------------------------------\n\n")
         
+        new_row = {'dataset': id, 'autosklearn': res_autosklearn, 'tpot': res_tpot, 'autokeras': res_autokeras, 'h2o': res_h2o, 'ludwig': res_ludwig}
+
+        res_calss = res_calss.append(new_row, ignore_index=True)
+
+        print(res_calss)
+
+
+
+if __name__ == '__main__':  
+    main()
         

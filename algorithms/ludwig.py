@@ -35,7 +35,7 @@ def create_dict(label, target):
     
     #, 'epochs': 10
     model['training'] = ({'validation_field': target.columns[0], 'validation_metric': 'last_accuracy', 'epochs': 5})
-    #print(model)
+    print(model)
     return model
 
 

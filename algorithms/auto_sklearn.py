@@ -11,8 +11,8 @@ def autoSklearn_class(df):
     if t == "string" or t == 'object':
       df[col] = df[col].astype('category')
 
-  y = df.iloc[:, -1:]
-  X = df.iloc[:, 0:df.shape[1]-1]
+  y = df.iloc[:, -1].to_frame()
+  X = df.iloc[:, :-1]
 
   #print(y.info())
   #print(X.info())
@@ -22,9 +22,7 @@ def autoSklearn_class(df):
   automl = autosklearn.classification.AutoSklearnClassifier(
         time_left_for_this_task=1*60,
         per_run_time_limit=30,
-        n_jobs=-1,
-        ensemble_size=1,
-        initial_configurations_via_metalearning=0
+        n_jobs=-1
   )
   #con le ultime due righe di solito si va a fare overfitting
   automl.fit(X_train, y_train)
