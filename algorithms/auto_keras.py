@@ -5,28 +5,19 @@ import tensorflow as tf
 import autokeras as ak
 from sklearn.model_selection import train_test_split
 
-def prepare_and_test(train_file_path, test_file_path, target):
-  # x_train as pandas.DataFrame, y_train as pandas.Series
-  x_train = pd.read_csv(train_file_path)
+def prepare_and_test(x_train, x_test, target):
 
   y_train = x_train.pop(target)
-
   y_train = pd.DataFrame(y_train)
-
   x_train = x_train.to_numpy()
   y_train = y_train.to_numpy()
-
-  # Preparing testing data.
-  x_test = pd.read_csv(test_file_path)
   y_test = x_test.pop(target)
 
-  # It tries 10 different models.
+
   clf = ak.StructuredDataClassifier(overwrite=True, max_trials=3)
-  # Feed the structured data classifier with training data.
   clf.fit(x_train, y_train, validation_split=0.15, epochs=5)
-  # Predict with the best model.
   predicted_y = clf.predict(x_test)
-  # Evaluate the best model with testing data.
+
   return (clf.evaluate(x_test, y_test))
 
 
@@ -45,7 +36,4 @@ def autokeras_class(df):
   X_test[target] = y_test
   test = X_test
 
-  train.to_csv("../train.csv", index=False, header=True)
-  test.to_csv("../test.csv", index=False, header=True)
-
-  return (prepare_and_test("../train.csv", "../test.csv", target))
+  return (prepare_and_test(train, test, target))

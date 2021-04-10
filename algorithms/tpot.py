@@ -17,10 +17,8 @@ def tpot_class(df):
   for col in df.columns:
     t = pd.api.types.infer_dtype(df[col])
     if t == "string" or t == 'object':
-      print(col)
       df[col] = df[col].astype('category').cat.codes
-    if t == 'categorical':
-      print(col)
+    if t == 'categorical' :
       df[col] = df[col].cat.codes
 
     

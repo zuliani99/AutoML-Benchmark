@@ -7,11 +7,12 @@ stopit
 xgboost
 scikit-mdr
 skrebate
-tensorflow==2.3.1
+tensorflow
+scipy==1.5.4
 tpot
 autokeras
 Cython
-numpy
+numpy==1.19.5
 pipelineprofiler
 auto-sklearn
 torch
@@ -19,3 +20,6 @@ h2o
 emcee
 scikit-optimize
 pyDOE
+--upgrade setuptools
+--upgrade "mxnet<2.0.0"
+--pre autogluon
