@@ -5,7 +5,6 @@ import pandas as pd
 
 def autoSklearn_class(df):
   #categorical, binary, nuymerical features
-
   for col in df.columns:
     t = pd.api.types.infer_dtype(df[col])
     if t == "string" or t == 'object':
