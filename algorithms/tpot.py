@@ -1,18 +1,30 @@
-from tpot import TPOTClassifier
+from tpot import TPOTClassifier, TPOTRegressor
 from sklearn.model_selection import train_test_split
 import pandas as pd
+import numpy as np
 from sklearn import preprocessing
+from sklearn.metrics import accuracy_score, mean_squared_error
+from sklearn.model_selection import RepeatedStratifiedKFold, RepeatedKFold
 
 
-def prepare_and_test(X, y):
-  model =  TPOTClassifier(generations=5, cv=5, max_time_mins=1, random_state=1, verbosity=2)
+def prepare_and_test(X, y, task):
+  if task == ' classification':
+    #cv = RepeatedStratifiedKFold(n_splits=10, n_repeats=3, random_state=1)
+    model =  TPOTClassifier(generations=5, cv=5, max_time_mins=1, random_state=1, verbosity=2)
+    score = lambda t, p: accuracy_score(t, p)
+  else:
+    #cv = RepeatedKFold(n_splits=10, n_repeats=3, random_state=1)
+    model =  TPOTRegressor(generations=5, cv=5, max_time_mins=1, random_state=1, verbosity=2)
+    score = lambda t, p: np.sqrt(mean_squared_error(y_true=t, y_pred=p))
+
   X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=1)
-  model.fit(X_train, y_train) 
-  return (model.score(X_test, y_test))
+  model.fit(X_train, y_train)
+  preds = model.predict(X_test)
+  return (score(y_test, preds))
 
 
 #devo fare datacleaning: pulizia nel senso nan -> fill_nan
-def tpot_class(df):
+def tpot(df, task):
 
   for col in df.columns:
     t = pd.api.types.infer_dtype(df[col])
@@ -25,4 +37,4 @@ def tpot_class(df):
   y = df.iloc[:, -1]
   X = df.iloc[:, :-1]
 
-  return prepare_and_test(X, y)
+  return prepare_and_test(X, y, task)

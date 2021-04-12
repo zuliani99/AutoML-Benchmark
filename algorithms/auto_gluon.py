@@ -1,9 +1,9 @@
 from autogluon.tabular import TabularDataset, TabularPredictor
 from sklearn.model_selection import train_test_split
 
-def autogluon(f):
+def autogluon(df, task):
 
-  df = TabularDataset(f)
+  df = TabularDataset(df)
 
 
   y = df.iloc[:, -1].to_frame()
@@ -17,9 +17,12 @@ def autogluon(f):
 
   test = X_test
 
-  predictor = TabularPredictor(label=target).fit(train)
+  predictor = TabularPredictor(label=target).fit(train, time_limit=60)
   results = predictor.fit_summary()
   
   
   y_pred = predictor.predict(test)
-  return (predictor.evaluate_predictions(y_true=y_test.squeeze(), y_pred=y_pred, auxiliary_metrics=True))['accuracy']
+  if(task == 'classification'):
+    return (predictor.evaluate_predictions(y_true=y_test.squeeze(), y_pred=y_pred, auxiliary_metrics=True))['accuracy']
+  else:
+    return (predictor.evaluate_predictions(y_true=y_test.squeeze(), y_pred=y_pred, auxiliary_metrics=True))['root_mean_squared_error']

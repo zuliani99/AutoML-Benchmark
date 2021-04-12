@@ -1,11 +1,12 @@
 #pip3 install autokeras
 
 import pandas as pd
+import numpy as np
 import tensorflow as tf
 import autokeras as ak
 from sklearn.model_selection import train_test_split
 
-def prepare_and_test(x_train, x_test, target):
+def prepare_and_test(x_train, x_test, target, task):
 
   y_train = x_train.pop(target)
   y_train = pd.DataFrame(y_train)
@@ -14,14 +15,17 @@ def prepare_and_test(x_train, x_test, target):
   y_test = x_test.pop(target)
 
 
-  clf = ak.StructuredDataClassifier(overwrite=True, max_trials=3)
+  if(task == 'classification'):
+    clf = ak.StructuredDataClassifier(overwrite=True, max_trials=3)
+  else:
+    clf = ak.StructuredDataRegressor(overwrite=True, max_trials=3)
   clf.fit(x_train, y_train, validation_split=0.15, epochs=5)
   predicted_y = clf.predict(x_test)
 
-  return (clf.evaluate(x_test, y_test))
+  return clf.evaluate(x_test, y_test) if task == 'classification' else np.sqrt(clf.evaluate(x_test, y_test))
 
 
-def autokeras_class(df):
+def autokeras(df, task):
   y = df.iloc[:, -1]
   X = df.iloc[:, :-1]
 
@@ -36,4 +40,4 @@ def autokeras_class(df):
   X_test[target] = y_test
   test = X_test
 
-  return (prepare_and_test(train, test, target))
+  return (prepare_and_test(train, test, target, task))

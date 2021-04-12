@@ -1,9 +1,11 @@
 from sklearn.model_selection import train_test_split
-from sklearn.metrics import accuracy_score
+from sklearn.metrics import accuracy_score, mean_squared_error
 import autosklearn.classification
+import autosklearn.regression
 import pandas as pd
+import numpy as np
 
-def autoSklearn_class(df):
+def auto_sklearn(df, task):
   #categorical, binary, nuymerical features
   for col in df.columns:
     t = pd.api.types.infer_dtype(df[col])
@@ -13,19 +15,25 @@ def autoSklearn_class(df):
   y = df.iloc[:, -1].to_frame()
   X = df.iloc[:, :-1]
 
-  #print(y.info())
-  #print(X.info())
-
   X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=1)
-  #automl = AutoSklearn2Classifier(
-  automl = autosklearn.classification.AutoSklearnClassifier(
-        time_left_for_this_task=1*60,
-        per_run_time_limit=30,
-        n_jobs=-1
-  )
-  #con le ultime due righe di solito si va a fare overfitting
+
+  if(task == 'classification'):
+    automl = autosklearn.classification.AutoSklearnClassifier(
+          time_left_for_this_task=1*60,
+          per_run_time_limit=30,
+          n_jobs=-1
+    )
+    score = lambda t, p: accuracy_score(t, p)
+  else:
+    automl = autosklearn.regression.AutoSklearnRegressor(
+      time_left_for_this_task=1*60,
+      per_run_time_limit=30,
+      n_jobs=-1
+    )
+    score = lambda t, p: np.sqrt(mean_squared_error(t, p))
   automl.fit(X_train, y_train)
   #print(automl.sprint_statistics())
   #print(automl.show_models())
   y_pred = automl.predict(X_test)
-  return (accuracy_score(y_test, y_pred))
+  return (score(y_test, y_pred))
+
