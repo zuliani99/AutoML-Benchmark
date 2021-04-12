@@ -3,6 +3,7 @@
 import openml
 import os.path
 import os
+import sys
 import pandas as pd
 import numpy as np
 from openml.datasets import edit_dataset, fork_dataset, get_dataset
@@ -92,7 +93,7 @@ def main():
     openml_list = openml.datasets.list_datasets()  # returns a dict
     datalist = pd.DataFrame.from_dict(openml_list, orient="index")
     datalist = datalist[["did", "name", "NumberOfInstances"]]
-    df_id_name = datalist[datalist.NumberOfInstances > 40000].sort_values(["NumberOfInstances"]).head(3)
+    df_id_name = datalist[datalist.NumberOfInstances > 40000].sort_values(["NumberOfInstances"]).head(int(sys.argv[1]))
 
     df_good = 0
     df_bad = 0
@@ -105,7 +106,7 @@ def main():
     res_class = pd.DataFrame(res_class)
     res_reg = pd.DataFrame(res_reg)
 
-    test = True
+    test = False
 
     if test == False:
         print('--------------------------------Inizio Dataset Download--------------------------------')
@@ -165,7 +166,7 @@ def main():
         print('\n\n---------------------------------RISULTATI DI REGRESSIONE---------------------------------')
         print(res_reg)
 
-        path = './results/' + datetime.now()
+        path = './results/' + str(datetime.now())
         os.mkdir(path)
         res_class.to_csv(path + 'classification.csv', index = False)
         res_reg.to_csv(path + 'regression.csv', index = False)
@@ -199,7 +200,7 @@ def main():
         # autokeras -> mean_squared_error: 0.006891193334013224 -> fixato
         # h2o -> mean_squared_error: 0.11184497546233797 -> fixato
         # autogluon -> root_mean_squared_error: 0.029061951526943217
-        print(tpot(df, task))    
+        print(H2O(df, task))    
 
 if __name__ == '__main__':  
     main()
