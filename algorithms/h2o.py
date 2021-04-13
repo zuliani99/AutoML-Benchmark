@@ -27,7 +27,6 @@ def prepare_and_test(train, test, task):
   pred = h2o.as_list(pred)
   target = h2o.as_list(test[y])
 
-  h2o.removeAll()
 
   if task == 'classification':
     pred = pred.drop(pred.columns[-2:].astype(str), 1)
