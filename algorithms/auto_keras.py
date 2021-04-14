@@ -1,5 +1,3 @@
-#pip3 install autokeras
-
 import pandas as pd
 import numpy as np
 import tensorflow as tf

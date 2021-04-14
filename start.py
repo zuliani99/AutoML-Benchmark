@@ -204,7 +204,7 @@ def main():
         # autokeras -> mean_squared_error: 0.006891193334013224 -> fixato
         # h2o -> mean_squared_error: 0.11184497546233797 -> fixato
         # autogluon -> root_mean_squared_error: 0.029061951526943217
-        print(tpot(df, task))
+        print(fun_autokeras(df, task))
 
 if __name__ == '__main__':  
     main()
