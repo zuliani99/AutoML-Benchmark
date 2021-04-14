@@ -180,9 +180,9 @@ def main():
             print('Inserisci un numero positivo oppure non inserire nulla per eseguire un test singolo')
             
     else:
-        task = 'regression'
+        task = 'classification'
 
-        id = 564
+        id = 881
         X, y = fetch_openml(data_id=id, as_frame=True, return_X_y=True, cache=True)
         y = y.to_frame()
         X[y.columns[0]] = y
@@ -204,7 +204,7 @@ def main():
         # autokeras -> mean_squared_error: 0.006891193334013224 -> fixato
         # h2o -> mean_squared_error: 0.11184497546233797 -> fixato
         # autogluon -> root_mean_squared_error: 0.029061951526943217
-        print(H2O(df, task))
+        print(tpot(df, task))
 
 if __name__ == '__main__':  
     main()

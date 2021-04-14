@@ -1,5 +1,4 @@
 openml
-ludwig
 deap
 update_checker
 tqdm
