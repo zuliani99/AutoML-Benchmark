@@ -9,10 +9,10 @@ from sklearn.model_selection import RepeatedStratifiedKFold, RepeatedKFold
 
 def prepare_and_test(X, y, task):
   if task == 'classification':
-    model =  TPOTClassifier(generations=5, cv=5, max_time_mins=1, random_state=1, verbosity=2)
+    model =  TPOTClassifier(generations=5, cv=5, max_time_mins=1, random_state=1, verbosity=2, n_jobs=-1)
     score = lambda t, p: accuracy_score(t, p)
   else:
-    model =  TPOTRegressor(generations=5, cv=5, max_time_mins=1, random_state=1, verbosity=2)
+    model =  TPOTRegressor(generations=5, cv=5, max_time_mins=1, random_state=1, verbosity=2, n_jobs=-1)
     score = lambda t, p: np.sqrt(mean_squared_error(y_true=t, y_pred=p))
 
   X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=1)
