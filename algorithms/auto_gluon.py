@@ -16,7 +16,7 @@ def autogluon(df, task):
 
   test = X_test
 
-  predictor = TabularPredictor(label=target).fit(train, time_limit=60, presets=['optimize_for_deployment'])
+  predictor = TabularPredictor(label=target).fit(train, time_limit=60, presets=['optimize_for_deployment'], path='/media/riccardo/8A13-C277/model_saved')
   results = predictor.fit_summary()
   
   y_pred = predictor.predict(test)
