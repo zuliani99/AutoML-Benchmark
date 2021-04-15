@@ -31,7 +31,7 @@ def fun_tpot(df, task):
     res_tpot = 0.0
     print("-----------------------------------TPOT------------------------------------")
     try:
-        res_tpot = (tpot(df, task))
+        res_tpot = (TPOT(df, task))
         print('Risultato memorizzato!')
     except:
         print('Qualcosa è andato storto :(')
@@ -146,7 +146,7 @@ def main():
                 
                 print('---------------------------------Dataset: ' + d + '---------------------------------\n')
 
-                res = [auto_sklearn(df, task), fun_tpot(df, task), fun_autokeras(df, task), fun_h2o(df, task), fun_autogluon(d, task)]
+                res = [auto_sklearn(df, task), fun_tpot(df, task, d), fun_autokeras(df, task), fun_h2o(df, task), fun_autogluon(d, task)]
 
                 if(task == 'classification'):
                     new_row = {'dataset': d.split('/')[3], 'autosklearn': res[0],'tpot': res[1], 'autokeras': res[2], 'h2o': res[3], 'autogluon': res[4], 'best': res_class.columns[np.argmax(res)+1] }
@@ -193,12 +193,12 @@ def main():
         # autokeras -> mean_squared_error: 0.006891193334013224 -> fixato
         # h2o -> mean_squared_error: 0.11184497546233797 -> fixato
         # autogluon -> root_mean_squared_error: 0.029061951526943217
-        print(autogluon(df, task))
+        print(TPOT(df, task))
 
 
 if __name__ == '__main__':
     from algorithms.auto_sklearn import auto_sklearn
-    from algorithms.tpot import tpot
+    from algorithms.tpot import TPOT
     from algorithms.h2o import H2O
     from algorithms.auto_keras import autokeras
     from algorithms.auto_gluon import autogluon

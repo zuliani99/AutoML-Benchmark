@@ -9,11 +9,9 @@ from sklearn.model_selection import RepeatedStratifiedKFold, RepeatedKFold
 
 def prepare_and_test(X, y, task):
   if task == 'classification':
-    #cv = RepeatedStratifiedKFold(n_splits=10, n_repeats=3, random_state=1)
     model =  TPOTClassifier(generations=5, cv=5, max_time_mins=1, random_state=1, verbosity=2)
     score = lambda t, p: accuracy_score(t, p)
   else:
-    #cv = RepeatedKFold(n_splits=10, n_repeats=3, random_state=1)
     model =  TPOTRegressor(generations=5, cv=5, max_time_mins=1, random_state=1, verbosity=2)
     score = lambda t, p: np.sqrt(mean_squared_error(y_true=t, y_pred=p))
 
@@ -24,7 +22,7 @@ def prepare_and_test(X, y, task):
 
 
 #devo fare datacleaning: pulizia nel senso nan -> fill_nan
-def tpot(df, task):
+def TPOT(df, task):
 
   for col in df.columns:
     t = pd.api.types.infer_dtype(df[col])
