@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
 
+# AUTOKERAS E AUTOGLUON -> scrivono nel disco per salvare tutti i modelli
+
 import openml
 import os.path
 import os
@@ -167,9 +169,9 @@ def main():
             print('Inserisci un numero positivo oppure non inserire nulla per eseguire un test singolo')
             
     else:
-        task = 'classification'
+        task = 'regression'
 
-        id = 881
+        id = 344
         X, y = fetch_openml(data_id=id, as_frame=True, return_X_y=True, cache=True)
         y = y.to_frame()
         X[y.columns[0]] = y
@@ -191,7 +193,7 @@ def main():
         # autokeras -> mean_squared_error: 0.006891193334013224 -> fixato
         # h2o -> mean_squared_error: 0.11184497546233797 -> fixato
         # autogluon -> root_mean_squared_error: 0.029061951526943217
-        print(fun_autokeras(df, task))
+        print(autogluon(df, task))
 
 
 if __name__ == '__main__':

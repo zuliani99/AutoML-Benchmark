@@ -26,11 +26,12 @@ def auto_sklearn(df, task):
     score = lambda t, p: accuracy_score(t, p)
   else:
     automl = autosklearn.regression.AutoSklearnRegressor(
-      time_left_for_this_task=1*60,
-      per_run_time_limit=30,
-      n_jobs=-1
+          time_left_for_this_task=1*60,
+          per_run_time_limit=30,
+          n_jobs=-1
     )
     score = lambda t, p: np.sqrt(mean_squared_error(t, p))
+    
   automl.fit(X_train, y_train)
   #print(automl.sprint_statistics())
   #print(automl.show_models())
