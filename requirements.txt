@@ -6,7 +6,7 @@ stopit
 xgboost
 scikit-mdr
 skrebate
-tensorflow
+tensorflow==2.4.1
 scipy==1.5.4
 tpot
 autokeras
