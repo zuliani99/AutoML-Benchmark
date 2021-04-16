@@ -1,4 +1,4 @@
-from algo_functions import fun_autosklearn, fun_tpot, fun_h2o, fun_autokeras, fun_autogluon
+from utils.algo_functions import fun_autosklearn, fun_tpot, fun_h2o, fun_autokeras, fun_autogluon
 from sklearn.datasets import fetch_openml
 from datetime import datetime
 import os

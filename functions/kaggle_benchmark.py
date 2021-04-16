@@ -2,6 +2,7 @@ import pandas as pd
 from kaggle.api.kaggle_api_extended import KaggleApi
 from zipfile import ZipFile
 import os
+from algorithms.auto_sklearn import auto_sklearn_k
 
 def kaggle_benchmark():
     api = KaggleApi()
@@ -24,4 +25,6 @@ def kaggle_benchmark():
     print(train.head())
     print(test.head())
 
+    print(auto_sklearn_k(train, test, 'classification'))
+    
 

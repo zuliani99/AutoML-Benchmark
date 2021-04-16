@@ -4,9 +4,9 @@
 # Ora tutti gli algoritmi sono parallelizzati, utilizzano tutti i core disponibili
 
 
-from openml_benchmark import openml_benchmark
-from kaggle_benchmark import kaggle_benchmark
-from test import test
+from functions.openml_benchmark import openml_benchmark
+from functions.kaggle_benchmark import kaggle_benchmark
+from functions.test import test
 import sys
 
 
