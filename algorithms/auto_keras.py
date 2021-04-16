@@ -21,7 +21,7 @@ def prepare_and_test(x_train, x_test, target, task):
   clf.fit(x_train, y_train, validation_split=0.15, epochs=5)
   predicted_y = clf.predict(x_test)
 
-  return clf.evaluate(x_test, y_test) if task == 'classification' else np.sqrt(clf.evaluate(x_test, y_test)[0])
+  return clf.evaluate(x_test, y_test) if task == 'classification' else np.sqrt(clf.evaluate(x_test, y_test))
 
 
 def autokeras(df, task):
