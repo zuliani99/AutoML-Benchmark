@@ -3,6 +3,10 @@ from kaggle.api.kaggle_api_extended import KaggleApi
 from zipfile import ZipFile
 import os
 from algorithms.auto_sklearn import auto_sklearn_k
+from algorithms.h2o import H2O_K
+from algorithms.tpot import TPOT_K
+from algorithms.auto_keras import autokeras_k
+from algorithms.auto_gluon import autogluon_k
 
 def kaggle_benchmark():
     api = KaggleApi()
@@ -25,6 +29,6 @@ def kaggle_benchmark():
     print(train.head())
     print(test.head())
 
-    print(auto_sklearn_k(train, test, 'classification'))
+    print(autogluon_k(train, test, 'classification'))
     
 

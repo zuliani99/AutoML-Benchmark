@@ -2,6 +2,7 @@ from sklearn.model_selection import train_test_split
 from sklearn.metrics import accuracy_score, mean_squared_error
 import autosklearn.classification
 import autosklearn.regression
+from sklearn.preprocessing import LabelEncoder 
 import pandas as pd
 import numpy as np
 
@@ -9,10 +10,11 @@ from utils.usefull_functions import get_target
 
 def auto_sklearn(df, task):
   #categorical, binary, nuymerical features
-  for col in df.columns:
-    t = pd.api.types.infer_dtype(df[col])
+  df = df.apply(LabelEncoder().fit_transform) # test -> 
+  '''for col in df.columns:
+    t = pd.api.types.infer_dtype(df[col]) # test -> 
     if t == "string" or t == 'object':
-      df[col] = df[col].astype('category')
+      df[col] = df[col].astype('category')'''
 
   y = df.iloc[:, -1].to_frame()
   X = df.iloc[:, :-1]
@@ -43,20 +45,22 @@ def auto_sklearn(df, task):
 
 
 def auto_sklearn_k(train, test, task):
-  #categorical, binary, nuymerical features
-  for col in train.columns:
+  #categorical, binary, nuymerical featuress
+  '''for col in train.columns:
     t = pd.api.types.infer_dtype(train[col])
     if t == "string" or t == 'object':
       train[col] = train[col].astype('category')
       train[col] = train[col].cat.add_categories('Unknown')
       train[col].fillna('Unknown', inplace =True) 
     if t == "integer" or t == "floating":
-      train[col] = train[col].fillna(train[col].mean())
+      train[col] = train[col].fillna(train[col].mean())'''
+
+  
 
   target = get_target(train, test)
-
   y = train[target]
-  X = train.drop([target, 'Name', 'Ticket'], axis=1)
+  train = train.drop([target], axis=1)
+  X = train.apply(LabelEncoder().fit_transform)
 
   X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=1)
 

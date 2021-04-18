@@ -5,6 +5,7 @@ import h2o
 from h2o.automl import H2OAutoML
 import numpy as np
 from sklearn.model_selection import train_test_split
+from utils.usefull_functions import get_target
 
 def prepare_and_test(train, test, task):
   x = train.columns
@@ -60,3 +61,22 @@ def H2O(df, task):
   test = h2o.H2OFrame(test)
   return(prepare_and_test(train, test, task))
 
+def H2O_K(train, test, task):
+  h2o.init()
+  target = get_target(train, test)
+  y = train[target]
+  X = train.drop(target, axis=1)
+
+  X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=1)
+
+  y_train = y_train.to_frame()
+  X_train[y_train.columns[0]] = y_train
+  train = X_train
+
+  y_test = y_test.to_frame()
+  X_test[y_test.columns[0]] = y_test
+  test = X_test
+
+  train = h2o.H2OFrame(train)
+  test = h2o.H2OFrame(test)
+  return(prepare_and_test(train, test, task))

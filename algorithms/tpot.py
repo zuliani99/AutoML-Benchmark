@@ -2,9 +2,10 @@ from tpot import TPOTClassifier, TPOTRegressor
 from sklearn.model_selection import train_test_split
 import pandas as pd
 import numpy as np
-from sklearn import preprocessing
+from sklearn.preprocessing import LabelEncoder
 from sklearn.metrics import accuracy_score, mean_squared_error
 from sklearn.model_selection import RepeatedStratifiedKFold, RepeatedKFold
+from utils.usefull_functions import get_target
 
 
 def prepare_and_test(X, y, task):
@@ -34,5 +35,13 @@ def TPOT(df, task):
     
   y = df.iloc[:, -1]
   X = df.iloc[:, :-1]
+
+  return prepare_and_test(X, y, task)
+
+def TPOT_K(train, test, task):
+  target = get_target(train, test)
+  y = train[target]
+  train = train.drop([target], axis=1)
+  X = train.apply(LabelEncoder().fit_transform)
 
   return prepare_and_test(X, y, task)
