@@ -60,8 +60,6 @@ def openml_benchmark(df_n):
     print('Good df: ' + str(df_good) + '    bad df: ' + str(df_bad) + '\n')
     
 
-
-
     #ESECUZUONE DEGLI ALGORITMI
     for d in list_df:
         task = d.split('/')[2]
@@ -78,12 +76,15 @@ def openml_benchmark(df_n):
             new_row = {'dataset': d.split('/')[3], 'autosklearn': res[0],'tpot': res[1], 'autokeras': res[2], 'h2o': res[3], 'autogluon': res[4], 'best': res_class.columns[np.argmin(res)+1] }
             res_reg = res_reg.append(new_row, ignore_index=True)
 
-    print('---------------------------------RISULTATI DI CLASSIFICAZIONE---------------------------------')
+
+    print('---------------------------------RISULTATI DI CLASSIFICAZIONE OPENML---------------------------------')
     print(res_class)
-    print('\n\n---------------------------------RISULTATI DI REGRESSIONE---------------------------------')
+    print('\n\n---------------------------------RISULTATI DI REGRESSIONE OPENML---------------------------------')
     print(res_reg)
 
-    path = './results/' + str(datetime.now())
+    path = './results/openml/' + str(datetime.now())
     os.makedirs(path)
-    res_class.to_csv(path + '/classification.csv', index = False)
-    res_reg.to_csv(path + '/regression.csv', index = False)
+    if(not res_class.empty):
+        res_class.to_csv(path + '/classification.csv', index = False)
+    if(not res_reg.empty):
+        res_reg.to_csv(path + '/regression.csv', index = False)

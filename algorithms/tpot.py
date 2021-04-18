@@ -24,24 +24,23 @@ def prepare_and_test(X, y, task):
 
 #devo fare datacleaning: pulizia nel senso nan -> fill_nan
 def TPOT(df, task):
+  if isinstance(df, pd.DataFrame):
+    for col in df.columns:
+      t = pd.api.types.infer_dtype(df[col])
+      if t == "string" or t == 'object':
+        df[col] = df[col].astype('category').cat.codes
+      if t == 'categorical' :
+        df[col] = df[col].cat.codes
 
-  for col in df.columns:
-    t = pd.api.types.infer_dtype(df[col])
-    if t == "string" or t == 'object':
-      df[col] = df[col].astype('category').cat.codes
-    if t == 'categorical' :
-      df[col] = df[col].cat.codes
+    y = df.iloc[:, -1]
+    X = df.iloc[:, :-1]
 
-    
-  y = df.iloc[:, -1]
-  X = df.iloc[:, :-1]
-
-  return prepare_and_test(X, y, task)
-
-def TPOT_K(train, test, task):
-  target = get_target(train, test)
-  y = train[target]
-  train = train.drop([target], axis=1)
-  X = train.apply(LabelEncoder().fit_transform)
+  else:
+    train = df[0]
+    test = df[1]
+    target = get_target(train, test)
+    y = train[target]
+    train = train.drop([target], axis=1)
+    X = train.apply(LabelEncoder().fit_transform)
 
   return prepare_and_test(X, y, task)

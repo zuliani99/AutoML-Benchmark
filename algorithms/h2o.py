@@ -1,9 +1,7 @@
-#pip3 install -f http://h2o-release.s3.amazonaws.com/h2o/latest_stable_Py.html h2o
-#sudo apt install default-jre
-
 import h2o
 from h2o.automl import H2OAutoML
 import numpy as np
+import pandas as pd
 from sklearn.model_selection import train_test_split
 from utils.usefull_functions import get_target
 
@@ -46,37 +44,30 @@ def prepare_and_test(train, test, task):
 
 def H2O(df, task):
   h2o.init()
-  y = df.iloc[:, -1].to_frame()
-  X = df.iloc[:, :-1]
+
+  if isinstance(df, pd.DataFrame):
+    y = df.iloc[:, -1].to_frame()
+    X = df.iloc[:, :-1]
+  else:
+    train = df[0]
+    test = df[1]
+    target = get_target(train, test)
+    y = train[target]
+    X = train.drop(target, axis=1)
 
   X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=1)
 
+  if isinstance(y_test, pd.Series):
+    y_train = y_train.to_frame()
   X_train[y_train.columns[0]] = y_train
   train = X_train
 
+  if isinstance(y_test, pd.Series):
+    y_test = y_test.to_frame()
   X_test[y_test.columns[0]] = y_test
   test = X_test
 
   train = h2o.H2OFrame(train)
   test = h2o.H2OFrame(test)
-  return(prepare_and_test(train, test, task))
 
-def H2O_K(train, test, task):
-  h2o.init()
-  target = get_target(train, test)
-  y = train[target]
-  X = train.drop(target, axis=1)
-
-  X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=1)
-
-  y_train = y_train.to_frame()
-  X_train[y_train.columns[0]] = y_train
-  train = X_train
-
-  y_test = y_test.to_frame()
-  X_test[y_test.columns[0]] = y_test
-  test = X_test
-
-  train = h2o.H2OFrame(train)
-  test = h2o.H2OFrame(test)
   return(prepare_and_test(train, test, task))
