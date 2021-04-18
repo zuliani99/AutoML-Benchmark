@@ -54,8 +54,10 @@ def kaggle_benchmark():
     os.makedirs(path)
     if(not res_class.empty):
         res_class.to_csv(path + '/classification.csv', index = False)
+        scatter(res_class, 'Kaggle - Classificazione')
     if(not res_reg.empty):
         res_reg.to_csv(path + '/regression.csv', index = False)
+        scatter(res_reg, 'Kaggle - Regressione')
 
     
 

@@ -1,4 +1,5 @@
 from utils.algo_functions import fun_autosklearn, fun_tpot, fun_h2o, fun_autokeras, fun_autogluon
+from utils.usefull_functions import scatter
 from sklearn.datasets import fetch_openml
 from datetime import datetime
 import os
@@ -86,5 +87,7 @@ def openml_benchmark(df_n):
     os.makedirs(path)
     if(not res_class.empty):
         res_class.to_csv(path + '/classification.csv', index = False)
+        scatter(res_class, 'OpenML - Classificazione')
     if(not res_reg.empty):
         res_reg.to_csv(path + '/regression.csv', index = False)
+        scatter(res_reg, 'OpenML - Regressione')
