@@ -19,15 +19,28 @@ plt.legend()
 plt.show()
 '''
 
+
+'''
+from utils.usefull_functions import scatter
+import pandas as pd
+
+data = pd.read_csv('./results/openml/2021-04-18 15:37:55.986520/regression.csv')
+scatter(data, 'Openml - Regressione')
+'''
+
 def scatter(data, task):
-    data = [go.Scatter(x=data['dataset'], y=data['autosklearn'], name='AutoSklearn'), 
-            go.Scatter(x=data['dataset'], y=data['tpot'], name='TPOT'),
-            go.Scatter(x=data['dataset'], y=data['h2o'], name='H2O'),
-            go.Scatter(x=data['dataset'], y=data['autokeras'], name='AutoKeras'),
-            go.Scatter(x=data['dataset'], y=data['autogluon'], name='AutoGluon')]
+    data = [go.Scatter(x=data['dataset'], y=data['autosklearn'], name='AutoSklearn', mode='lines+markers'), 
+            go.Scatter(x=data['dataset'], y=data['tpot'], name='TPOT', mode='lines+markers'),
+            go.Scatter(x=data['dataset'], y=data['h2o'], name='H2O', mode='lines+markers'),
+            go.Scatter(x=data['dataset'], y=data['autokeras'], name='AutoKeras', mode='lines+markers'),
+            go.Scatter(x=data['dataset'], y=data['autogluon'], name='AutoGluon', mode='lines+markers')]
+    if task.split(' ')[2] == 'Classificazione':
+        y = 'Accuracy'
+    else:
+        y = 'RMSE'
     layout = go.Layout(dict(title = 'Risultati ' + task,
-                    xaxis = dict(title = 'Dataset'),
-                    yaxis = dict(title = 'Algoritmo'),
+                    xaxis = dict(title = 'Datasets'),
+                    yaxis = dict(title = y),
                     ),legend=dict(
                     orientation="v"))
     py.iplot(dict(data=data, layout=layout))

@@ -5,6 +5,7 @@ from zipfile import ZipFile
 import os
 from datetime import datetime
 from utils.algo_functions import fun_autosklearn, fun_tpot, fun_h2o, fun_autokeras, fun_autogluon
+from utils.usefull_functions import scatter
 
 def kaggle_benchmark():
     api = KaggleApi()
