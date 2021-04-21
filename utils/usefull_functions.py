@@ -1,6 +1,7 @@
 import plotly.graph_objs as go
 import plotly.offline as py
-#import matplotlib.pyplot as plt
+import matplotlib.pyplot as plt
+import numpy as np
 
 def get_target(train, test):
     for c in train.columns:
@@ -44,3 +45,39 @@ def scatter(data, task):
                     ),legend=dict(
                     orientation="v"))
     py.iplot(dict(data=data, layout=layout))
+
+def hist(data, task):
+    #data.plot.bar()
+
+    labels = data['dataset'].to_numpy()
+
+    x = np.arange(len(labels))  # the label locations
+    bar_width = 0.15
+
+    fig, ax = plt.subplots(figsize=(20, 8))
+    rects1 = ax.bar(x, data['autosklearn'].to_numpy(), width=bar_width, label='AutoSklearn')
+    rects2 = ax.bar(x + bar_width, data['tpot'].to_numpy(), width=bar_width, label='TPOT')
+    rects3 = ax.bar(x + bar_width*2, data['h2o'].to_numpy(), width=bar_width, label='H2O')
+    rects4 = ax.bar(x + bar_width*3, data['autokeras'].to_numpy(), width=bar_width, label='AutoKeras')
+    rects5 = ax.bar(x + bar_width*4, data['autogluon'].to_numpy(), width=bar_width, label='AutoGluon')
+
+    # Add some text for labels, title and custom x-axis tick labels, etc.
+    if(task.split(' ')[2] == 'Classificazione'):
+        ax.set_ylabel('Accuracy')
+    else:
+        ax.set_ylabel('RMSE')
+   
+    ax.set_title('Risultati per ' + task)
+    ax.set_xticks(x)
+    ax.set_xticklabels(labels)
+    ax.legend()
+
+    ax.bar_label(rects1, padding=3)
+    ax.bar_label(rects2, padding=3)
+    ax.bar_label(rects3, padding=3)
+    ax.bar_label(rects4, padding=3)
+    ax.bar_label(rects5, padding=3)
+
+    fig.tight_layout()
+
+    plt.show()

@@ -5,7 +5,7 @@ from zipfile import ZipFile
 import os
 from datetime import datetime
 from utils.algo_functions import fun_autosklearn, fun_tpot, fun_h2o, fun_autokeras, fun_autogluon
-from utils.usefull_functions import scatter
+from utils.usefull_functions import scatter, hist
 
 datasets = [('titanic', 'classification'), ('tabular-playground-series-mar-2021', 'classification')]
 
@@ -64,14 +64,14 @@ def kaggle_benchmark(list_df):
         print(res_class)
 
         res_class.to_csv(path + '/classification.csv', index = False)
-        scatter(res_class, 'Kaggle - Classificazione')
+        hist(res_class, 'Kaggle - Classificazione')
 
     if(not res_reg.empty):
         print('\n\n---------------------------------RISULTATI DI REGRESSIONE KAGGLE---------------------------------')
         print(res_reg)
 
         res_reg.to_csv(path + '/regression.csv', index = False)
-        scatter(res_reg, 'Kaggle - Regressione')
+        hist(res_reg, 'Kaggle - Regressione')
 
     
 

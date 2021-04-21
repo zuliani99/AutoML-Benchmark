@@ -1,5 +1,5 @@
 from sklearn.model_selection import train_test_split
-from sklearn.metrics import accuracy_score, mean_squared_error
+from sklearn.metrics import accuracy_score, mean_squared_error, f1_score, r2_score
 import autosklearn.classification
 import autosklearn.regression
 from sklearn.preprocessing import LabelEncoder 
@@ -44,20 +44,21 @@ def auto_sklearn(df, task):
           per_run_time_limit=30,
           n_jobs=-1
     )
-    score = lambda t, p: accuracy_score(t, p)
+    le = LabelEncoder()
+    score = lambda t, p: (accuracy_score(t, p), f1_score(le.fit_transform(t), le.fit_transform(p)))
   else:
     automl = autosklearn.regression.AutoSklearnRegressor(
           time_left_for_this_task=1*60,
           per_run_time_limit=30,
           n_jobs=-1
     )
-    score = lambda t, p: np.sqrt(mean_squared_error(t, p))
+    score = lambda t, p: (np.sqrt(mean_squared_error(t, p)), r2_score(t, p))
     
   automl.fit(X_train, y_train)
   #print(automl.sprint_statistics())
   #print(automl.show_models())
   y_pred = automl.predict(X_test)
-  return (score(y_test, y_pred))
+  return score(y_test, y_pred)
 
 
 

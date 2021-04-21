@@ -36,7 +36,9 @@ def autogluon(df, task):
   y_pred = predictor.predict(test)
 
   if(task == 'classification'):
-    return (predictor.evaluate_predictions(y_true=y_test.squeeze(), y_pred=y_pred, auxiliary_metrics=True))['accuracy']
+    res = predictor.evaluate_predictions(y_true=y_test.squeeze(), y_pred=y_pred, auxiliary_metrics=True)
+    return (res['accuracy'], res['f1_score'])
   else:
-    return (predictor.evaluate_predictions(y_true=y_test.squeeze(), y_pred=y_pred, auxiliary_metrics=True))['root_mean_squared_error']
+    res = predictor.evaluate_predictions(y_true=y_test.squeeze(), y_pred=y_pred, auxiliary_metrics=True)
+    return (res['root_mean_squared_error'], res['r2_score'])
 

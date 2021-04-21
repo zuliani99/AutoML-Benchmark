@@ -3,7 +3,7 @@ from sklearn.model_selection import train_test_split
 import pandas as pd
 import numpy as np
 from sklearn.preprocessing import LabelEncoder
-from sklearn.metrics import accuracy_score, mean_squared_error
+from sklearn.metrics import accuracy_score, mean_squared_error, f1_score, r2_score
 from sklearn.model_selection import RepeatedStratifiedKFold, RepeatedKFold
 from utils.usefull_functions import get_target
 
@@ -11,10 +11,10 @@ from utils.usefull_functions import get_target
 def prepare_and_test(X, y, task):
   if task == 'classification':
     model =  TPOTClassifier(generations=5, cv=5, max_time_mins=1, random_state=1, verbosity=2, n_jobs=-1)
-    score = lambda t, p: accuracy_score(t, p)
+    score = lambda t, p: (accuracy_score(t, p), f1_score(t, p))
   else:
     model =  TPOTRegressor(generations=5, cv=5, max_time_mins=1, random_state=1, verbosity=2, n_jobs=-1)
-    score = lambda t, p: np.sqrt(mean_squared_error(y_true=t, y_pred=p))
+    score = lambda t, p: (np.sqrt(mean_squared_error(t, p)), r2_score(t, p))
 
   X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=1)
   model.fit(X_train, y_train)

@@ -4,6 +4,8 @@ import numpy as np
 import pandas as pd
 from sklearn.model_selection import train_test_split
 from utils.usefull_functions import get_target
+from sklearn.preprocessing import LabelEncoder 
+from sklearn.metrics import accuracy_score, mean_squared_error, f1_score, r2_score
 
 def prepare_and_test(train, test, task):
   x = train.columns
@@ -16,30 +18,24 @@ def prepare_and_test(train, test, task):
     train[y] = train[y].asfactor()
     test[y] = test[y].asfactor()
 
-  aml = H2OAutoML(max_runtime_secs=1*60, nfolds=15, max_models=20, seed=1)
+  aml = H2OAutoML(max_runtime_secs=2*60, nfolds=15, max_models=20, seed=1)
   aml.train(x, y, training_frame=train)
   lb = aml.leaderboard
-  lb.head(rows=lb.nrows)
+  lb = h2o.as_list(lb)
 
   pred = aml.predict(test)
 
   pred = h2o.as_list(pred)
   target = h2o.as_list(test[y])
 
+  le = LabelEncoder()
 
   if task == 'classification':
-    pred = pred.drop(pred.columns[-2:].astype(str), 1)
-
-    temp = pred
-    temp['true'] = target
-
-    temp['predict'] = temp['predict'].astype(str)
-    temp['true'] = temp['true'].astype(str)
-    temp['ver'] = np.where(temp['predict'] == temp['true'], 1, 0)
-    
-    return (temp['ver'].sum()/pred.shape[0])
+    target = le.fit_transform(target)
+    pred = le.fit_transform(pred['predict'])
+    return (accuracy_score(target, pred), f1_score(target, pred))
   else:
-    return np.sqrt(np.mean((target.to_numpy() - pred.to_numpy())**2))
+    return (np.sqrt(mean_squared_error(target, pred)), r2_score(target, pred))
 
 
 def H2O(df, task):
