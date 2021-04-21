@@ -11,7 +11,7 @@ def kaggle_benchmark():
     api = KaggleApi()
     api.authenticate()
 
-    datasets = [('titanic', 'classification')]
+    datasets = [('titanic', 'classification'), ('tabular-playground-series-mar-2021', 'classification')]
 
     res_class = {'dataset': [], 'autosklearn': [], 'tpot': [], 'autokeras': [], 'h2o': [], 'autogluon': [], 'best': []}
     res_reg = {'dataset': [], 'autosklearn': [], 'tpot': [], 'autokeras': [], 'h2o': [], 'autogluon': [], 'best': []}
