@@ -11,7 +11,8 @@ from utils.usefull_functions import get_target
 def prepare_and_test(X, y, task):
   if task == 'classification':
     model =  TPOTClassifier(generations=5, cv=5, max_time_mins=1, random_state=1, verbosity=2, n_jobs=-1)
-    score = lambda t, p: (accuracy_score(t, p), f1_score(t, p))
+    le = LabelEncoder()
+    score = lambda t, p: (accuracy_score(t, p), f1_score(le.fit_transform(t), le.fit_transform(p)))
   else:
     model =  TPOTRegressor(generations=5, cv=5, max_time_mins=1, random_state=1, verbosity=2, n_jobs=-1)
     score = lambda t, p: (np.sqrt(mean_squared_error(t, p)), r2_score(t, p))

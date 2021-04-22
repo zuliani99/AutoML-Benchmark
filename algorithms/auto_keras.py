@@ -1,9 +1,10 @@
 import pandas as pd
 import numpy as np
-import tensorflow as tf
 import autokeras as ak
 from sklearn.model_selection import train_test_split
 from utils.usefull_functions import get_target
+from sklearn.metrics import accuracy_score, mean_squared_error, f1_score, r2_score
+from sklearn.preprocessing import LabelEncoder 
 
 def prepare_and_test(x_train, x_test, target, task):
 
@@ -22,7 +23,11 @@ def prepare_and_test(x_train, x_test, target, task):
   clf.fit(x_train, y_train, validation_split=0.15, epochs=5)
   predicted_y = clf.predict(x_test)
 
-  return clf.evaluate(x_test, y_test) if task == 'classification' else np.sqrt(clf.evaluate(x_test, y_test))
+  if task == 'classification':
+    le = LabelEncoder()
+    return (accuracy_score(y_test, predicted_y), f1_score(le.fit_transform(y_test), le.fit_transform(predicted_y)))
+  else:
+    return (np.sqrt(mean_squared_error(y_test, predicted_y)), r2_score(y_test, predicted_y))
 
 
 def autokeras(df, task):

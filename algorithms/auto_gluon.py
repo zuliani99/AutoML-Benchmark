@@ -4,17 +4,18 @@ from utils.usefull_functions import get_target
 import pandas as pd
 
 def autogluon(df, task):
-  if isinstance(df, str):
-    df = TabularDataset(df)
-    y = df.iloc[:, -1].to_frame()
-    X = df.iloc[:, :-1]
-  else:
+  if type(df) == tuple:
     train = df[0]
     test = df[1]
-    df = TabularDataset(train)
+    #df = TabularDataset(train)
     target = get_target(train, test)
     y = train[target]
     X = train.drop([target], axis=1)
+  else:
+    df = TabularDataset(df)
+    y = df.iloc[:, -1].to_frame()
+    X = df.iloc[:, :-1]
+  
 
 
   X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=1)

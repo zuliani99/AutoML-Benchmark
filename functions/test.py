@@ -2,15 +2,15 @@ from sklearn.datasets import fetch_openml
 from utils.algo_functions import fun_autosklearn, fun_tpot, fun_h2o, fun_autokeras, fun_autogluon
 import pandas as pd
 import os
-from utils.algo_functions import auto_sklearn, H2O
+from utils.algo_functions import auto_sklearn, H2O, TPOT, autokeras, autogluon
 
 def switch(algo, df, task):
     return {
         'autosklearn': lambda df, task: auto_sklearn(df, task),
-        'tpot': lambda df, task: fun_tpot(df, task),
+        'tpot': lambda df, task: TPOT(df, task),
         'h2o': lambda df, task: H2O(df, task),
-        'autokeras': lambda df, task: fun_autokeras(df, task),
-        'autogluon': lambda df, task: fun_autogluon(df, task),
+        'autokeras': lambda df, task: autokeras(df, task),
+        'autogluon': lambda df, task: autogluon(df, task),
         'all': lambda df, task: pd.DataFrame.from_dict({'autosklearn': fun_autosklearn(df, task),
                                                         'tpot': fun_tpot(df, task),
                                                         'autokeras': fun_autokeras(df, task),

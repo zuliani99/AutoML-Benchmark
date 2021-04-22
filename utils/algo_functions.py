@@ -33,7 +33,7 @@ def fun_autokeras(df, task):
     res_autokeras = 0.0
     print("---------------------------------AUTOKERAS---------------------------------")
     try:
-        res_autokeras = (autokeras(df, task))[1]
+        res_autokeras = (autokeras(df, task))
         print('Risultato memorizzato!')
     except:
         print('Qualcosa è andato storto :(')
