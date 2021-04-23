@@ -2,3 +2,4 @@
 algorithms/__pycache__/
 functions/__pycache__/
 utils/__pycache__/
+*.csv
