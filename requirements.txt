@@ -19,6 +19,7 @@ h2o
 emcee
 scikit-optimize
 pyDOE
---upgrade setuptools
---upgrade "mxnet<2.0.0"
---pre autogluon
+autogluon
+Pillow==8.1
+psutil==5.7.0
+portalocker==2.0.0

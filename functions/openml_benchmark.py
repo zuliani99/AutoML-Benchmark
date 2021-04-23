@@ -97,11 +97,11 @@ def openml_benchmark(df_n):
 
         if(task == 'classification'):
             #new_row = {'dataset': , 'autosklearn': res[0],'tpot': res[1], 'autokeras': res[2], 'h2o': res[3], 'autogluon': res[4], 'best': res_class.columns[np.argmax(res)+1] }
-            new_row = {'dataset': d.split('/')[3], 'autosklearn-acc': res_as[0], 'autosklearn-f1': res_as[1], 'tpot-acc': res_t[0], 'tpot-f1': res_t[1], 'autokeras-acc': res_ak[0], 'autokeras-f1': res_ak[1], 'h2o-acc': res_h[0], 'h2o-f1': res_h[0], 'autogluon-acc': res_ag[0], 'autogluon-f1': res_ag[1]}
+            new_row = {'dataset': d.split('/')[3], 'autosklearn-acc': res_as[0], 'autosklearn-f1': res_as[1], 'tpot-acc': res_t[0], 'tpot-f1': res_t[1], 'autokeras-acc': res_ak[0], 'autokeras-f1': res_ak[1], 'h2o-acc': res_h[0], 'h2o-f1': res_h[1], 'autogluon-acc': res_ag[0], 'autogluon-f1': res_ag[1]}
             res_class = res_class.append(new_row, ignore_index=True)
         else:
             #new_row = {'dataset': d.split('/')[3], 'autosklearn': res[0],'tpot': res[1], 'autokeras': res[2], 'h2o': res[3], 'autogluon': res[4], 'best': res_class.columns[np.argmin(res)+1] }
-            new_row = {'dataset': d.split('/')[3], 'autosklearn-rmse': res_as[0], 'autosklearn-r2': res_as[1], 'tpot-rmse': res_t[0], 'tpot-r2': res_t[1], 'autokeras-rmse': res_ak[0], 'autokeras-r2': res_ak[1], 'h2o-rmse': res_h[0], 'h2o-r2': res_h[0], 'autogluon-rmse': res_ag[0], 'autogluon-r2': res_ag[1]}
+            new_row = {'dataset': d.split('/')[3], 'autosklearn-rmse': res_as[0], 'autosklearn-r2': res_as[1], 'tpot-rmse': res_t[0], 'tpot-r2': res_t[1], 'autokeras-rmse': res_ak[0], 'autokeras-r2': res_ak[1], 'h2o-rmse': res_h[0], 'h2o-r2': res_h[1], 'autogluon-rmse': res_ag[0], 'autogluon-r2': res_ag[1]}
             res_reg = res_reg.append(new_row, ignore_index=True)
 
 

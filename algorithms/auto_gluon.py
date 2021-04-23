@@ -30,8 +30,8 @@ def autogluon(df, task):
   train = X_train
 
   test = X_test
-
-  predictor = TabularPredictor(label=target, path='/media/riccardo/8A13-C277/model_saved').fit(train, time_limit=60, presets=['optimize_for_deployment'])   # TEMPORANEO
+                                            #attenzione salvo sul cestino
+  predictor = TabularPredictor(label=target, path='/home/riccardo/.local/share/Trash').fit(train, time_limit=60, presets=['optimize_for_deployment'])   # TEMPORANEO
   results = predictor.fit_summary()
   
   y_pred = predictor.predict(test)

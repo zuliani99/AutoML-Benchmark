@@ -16,9 +16,9 @@ def prepare_and_test(x_train, x_test, target, task):
 
 
   if(task == 'classification'):
-    clf = ak.StructuredDataClassifier(overwrite=True, max_trials=3, directory='/media/riccardo/8A13-C277/model_saved/')
+    clf = ak.StructuredDataClassifier(overwrite=True, max_trials=3, directory='/home/riccardo/.local/share/Trash')#attenzione salvo sul cestino
   else:
-    clf = ak.StructuredDataRegressor(overwrite=True, max_trials=3, directory='/media/riccardo/8A13-C277/model_saved/')
+    clf = ak.StructuredDataRegressor(overwrite=True, max_trials=3, directory='/home/riccardo/.local/share/Trash')#attenzione salvo sul cestino
     
   clf.fit(x_train, y_train, validation_split=0.15, epochs=5)
   predicted_y = clf.predict(x_test)

@@ -11,11 +11,11 @@ def switch(algo, df, task):
         'h2o': lambda df, task: H2O(df, task),
         'autokeras': lambda df, task: autokeras(df, task),
         'autogluon': lambda df, task: autogluon(df, task),
-        'all': lambda df, task: pd.DataFrame.from_dict({'autosklearn': fun_autosklearn(df, task),
-                                                        'tpot': fun_tpot(df, task),
-                                                        'autokeras': fun_autokeras(df, task),
-                                                        'h2o': fun_h2o(df, task),
-                                                        'autogluon': fun_autogluon(df, task)})
+        'all': lambda df, task: pd.DataFrame.from_dict({'autosklearn': auto_sklearn(df, task),
+                                                        'tpot': TPOT(df, task),
+                                                        'autokeras': autokeras(df, task),
+                                                        'h2o': H2O(df, task),
+                                                        'autogluon': autogluon(df, task)})
     }.get(algo)(df, task)
 
 def test(id, algo):
