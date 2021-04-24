@@ -10,19 +10,24 @@ sudo apt install install defaut-jre
 sudo apt install install python3-tk
 ```
 
-And finally to install all dependencies run 
+To install all dependencies run 
 ```bash
 make install
 ```
 
+Then you have to sing in [kaggle](https://www.kaggle.com/) or create a new. After this step you have to download you api token by moving into these page *Your Profile* -> *Account* -> *Create New API Token* and download the JSON file.
+And as last command you have to move the API Token into the *.kaggle* folder, you can do this by you own or run this line of command in your bash
+```bash
+mv /home/YOUR_USERNAME/Downloads/kaggle.json /home/YOUR_USERNAME/.kaggle
+```
 
 ## Usage
 There are three types of operations:
 
 ```bash
-python3 start.py --ndfopenml n
+python3 start.py --ndfopenml n --morethan m
 ``` 
-Where **n** is the number of datasets each for classification task and for regression task. This command will start a benchmark using openml datasets.
+Where **n** is the number of datasets each for classification task and for regression task and **m** is the number of instances that a dataset at least has. This command will start a benchmark using openml datasets.
 
 ```bash
 python3 start.py --dfkaggle list

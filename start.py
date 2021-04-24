@@ -12,6 +12,7 @@ def main():
     print("---------------------------------------START---------------------------------------")
     parser = argparse.ArgumentParser()
     parser.add_argument("--ndfopenml", help="number of opneml's dataframes to test")
+    parser.add_argument("--morethan", help="number of instances that a dataset at least has")
     parser.add_argument("--dfkaggle", nargs="+", help="list of kaggle's dataframes to test: " + str(os.listdir('./datasets/kaggle')))
     parser.add_argument("--id", help="id of dataset to test")
     parser.add_argument("--algo", help="algorithm to use: autosklearn, tpot, h2o, autokeras, autogluon and all")
@@ -26,9 +27,9 @@ def main():
             openml_benchmark(int(args.ndfopenml))
         else:
             print('Inserisci un numero positivo')
-    elif args.dfkaggle and len(sys.argv) > 2:
+    elif args.dfkaggle and args.morethan and len(sys.argv)-1 == 4:
         #print('kaggle ' + str(args.dfkaggle))
-        kaggle_benchmark(args.dfkaggle)
+        kaggle_benchmark(args.dfkaggle, args.morethan)
     else:
         print('Comando non valido!')
 

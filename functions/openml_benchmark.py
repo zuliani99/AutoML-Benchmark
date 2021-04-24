@@ -4,7 +4,7 @@ import pandas as pd
 import openml
 from utils.result_class import Result
 
-def openml_benchmark(df_n):
+def openml_benchmark(df_n, morethan):
     n_class = df_n
     n_reg = df_n
     list_df = []
@@ -14,7 +14,7 @@ def openml_benchmark(df_n):
     openml_list = openml.datasets.list_datasets()  # returns a dict
     datalist = pd.DataFrame.from_dict(openml_list, orient="index")
     datalist = datalist[["did", "name", "NumberOfInstances"]]
-    df_id_name = datalist[datalist.NumberOfInstances > 40000].sort_values(["NumberOfInstances"]) #.head(df_n)
+    df_id_name = datalist[datalist.NumberOfInstances > morethan].sort_values(["NumberOfInstances"]) #.head(df_n)
 
     print('--------------------------------Inizio Dataset Download--------------------------------')
 
@@ -23,7 +23,7 @@ def openml_benchmark(df_n):
         try:
             if not os.path.exists('./datasets/classification/' + str(row['did']) + '.csv') and not os.path.exists('./datasets/regression/' + str(row['did']) + '.csv'):
                 X, y = fetch_openml(data_id=row[0], as_frame=True, return_X_y=True, cache=True)
-                if y is not None:
+                if y is not None and not isinstance(y, pd.DataFrame):
                     y = y.to_frame()
                 else:
                     y = X.iloc[:, -1].to_frame()
@@ -65,7 +65,7 @@ def openml_benchmark(df_n):
                     n_reg-=1
 
         except:
-            print("bad df\n")
+            print("Impossibile scaricare il DataFrame\n")
 
         if n_class == 0 and n_reg == 0:
             print('--------------------------------Fine Dataset Download--------------------------------')

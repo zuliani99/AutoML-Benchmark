@@ -9,7 +9,8 @@ from utils.usefull_functions import get_target
 
 def auto_sklearn(df, task):
   #categorical, binary, nuymerical features
-  
+  le = LabelEncoder()
+
   if isinstance(df, pd.DataFrame):
     #df = df.apply(LabelEncoder().fit_transform)
 
@@ -37,6 +38,7 @@ def auto_sklearn(df, task):
   
 
   X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=1)
+  y_test = le.fit_transform(y_test)
 
   if(task == 'classification'):
     automl = autosklearn.classification.AutoSklearnClassifier(
@@ -44,21 +46,24 @@ def auto_sklearn(df, task):
           per_run_time_limit=30,
           n_jobs=-1
     )
-    le = LabelEncoder()
-    score = lambda t, p: (accuracy_score(t, p), f1_score(le.fit_transform(t), le.fit_transform(p)))
+    automl.fit(X_train, y_train)
+    y_pred = le.fit_transform(automl.predict(X_test))
+    if len(np.unique(y_train)) > 0:
+      return (accuracy_score(y_test, y_pred), f1_score(y_test, y_pred, average='weighted'))
+    else:
+      return (accuracy_score(y_test, y_pred), f1_score(y_test, y_pred))
   else:
     automl = autosklearn.regression.AutoSklearnRegressor(
           time_left_for_this_task=1*60,
           per_run_time_limit=30,
           n_jobs=-1
     )
-    score = lambda t, p: (np.sqrt(mean_squared_error(t, p)), r2_score(t, p))
-    
-  automl.fit(X_train, y_train)
+    automl.fit(X_train, y_train)
+    y_pred = automl.predict(X_test)
+    return (np.sqrt(mean_squared_error(t, p)), r2_score(t, p))
+
   #print(automl.sprint_statistics())
   #print(automl.show_models())
-  y_pred = automl.predict(X_test)
-  return score(y_test, y_pred)
 
 
 
