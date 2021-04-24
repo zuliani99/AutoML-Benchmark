@@ -1,35 +1,24 @@
-from utils.algo_functions import fun_autosklearn, fun_tpot, fun_h2o, fun_autokeras, fun_autogluon
-from utils.usefull_functions import scatter, hist
 from sklearn.datasets import fetch_openml
-from datetime import datetime
 import os
-import numpy as np
 import pandas as pd
 import openml
+from utils.result_class import Result
 
 def openml_benchmark(df_n):
     n_class = df_n
     n_reg = df_n
-
     list_df = []
 
-    res_class = {'dataset': [], 'autosklearn-acc': [], 'autosklearn-f1': [], 'tpot-acc': [], 'tpot-f1': [], 'autokeras-acc': [], 'autokeras-f1': [], 'h2o-acc': [], 'h2o-f1': [], 'autogluon-acc': [], 'autogluon-f1': []}
-    res_reg = {'dataset': [], 'autosklearn-rmse': [], 'autosklearn-r2': [], 'tpot-rmse': [], 'tpot-r2': [], 'autokeras-rmse': [], 'autokeras-r2': [], 'h2o-rmse': [], 'h2o-r2': [], 'autogluon-rmse': [], 'autogluon-r2': []}
-
-    res_class = pd.DataFrame(res_class)
-    res_reg = pd.DataFrame(res_reg)
-
+    res_openml = Result('OpenML')
 
     openml_list = openml.datasets.list_datasets()  # returns a dict
     datalist = pd.DataFrame.from_dict(openml_list, orient="index")
     datalist = datalist[["did", "name", "NumberOfInstances"]]
     df_id_name = datalist[datalist.NumberOfInstances > 40000].sort_values(["NumberOfInstances"]) #.head(df_n)
-    
 
     print('--------------------------------Inizio Dataset Download--------------------------------')
-    
 
-    #while n_class > 0 and n_reg > 0:
+    # DOWNLOA DEI DATASETS
     for index, row in df_id_name.iterrows():
         try:
             if not os.path.exists('./datasets/classification/' + str(row['did']) + '.csv') and not os.path.exists('./datasets/regression/' + str(row['did']) + '.csv'):
@@ -89,32 +78,6 @@ def openml_benchmark(df_n):
         df = pd.read_csv(d)
                 
         print('---------------------------------Dataset: ' + d + '---------------------------------\n')
-        res_as = fun_autosklearn(df, task)
-        res_t = fun_tpot(df, task)
-        res_h = fun_autokeras(df, task)
-        res_ak = fun_h2o(df, task)
-        res_ag = fun_autogluon(d, task)
+        res_openml.run_benchmark(df, task)
 
-        if(task == 'classification'):
-            #new_row = {'dataset': , 'autosklearn': res[0],'tpot': res[1], 'autokeras': res[2], 'h2o': res[3], 'autogluon': res[4], 'best': res_class.columns[np.argmax(res)+1] }
-            new_row = {'dataset': d.split('/')[3], 'autosklearn-acc': res_as[0], 'autosklearn-f1': res_as[1], 'tpot-acc': res_t[0], 'tpot-f1': res_t[1], 'autokeras-acc': res_ak[0], 'autokeras-f1': res_ak[1], 'h2o-acc': res_h[0], 'h2o-f1': res_h[1], 'autogluon-acc': res_ag[0], 'autogluon-f1': res_ag[1]}
-            res_class = res_class.append(new_row, ignore_index=True)
-        else:
-            #new_row = {'dataset': d.split('/')[3], 'autosklearn': res[0],'tpot': res[1], 'autokeras': res[2], 'h2o': res[3], 'autogluon': res[4], 'best': res_class.columns[np.argmin(res)+1] }
-            new_row = {'dataset': d.split('/')[3], 'autosklearn-rmse': res_as[0], 'autosklearn-r2': res_as[1], 'tpot-rmse': res_t[0], 'tpot-r2': res_t[1], 'autokeras-rmse': res_ak[0], 'autokeras-r2': res_ak[1], 'h2o-rmse': res_h[0], 'h2o-r2': res_h[1], 'autogluon-rmse': res_ag[0], 'autogluon-r2': res_ag[1]}
-            res_reg = res_reg.append(new_row, ignore_index=True)
-
-
-    print('---------------------------------RISULTATI DI CLASSIFICAZIONE OPENML---------------------------------')
-    print(res_class)
-    print('\n\n---------------------------------RISULTATI DI REGRESSIONE OPENML---------------------------------')
-    print(res_reg)
-
-    path = './results/openml/' + str(datetime.now())
-    os.makedirs(path)
-    if(not res_class.empty):
-        res_class.to_csv(path + '/classification.csv', index = False)
-        hist(res_class, 'OpenML - Classificazione')
-    if(not res_reg.empty):
-        res_reg.to_csv(path + '/regression.csv', index = False)
-        hist(res_reg, 'OpenML - Regressione')
+    res_openml.print_res()

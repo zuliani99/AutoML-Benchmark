@@ -8,27 +8,6 @@ def get_target(train, test):
         if c not in test.columns:
             return c
 
-
-'''
-data = pd.read_csv('./results/openml/2021-04-18 15:37:55.986520/regression.csv')
-plt.plot('dataset', 'autosklearn', data=data, marker='', color='red', linewidth=2)
-plt.plot('dataset', 'tpot', data=data, marker='', color='green', linewidth=2)
-plt.plot('dataset', 'h2o', data=data, marker='', color='yellow', linewidth=2)
-plt.plot('dataset', 'autokeras', data=data, marker='', color='blue', linewidth=2)
-plt.plot('dataset', 'autogluon', data=data, marker='', color='black', linewidth=2)
-plt.legend()
-plt.show()
-'''
-
-
-'''
-from utils.usefull_functions import scatter
-import pandas as pd
-
-data = pd.read_csv('./results/openml/2021-04-18 15:37:55.986520/regression.csv')
-scatter(data, 'Openml - Regressione')
-'''
-
 def scatter(data, task):
     data = [go.Scatter(x=data['dataset'], y=data['autosklearn'], name='AutoSklearn', mode='lines+markers'), 
             go.Scatter(x=data['dataset'], y=data['tpot'], name='TPOT', mode='lines+markers'),
@@ -69,7 +48,6 @@ def hist(data, task):
     rects4 = ax.bar(x + bar_width*3, data['autokeras' + score].to_numpy(), width=bar_width, label='AutoKeras')
     rects5 = ax.bar(x + bar_width*4, data['autogluon' + score].to_numpy(), width=bar_width, label='AutoGluon')
 
-    # Add some text for labels, title and custom x-axis tick labels, etc.
 
    
     ax.set_title('Risultati per ' + task)
@@ -115,3 +93,10 @@ def hist(data, task):
     ax2.bar_label(rects5, padding=3)
     fig2.tight_layout()
     plt.show()
+
+
+def get_task(df):
+    for d in datasets:
+        if df == d[0]:
+            return d[1]
+    return False
