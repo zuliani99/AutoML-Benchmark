@@ -6,6 +6,7 @@ from functions.test import test
 import sys
 import argparse
 import os
+from termcolor import colored
 
 
 def main():
@@ -21,17 +22,17 @@ def main():
     if args.id and args.algo and len(sys.argv)-1 == 4:
         #print('test')
         test(int(args.id), args.algo)
-    elif args.ndfopenml and len(sys.argv)-1 == 2:
+    elif args.ndfopenml and args.morethan and len(sys.argv)-1 == 4:
         #print('openml')
-        if int(args.ndfopenml) > 0:
-            openml_benchmark(int(args.ndfopenml))
+        if int(args.ndfopenml) > 0 and int(args.morethan):
+            openml_benchmark(int(args.ndfopenml), int(args.morethan))
         else:
-            print('Inserisci un numero positivo')
-    elif args.dfkaggle and args.morethan and len(sys.argv)-1 == 4:
+            print(colored('Inserisci un numero positivo in entrambi parametri', 'yellow'))
+    elif args.dfkaggle and len(sys.argv) > 2:
         #print('kaggle ' + str(args.dfkaggle))
-        kaggle_benchmark(args.dfkaggle, args.morethan)
+        kaggle_benchmark(args.dfkaggle)
     else:
-        print('Comando non valido!')
+        print(colored('Comando non valido!', 'red'))
 
 
 

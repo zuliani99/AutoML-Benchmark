@@ -25,7 +25,12 @@ def prepare_and_test(x_train, x_test, target, task):
 
   if task == 'classification':
     le = LabelEncoder()
-    return (accuracy_score(y_test, predicted_y), f1_score(le.fit_transform(y_test), le.fit_transform(predicted_y)))
+    y_test = le.fit_transform(y_test)
+    y_pred = le.fit_transform(predicted_y)
+    if len(np.unique(predicted_y)) > 2:
+      return (accuracy_score(y_test, y_pred), f1_score(y_test, y_pred, average='weighted'))
+    else:
+      return (accuracy_score(y_test, y_pred), f1_score(y_test, y_pred))
   else:
     return (np.sqrt(mean_squared_error(y_test, predicted_y)), r2_score(y_test, predicted_y))
 

@@ -2,7 +2,11 @@ from sklearn.datasets import fetch_openml
 from utils.algo_functions import fun_autosklearn, fun_tpot, fun_h2o, fun_autokeras, fun_autogluon
 import pandas as pd
 import os
-from utils.algo_functions import auto_sklearn, H2O, TPOT, autokeras, autogluon
+from algorithms.auto_keras import autokeras
+from algorithms.auto_sklearn import auto_sklearn
+from algorithms.auto_gluon import autogluon
+from algorithms.tpot import TPOT
+from algorithms.h2o import H2O  
 
 def switch(algo, df, task):
     return {
@@ -21,9 +25,13 @@ def switch(algo, df, task):
 def test(id, algo):
     if not os.path.exists('./datasets/classification/' + str(id) + '.csv') and not os.path.exists('./datasets/regression/' + str(id) + '.csv'):
         X, y = fetch_openml(data_id=id, as_frame=True, return_X_y=True, cache=True)
-        y = y.to_frame()
+        if y is not None and not isinstance(y, pd.DataFrame):
+            y = y.to_frame()
+        print(y.info())
         X[y.columns[0]] = y
         df = X
+        print(df.info())
+        print(df.head())
         t = pd.api.types.infer_dtype(y[y.columns[0]])
         if (t == "categorical" or t == "boolean"):
             file_dir =  './datasets/classification/'
@@ -33,6 +41,8 @@ def test(id, algo):
 
         fullname = os.path.join(file_dir, str(id) + '.csv')
         df.to_csv(fullname, index=False, header=True)
+        
+        print(switch(algo, df, task))
     else:
         if os.path.exists('./datasets/classification/' + str(id) + '.csv'):
             task = 'classification'
@@ -42,5 +52,7 @@ def test(id, algo):
             path = './datasets/regression/' + str(id) + '.csv'
         
         df = pd.read_csv(path)
+
+        print(df.head())
 
         print(switch(algo, df, task))

@@ -3,6 +3,7 @@ import os
 import pandas as pd
 import openml
 from utils.result_class import Result
+from termcolor import colored
 
 def openml_benchmark(df_n, morethan):
     n_class = df_n
@@ -20,6 +21,7 @@ def openml_benchmark(df_n, morethan):
 
     # DOWNLOA DEI DATASETS
     for index, row in df_id_name.iterrows():
+        file_dir = ''
         try:
             if not os.path.exists('./datasets/classification/' + str(row['did']) + '.csv') and not os.path.exists('./datasets/regression/' + str(row['did']) + '.csv'):
                 X, y = fetch_openml(data_id=row[0], as_frame=True, return_X_y=True, cache=True)
@@ -30,14 +32,15 @@ def openml_benchmark(df_n, morethan):
                     X = X.drop(y.columns[0], axis=1)
 
                 t = pd.api.types.infer_dtype(y[y.columns[0]])
-                if (t == "categorical" or t == "boolean"):
+                if (t == "categorical" or t == "boolean") and n_class > 0:
                     file_dir =  './datasets/classification/'
 
-                if (t == "floating" or t == 'integer' or t == 'decimal'):
+                if (t == "floating" or t == 'integer' or t == 'decimal') and n_reg > 0:
                     file_dir =  './datasets/regression/'
 
-                if n_class > 0 or n_reg > 0:
+                if file_dir != '':
                     print('------------------Dataset ID: ' + str(row['did']) + ' name: ' + str(row['name']) + '------------------')
+
                     print(y.info())
                     fullname = os.path.join(file_dir, str(row['did']) + '.csv')
 
@@ -64,8 +67,9 @@ def openml_benchmark(df_n, morethan):
                     list_df.append('./datasets/regression/' + str(row['did']) + '.csv')
                     n_reg-=1
 
-        except:
-            print("Impossibile scaricare il DataFrame\n")
+        except Exception as e:
+            text = colored('Impossibile scaricare il DataFrame causa: ' + e + '\n', 'red')
+            print(text)
 
         if n_class == 0 and n_reg == 0:
             print('--------------------------------Fine Dataset Download--------------------------------')
@@ -74,10 +78,11 @@ def openml_benchmark(df_n, morethan):
 
     #ESECUZUONE DEGLI ALGORITMI
     for d in list_df:
-        task = d.split('/')[2]
+        str_path = d.split('/')
         df = pd.read_csv(d)
                 
-        print('---------------------------------Dataset: ' + d + '---------------------------------\n')
-        res_openml.run_benchmark(df, task)
+        print('---------------------------------Dataset: ' + d + '---------------------------------')
+        res_openml.run_benchmark(df, str_path[2], str_path[3])
+        print(colored('--------------------------------- Riga inserita ---------------------------------', 'green'))
 
     res_openml.print_res()

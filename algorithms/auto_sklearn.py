@@ -18,8 +18,11 @@ def auto_sklearn(df, task):
       t = pd.api.types.infer_dtype(df[col]) # test -> 
       if t == "string" or t == 'object':
         df[col] = df[col].astype('category')
+        df[col] = df[col].cat.add_categories('Unknown')
+        df[col].fillna('Unknown', inplace =True)
+      if t == "integer" or t == "floating":
+        df[col] = df[col].fillna(df[col].mean())
 
-        
     y = df.iloc[:, -1].to_frame()
     X = df.iloc[:, :-1]
   else:
@@ -48,7 +51,7 @@ def auto_sklearn(df, task):
     )
     automl.fit(X_train, y_train)
     y_pred = le.fit_transform(automl.predict(X_test))
-    if len(np.unique(y_train)) > 0:
+    if len(np.unique(y_test)) > 2:
       return (accuracy_score(y_test, y_pred), f1_score(y_test, y_pred, average='weighted'))
     else:
       return (accuracy_score(y_test, y_pred), f1_score(y_test, y_pred))
@@ -60,7 +63,7 @@ def auto_sklearn(df, task):
     )
     automl.fit(X_train, y_train)
     y_pred = automl.predict(X_test)
-    return (np.sqrt(mean_squared_error(t, p)), r2_score(t, p))
+    return (np.sqrt(mean_squared_error(y_test, y_pred)), r2_score(y_test, y_pred))
 
   #print(automl.sprint_statistics())
   #print(automl.show_models())

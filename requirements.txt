@@ -23,3 +23,5 @@ autogluon
 Pillow==8.1
 psutil==5.7.0
 portalocker==2.0.0
+termcolor
+mxnet
