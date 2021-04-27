@@ -16,8 +16,11 @@ def autogluon(df, task):
     X = train.drop([target], axis=1)
   else:
     #df = TabularDataset(df)
-    y = df.iloc[:, -1].to_frame()
-    X = df.iloc[:, :-1]
+    n_target = df['n_target'][0]
+    df = df.drop('n_target', axis = 1)
+
+    y = df.iloc[:, -n_target].to_frame()
+    X = df.iloc[:, :-n_target]
   
 
 
@@ -51,7 +54,9 @@ def autogluon(df, task):
     else:
       f1 = f1_score(y_test, y_pred)
     return (res['accuracy'], f1)'''
+    print(res)
     return (res['accuracy'], res['classification_report']['weighted avg']['f1-score'])
   else:
+    print(res)
     return (res['root_mean_squared_error'], res['r2_score'])
 

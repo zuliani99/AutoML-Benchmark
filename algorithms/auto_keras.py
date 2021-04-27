@@ -37,8 +37,11 @@ def prepare_and_test(x_train, x_test, target, task):
 
 def autokeras(df, task):
   if isinstance(df, pd.DataFrame):
-    y = df.iloc[:, -1]
-    X = df.iloc[:, :-1]
+    n_target = df['n_target'][0]
+    df = df.drop('n_target', axis = 1)
+
+    y = df.iloc[:, -n_target].to_frame()
+    X = df.iloc[:, :-n_target]
   else:
     train = df[0]
     test = df[1]
@@ -48,12 +51,14 @@ def autokeras(df, task):
 
   X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=1)
 
-  y_train = y_train.to_frame() 
+  if isinstance(y_train, pd.Series):
+    y_train = y_train.to_frame()
   target = y_train.columns[0]
   X_train[target] = y_train
   train = X_train
 
-  y_test = y_test.to_frame() 
+  if isinstance(y_test, pd.Series):
+    y_test = y_test.to_frame() 
   X_test[target] = y_test
   test = X_test
 

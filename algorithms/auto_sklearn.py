@@ -23,8 +23,11 @@ def auto_sklearn(df, task):
       if t == "integer" or t == "floating":
         df[col] = df[col].fillna(df[col].mean())
 
-    y = df.iloc[:, -1].to_frame()
-    X = df.iloc[:, :-1]
+    n_target = df['n_target'][0]
+    df = df.drop('n_target', axis = 1)
+
+    y = df.iloc[:, -n_target].to_frame()
+    X = df.iloc[:, :-n_target]
   else:
     train = df[0]
     test = df[1]

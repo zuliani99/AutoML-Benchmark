@@ -30,7 +30,7 @@ def prepare_and_test(train, test, task):
 
   le = LabelEncoder()
 
-  if task == 'classification':
+  if task[0] == 'classification':
     target = le.fit_transform(target)
     pred = le.fit_transform(pred['predict'])
     return (accuracy_score(target, pred), f1_score(target, pred))
@@ -42,8 +42,11 @@ def H2O(df, task):
   h2o.init()
 
   if isinstance(df, pd.DataFrame):
-    y = df.iloc[:, -1].to_frame()
-    X = df.iloc[:, :-1]
+    n_target = df['n_target'][0]
+    df = df.drop('n_target', axis = 1)
+
+    y = df.iloc[:, -n_target].to_frame()
+    X = df.iloc[:, :-n_target]
   else:
     train = df[0]
     test = df[1]

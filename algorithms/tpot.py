@@ -39,8 +39,11 @@ def TPOT(df, task):
       if t == 'categorical' :
         df[col] = df[col].cat.codes
 
-    y = df.iloc[:, -1]
-    X = df.iloc[:, :-1]
+    n_target = df['n_target'][0]
+    df = df.drop('n_target', axis = 1)
+
+    y = df.iloc[:, -n_target].to_frame()
+    X = df.iloc[:, :-n_target]
 
   else:
     train = df[0]
