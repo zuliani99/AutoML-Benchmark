@@ -1,29 +1,13 @@
 from autogluon.tabular import TabularDataset, TabularPredictor
 from sklearn.model_selection import train_test_split
-from utils.usefull_functions import get_target
+from utils.usefull_functions import return_X_y
 import pandas as pd
 import numpy as np
 from sklearn.metrics import f1_score
-from sklearn.preprocessing import LabelEncoder 
 
 def autogluon(df, task):
-  if type(df) == tuple:
-    train = df[0]
-    test = df[1]
-    #df = TabularDataset(train)
-    target = get_target(train, test)
-    y = train[target]
-    X = train.drop([target], axis=1)
-  else:
-    #df = TabularDataset(df)
-    n_target = df['n_target'][0]
-    df = df.drop('n_target', axis = 1)
-
-    y = df.iloc[:, -n_target].to_frame()
-    X = df.iloc[:, :-n_target]
+  X, y = return_X_y(df)
   
-
-
   X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=1)
 
   if isinstance(y_train, pd.Series):
@@ -44,7 +28,6 @@ def autogluon(df, task):
   y_pred = predictor.predict(test)
 
   res = predictor.evaluate_predictions(y_true=y_test.squeeze(), y_pred=y_pred, auxiliary_metrics=True)
-  le = LabelEncoder()
 
   if(task == 'classification'):
     '''y_test = le.fit_transform(y_test)

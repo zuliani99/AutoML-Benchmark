@@ -35,14 +35,14 @@ class Result:
 
 
     def print_res(self):
-        path = '../results/' + self.t + '/' + str(datetime.now())
+        path = './results/' + self.t + '/' + str(datetime.now())
         os.makedirs(path)
         if(not self.res_class.empty):
             print('---------------------------------RISULTATI DI CLASSIFICAZIONE ' + self.t + '---------------------------------')
             print(self.res_class)
 
             self.res_class.to_csv(path + '/classification.csv', index = False)
-            hist(res_class, self.t + ' - Classificazione')
+            hist(self.res_class, self.t + ' - Classificazione')
         if(not self.res_reg.empty):
             print('\n\n---------------------------------RISULTATI DI REGRESSIONE ' + self.t +'---------------------------------')
             print(self.res_reg)

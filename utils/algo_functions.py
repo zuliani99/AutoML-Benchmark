@@ -13,7 +13,7 @@ def fun_autosklearn(df, task):
         print(colored('Risultato memorizzato!', 'green'))
         return res_autosklearn
     except Exception as e:
-        print(colored('Qualcosa è andato storto :(     -> ' + e, 'red'))
+        print(colored('Qualcosa è andato storto :(     -> ' + str(e), 'red'))
     print("--------------------------------AUTOSKLEARN--------------------------------\n\n")
     return res_autosklearn
 
@@ -25,7 +25,7 @@ def fun_tpot(df, task):
         res_tpot = (TPOT(df, task))
         print(colored('Risultato memorizzato!', 'green'))
     except Exception as e:
-        print(colored('Qualcosa è andato storto :(     -> ' + e, 'red'))
+        print(colored('Qualcosa è andato storto :(     -> ' + str(e), 'red'))
     print("-----------------------------------TPOT------------------------------------\n\n")
     return res_tpot
 
@@ -37,7 +37,7 @@ def fun_autokeras(df, task):
         res_autokeras = (autokeras(df, task))
         print(colored('Risultato memorizzato!', 'green'))
     except Exception as e:
-        print(colored('Qualcosa è andato storto :(     -> ' + e, 'red'))
+        print(colored('Qualcosa è andato storto :(     -> ' + str(e), 'red'))
     print("---------------------------------AUTOKERAS---------------------------------\n\n")
     return res_autokeras
 
@@ -48,7 +48,7 @@ def fun_h2o(df, task):
         res_h2o = (H2O(df, task))
         print(colored('Risultato memorizzato!', 'green'))
     except Exception as e:
-        print(colored('Qualcosa è andato storto :(     -> ' + e, 'red'))
+        print(colored('Qualcosa è andato storto :(     -> ' + str(e), 'red'))
     print("------------------------------------H2O------------------------------------\n\n")
     return res_h2o
 
@@ -60,6 +60,6 @@ def fun_autogluon(df, task):
         res_autogluon = (autogluon(df, task))
         print(colored('Risultato memorizzato!', 'green'))
     except Exception as e:
-        print(colored('Qualcosa è andato storto :(     -> ' + e, 'red'))
+        print(colored('Qualcosa è andato storto :(     -> ' + str(e), 'red'))
     print("----------------------------------AUTOGLUON--------------------------------\n\n")
     return res_autogluon

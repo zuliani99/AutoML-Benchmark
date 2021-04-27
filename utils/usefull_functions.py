@@ -2,6 +2,8 @@ import plotly.graph_objs as go
 import plotly.offline as py
 import matplotlib.pyplot as plt
 import numpy as np
+import pandas as pd
+from sklearn.preprocessing import MinMaxScaler
 
 def get_target(train, test):
     for c in train.columns:
@@ -100,3 +102,34 @@ def get_task(df):
         if df == d[0]:
             return d[1]
     return False
+
+
+def return_X_y(df):
+    if isinstance(df, pd.DataFrame):
+        n_target = df['n_target'][0]
+        df = df.drop('n_target', axis = 1)
+
+        y = df.iloc[:, -n_target].to_frame()
+        X = df.iloc[:, :-n_target]
+    else:
+        target = get_target(df[0], df[1])
+        y = df[0][target]
+        X = df[0].drop([target], axis=1)
+    return X, y
+
+def fill_and_to_category(df):
+    for col in df.columns:
+        t = pd.api.types.infer_dtype(df[col])
+        if t == "string" or t == 'object':
+            df[col] = df[col].astype('category')
+            df[col] = df[col].cat.add_categories('Unknown')
+            df[col].fillna('Unknown', inplace =True)
+            df[col] = df[col].cat.codes
+        if t == "integer" or t == "floating":
+            df[col] = df[col].fillna(df[col].mean())
+            #scaler = MinMaxScaler()
+            #scaler.fit(df[col])
+            #df[col] = scaler.transform(df[col])
+        if t == 'categorical' :
+            df[col] = df[col].cat.codes
+    return df
