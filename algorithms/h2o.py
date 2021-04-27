@@ -25,14 +25,14 @@ def prepare_and_test(train, test, task):
 
   pred = aml.predict(test)
 
-  pred = h2o.as_list(pred)
+  pred = h2o.as_list(pred)['predict']
   target = h2o.as_list(test[y])
 
   le = LabelEncoder()
 
   if task[0] == 'classification':
     target = le.fit_transform(target)
-    pred = le.fit_transform(pred['predict'])
+    pred = le.fit_transform(pred)
     return (accuracy_score(target, pred), f1_score(target, pred))
   else:
     return (np.sqrt(mean_squared_error(target, pred)), r2_score(target, pred))

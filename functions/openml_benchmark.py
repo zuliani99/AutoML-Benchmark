@@ -35,7 +35,7 @@ def openml_benchmark(df_n, morethan):
                         #y = X.iloc[:, -1].to_frame()
                         #X = X.drop(y.columns[0], axis=1)
 
-                    print(y.info())
+                    #print(y.info())
                     if(len(y.columns) == 1):
                         X[y.columns[0]] = y
                         df = X
