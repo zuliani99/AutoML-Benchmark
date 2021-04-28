@@ -2,8 +2,11 @@ import plotly.graph_objs as go
 import plotly.offline as py
 import matplotlib.pyplot as plt
 import numpy as np
+import os
 import pandas as pd
 from sklearn.preprocessing import MinMaxScaler
+from termcolor import colored
+from sklearn.datasets import fetch_openml
 
 def get_target(train, test):
     for c in train.columns:
@@ -133,3 +136,58 @@ def fill_and_to_category(df):
         if t == 'categorical' :
             df[col] = df[col].cat.codes
     return df
+
+
+
+
+def get_df_list(datalist, n_df, task):
+    list_df = []
+    for row in datalist:
+        try:
+            if not os.path.exists('./datasets/'+ task +'/' + str(row) + '.csv'):
+                X, y = fetch_openml(data_id=row, as_frame=True, return_X_y=True, cache=True)
+                if y is not None:
+                    if not isinstance(y, pd.DataFrame):
+                        y = y.to_frame()
+
+                    if(len(y.columns) == 1):
+                        X[y.columns[0]] = y
+                        df = X
+                    else:
+                        for col in y.columns:
+                            X[col] = y[col]
+                        df = X
+
+                    df['n_target'] = len(y.columns)
+
+                    file_dir = './datasets/'+ task +'/'
+
+                    if n_df > 0:
+                        print('------------------Dataset ID: ' + str(row) + '------------------')
+
+                        print(y.info())
+                        fullname = os.path.join(file_dir, str(row) + '.csv')
+
+                        print("good df " + fullname + '\n')
+
+                        X[y.columns[0]] = y
+                        X.to_csv(fullname, index=False, header=True)
+
+                        list_df.append(fullname)
+
+                        n_df-=1
+ 
+            else:
+                if n_df > 0:
+                    print('------------------Dataset ID: ' + str(row) + '------------------')
+                    print('-------------------------Dataset già presente-------------------------\n')
+                    list_df.append('./datasets/'+ task +'/' + str(row) + '.csv')
+                    n_df-=1
+
+        except Exception as e:
+            print(colored('Impossibile scaricare il DataFrame ' + str(row) + ' causa: ' + str(e) + '\n', 'red'))
+
+        if n_df == 0:
+            break
+
+    return list_df

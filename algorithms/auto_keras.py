@@ -15,11 +15,11 @@ def prepare_and_test(X, y, task):
     y_test = y_test.to_frame() 
 
   if(task == 'classification'):
-    clf = ak.StructuredDataClassifier(overwrite=True, max_trials=5, directory='/home/riccardo/.local/share/Trash')#attenzione salvo sul cestino
+    clf = ak.StructuredDataClassifier(overwrite=True, max_trials=3, directory='/home/riccardo/.local/share/Trash')#attenzione salvo sul cestino
   else:
-    clf = ak.StructuredDataRegressor(overwrite=True, max_trials=5, directory='/home/riccardo/.local/share/Trash')#attenzione salvo sul cestino
+    clf = ak.StructuredDataRegressor(overwrite=True, max_trials=3, directory='/home/riccardo/.local/share/Trash')#attenzione salvo sul cestino
     
-  clf.fit(X_train, y_train, validation_split=0.15, epochs=25)
+  clf.fit(X_train, y_train, validation_split=0.15, epochs=10)
   y_pred = clf.predict(X_test)
 
   if task == 'classification':
@@ -29,12 +29,10 @@ def prepare_and_test(X, y, task):
     else:
       return (accuracy_score(y_test, y_pred), f1_score(y_test, y_pred))
   else:
-    return (np.sqrt(mean_squared_error(y_test, predicted_y)), r2_score(y_test, predicted_y))
+    return (np.sqrt(mean_squared_error(y_test, y_pred)), r2_score(y_test, y_pred))
 
 
 def autokeras(df, task):
-  if isinstance(df, pd.DataFrame):
-    df = fill_and_to_category(df)
   X, y = return_X_y(df)
   if not isinstance(df, pd.DataFrame):
     X = X.apply(LabelEncoder().fit_transform)

@@ -4,6 +4,7 @@ from sklearn.datasets import fetch_openml
 from utils.algo_functions import fun_autosklearn, fun_tpot, fun_h2o, fun_autokeras, fun_autogluon
 import pandas as pd
 import os
+import numpy as np
 from algorithms.auto_keras import autokeras
 from algorithms.auto_sklearn import auto_sklearn
 from algorithms.auto_gluon import autogluon
@@ -41,6 +42,7 @@ def test(id, algo):
 
             print(y.info())
             if(len(y.columns) == 1):
+                print(np.unique(y))
                 X[y.columns[0]] = y
                 df = X
             else:
