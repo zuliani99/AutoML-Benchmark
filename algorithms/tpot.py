@@ -15,6 +15,7 @@ def TPOT(df, task):
   if not isinstance(df, pd.DataFrame):
     X = fill_and_to_category(X)
 
+
   X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=1)
   le = LabelEncoder()
   if task == 'classification':

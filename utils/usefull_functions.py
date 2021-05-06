@@ -123,7 +123,8 @@ def return_X_y(df):
 def fill_and_to_category(df):
     for col in df.columns:
         t = pd.api.types.infer_dtype(df[col])
-        if t == "string" or t == 'object':
+        if t == "string":
+            df[col] = pd.Categorical(df[col])
             df[col] = df[col].astype('category')
             df[col] = df[col].cat.add_categories('Unknown')
             df[col].fillna('Unknown', inplace =True)
@@ -135,6 +136,7 @@ def fill_and_to_category(df):
             #df[col] = scaler.transform(df[col])
         if t == 'categorical' :
             df[col] = df[col].cat.codes
+    print(df.info())
     return df
 
 

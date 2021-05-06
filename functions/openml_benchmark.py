@@ -24,6 +24,8 @@ def openml_benchmark(df_n, morethan):
     list_df = get_df_list(datalist_class['did'].unique(), df_n, 'classification')
     list_df.extend(get_df_list(datalist_reg['did'].unique(), df_n, 'regression'))
 
+    print(list_df)
+
     print(colored('--------------------------------Fine Dataset Download --------------------------------', 'yellow'))
 
     #ESECUZUONE DEGLI ALGORITMI

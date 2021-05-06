@@ -29,7 +29,10 @@ def prepare_and_test(train, test, task):
   target = h2o.as_list(test[y])
 
   if task == 'classification':
-    return (accuracy_score(target, pred), f1_score(target, pred))
+    if len(np.unique(target)) > 2:
+      return (accuracy_score(target, pred), f1_score(target, pred, average='weighted'))
+    else:
+      return (accuracy_score(target, pred), f1_score(target, pred))
   else:
     return (np.sqrt(mean_squared_error(target, pred)), r2_score(target, pred))
 

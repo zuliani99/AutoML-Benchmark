@@ -27,13 +27,11 @@ def switch(algo, df, task):
     }.get(algo)(df, task)
 
 def test(id, algo):
-    if not os.path.exists('./datasets/classification/' + str(id) + '.csv') and not os.path.exists('./datasets/regression/' + str(id) + '.csv'):
-        X, y = fetch_openml(data_id=id, as_frame=True, return_X_y=True, cache=True)
-        #dataset = openml.datasets.get_dataset(row[0])
-        #X, y, categorical_indicator, attribute_names = dataset.get_data(dataset_format="dataframe", target=dataset.default_target_attribute)
-        if y is None:
-            print(colored('Dataset senza una target feature', 'red'))
-        else:
+    try:
+        if not os.path.exists('./datasets/classification/' + str(id) + '.csv') and not os.path.exists('./datasets/regression/' + str(id) + '.csv'):
+            X, y = fetch_openml(data_id=id, as_frame=True, return_X_y=True, cache=True)
+            #dataset = openml.datasets.get_dataset(row[0])
+            #X, y, categorical_indicator, attribute_names = dataset.get_data(dataset_format="dataframe", target=dataset.default_target_attribute)
             if not isinstance(y, pd.DataFrame):
                 y = y.to_frame()
             #else:
@@ -64,18 +62,20 @@ def test(id, algo):
             file_dir =  './datasets/' + task + '/'
             fullname = os.path.join(file_dir, str(id) + '.csv')
             df.to_csv(fullname, index=False, header=True)
-            
+                
             print(switch(algo, df, task))
-    else:
-        if os.path.exists('./datasets/classification/' + str(id) + '.csv'):
-            task = 'classification'
-            path = './datasets/classification/' + str(id) + '.csv'
         else:
-            task = 'regression'
-            path = './datasets/regression/' + str(id) + '.csv'
-        
-        df = pd.read_csv(path)
+            if os.path.exists('./datasets/classification/' + str(id) + '.csv'):
+                task = 'classification'
+                path = './datasets/classification/' + str(id) + '.csv'
+            else:
+                task = 'regression'
+                path = './datasets/regression/' + str(id) + '.csv'
+            
+            df = pd.read_csv(path)
 
-        print(df.head())
+            print(df.head())
 
-        print(switch(algo, df, task))
+            print(switch(algo, df, task))
+    except Exception as e:
+            print(colored('Impossibile scaricare il DataFrame ' + str(id) + ' causa: ' + str(e) + '\n', 'red'))
