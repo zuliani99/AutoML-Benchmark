@@ -37,4 +37,4 @@ def openml_benchmark(df_n, morethan):
         res_openml.run_benchmark(df, str_path[2], str_path[3])
         print(colored('--------------------------------- Riga inserita ---------------------------------', 'green'))
 
-    res_openml.print_res()
+    return res_openml.print_res()

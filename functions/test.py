@@ -27,6 +27,7 @@ def switch(algo, df, task):
     }.get(algo)(df, task)
 
 def test(id, algo):
+    print('----------------'+str(id)+'-----------'+str(algo)+'-------------')
     try:
         if not os.path.exists('./datasets/classification/' + str(id) + '.csv') and not os.path.exists('./datasets/regression/' + str(id) + '.csv'):
             X, y = fetch_openml(data_id=id, as_frame=True, return_X_y=True, cache=True)
@@ -38,9 +39,9 @@ def test(id, algo):
                 #y = X.iloc[:, -1].to_frame()
                 #X = X.drop(y.columns[0], axis=1)
 
-            print(y.info())
+            #print(y.info())
             if(len(y.columns) == 1):
-                print(np.unique(y))
+                #print(np.unique(y))
                 X[y.columns[0]] = y
                 df = X
             else:
@@ -62,8 +63,9 @@ def test(id, algo):
             file_dir =  './datasets/' + task + '/'
             fullname = os.path.join(file_dir, str(id) + '.csv')
             df.to_csv(fullname, index=False, header=True)
-                
-            print(switch(algo, df, task))
+            res = switch(algo, df, task)
+            print(task, res)
+            return task, res
         else:
             if os.path.exists('./datasets/classification/' + str(id) + '.csv'):
                 task = 'classification'
@@ -75,7 +77,8 @@ def test(id, algo):
             df = pd.read_csv(path)
 
             print(df.head())
-
-            print(switch(algo, df, task))
+            res = switch(algo, df, task)
+            print(task, res)
+            return task, res
     except Exception as e:
             print(colored('Impossibile scaricare il DataFrame ' + str(id) + ' causa: ' + str(e) + '\n', 'red'))

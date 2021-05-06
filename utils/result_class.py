@@ -49,3 +49,4 @@ class Result:
 
             self.res_reg.to_csv(path + '/regression.csv', index = False)
             hist(self.res_reg, self.t + ' - Regressione')
+        return self.res_class, self.res_reg

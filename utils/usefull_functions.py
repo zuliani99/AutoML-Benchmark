@@ -100,13 +100,6 @@ def hist(data, task):
     plt.show()
 
 
-def get_task(df):
-    for d in datasets:
-        if df == d[0]:
-            return d[1]
-    return False
-
-
 def return_X_y(df):
     if isinstance(df, pd.DataFrame):
         n_target = df['n_target'][0]

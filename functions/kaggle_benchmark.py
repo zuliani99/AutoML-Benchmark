@@ -2,7 +2,7 @@ import pandas as pd
 from kaggle.api.kaggle_api_extended import KaggleApi
 from zipfile import ZipFile
 from utils.result_class import Result
-from utils.usefull_functions import get_task
+import os
 
 datasets = [('titanic', 'classification'), ('tabular-playground-series-mar-2021', 'classification')]
 
@@ -11,10 +11,11 @@ def kaggle_benchmark(list_df):
     api.authenticate()
 
     res_kaggle = Result('Kaggle')
-
+    if not isinstance(list_df, list):
+        list_df = [list_df]
     for df in list_df:
-        task = get_task(df)
-        if task is not False:
+        if (df, 'classification') in datasets or (df, 'regression') in datasets:
+            task = 'classification' if (df, 'classification') in datasets else 'regression'
             print('------------------Dataset name: ' + df + ' - Task: ' + task + '------------------')
             path = './datasets/kaggle/' + df
 
@@ -30,7 +31,8 @@ def kaggle_benchmark(list_df):
             test = pd.read_csv(path + '/test.csv')
 
             res_kaggle.run_benchmark((train, test), task, df)
+            return res_kaggle.print_res()
         else:
-            print('\nDatasek di kaggle inesistente. Se esistente accertarsi di aver accettato le condizioni della competizione.\n')
+            print('\nDataset di kaggle inesistente. Se esistente accertarsi di aver accettato le condizioni della competizione.\n')
 
-    res_kaggle.print_res()
+    

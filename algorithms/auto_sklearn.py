@@ -37,7 +37,9 @@ def auto_sklearn(df, task):
     )
     automl.fit(X_train, y_train)
     y_pred = automl.predict(X_test)
+    
     return (np.sqrt(mean_squared_error(y_test, y_pred)), r2_score(y_test, y_pred))
 
-  #print(automl.sprint_statistics())
-  #print(automl.show_models())
+  
+#print(automl.sprint_statistics())
+#print(automl.show_models())
