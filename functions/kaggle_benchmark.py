@@ -31,8 +31,7 @@ def kaggle_benchmark(list_df):
             test = pd.read_csv(path + '/test.csv')
 
             res_kaggle.run_benchmark((train, test), task, df)
-            return res_kaggle.print_res()
         else:
             print('\nDataset di kaggle inesistente. Se esistente accertarsi di aver accettato le condizioni della competizione.\n')
-
-    
+            #return 'Dataset di kaggle inesistente. Se esistente accertarsi di aver accettato le condizioni della competizione.'
+    return res_kaggle.print_res()

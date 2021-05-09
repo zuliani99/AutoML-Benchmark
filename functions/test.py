@@ -1,6 +1,4 @@
 from sklearn.datasets import fetch_openml
-#from openml.datasets import get_dataset
-#import openml
 from utils.algo_functions import fun_autosklearn, fun_tpot, fun_h2o, fun_autokeras, fun_autogluon
 import pandas as pd
 import os
@@ -11,6 +9,7 @@ from algorithms.auto_gluon import autogluon
 from algorithms.tpot import TPOT
 from algorithms.h2o import H2O
 from termcolor import colored
+import openml
 
 def switch(algo, df, task):
     return {
@@ -31,17 +30,9 @@ def test(id, algo):
     try:
         if not os.path.exists('./datasets/classification/' + str(id) + '.csv') and not os.path.exists('./datasets/regression/' + str(id) + '.csv'):
             X, y = fetch_openml(data_id=id, as_frame=True, return_X_y=True, cache=True)
-            #dataset = openml.datasets.get_dataset(row[0])
-            #X, y, categorical_indicator, attribute_names = dataset.get_data(dataset_format="dataframe", target=dataset.default_target_attribute)
             if not isinstance(y, pd.DataFrame):
                 y = y.to_frame()
-            #else:
-                #y = X.iloc[:, -1].to_frame()
-                #X = X.drop(y.columns[0], axis=1)
-
-            #print(y.info())
             if(len(y.columns) == 1):
-                #print(np.unique(y))
                 X[y.columns[0]] = y
                 df = X
             else:
@@ -53,19 +44,23 @@ def test(id, algo):
 
             print(df.info())
             print(df.head())
-            t = pd.api.types.infer_dtype(y[y.columns[0]])
-            if (t == "categorical" or t == "boolean"):
-                task = 'classification'
 
-            if (t == "floating" or t == 'integer' or t == 'decimal'):
-                task = 'regression'
+            tasks = openml.tasks.list_tasks(data_id=id, output_format="dataframe")
+            print(tasks)
+            if openml.tasks.TaskType.SUPERVISED_CLASSIFICATION in tasks['task_type'] or openml.tasks.TaskType.SUPERVISED_REGRESSION in tasks['task_type']:
+                if openml.tasks.TaskType.SUPERVISED_CLASSIFICATION in tasks['task_type']:
+                    task = 'calssification'
+                elif openml.tasks.TaskType.SUPERVISED_REGRESSION in tasks['task_type']:
+                    task = 'regression'
 
-            file_dir =  './datasets/' + task + '/'
-            fullname = os.path.join(file_dir, str(id) + '.csv')
-            df.to_csv(fullname, index=False, header=True)
-            res = switch(algo, df, task)
-            print(task, res)
-            return task, res
+                file_dir =  './datasets/' + task + '/'
+                fullname = os.path.join(file_dir, str(id) + '.csv')
+                df.to_csv(fullname, index=False, header=True)
+                res = switch(algo, df, task)
+                print(task, res)
+                return task, res
+            else:
+                return None, None            
         else:
             if os.path.exists('./datasets/classification/' + str(id) + '.csv'):
                 task = 'classification'
@@ -79,6 +74,7 @@ def test(id, algo):
             print(df.head())
             res = switch(algo, df, task)
             print(task, res)
+            # ritorno il tipo di task ed il risultato dell'algoritmo -> (acc, f1) o (rmse, r2) oppure il datafrsame con tutti i risultati di ytutti gli algoritmi
             return task, res
     except Exception as e:
             print(colored('Impossibile scaricare il DataFrame ' + str(id) + ' causa: ' + str(e) + '\n', 'red'))

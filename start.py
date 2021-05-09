@@ -15,35 +15,28 @@ import dash_core_components as dcc
 import dash_html_components as html
 from dash.dependencies import Input, Output, State
 import dash_bootstrap_components as dbc
+import plotly.graph_objects as go
 
 
-def print_table(res):
-    #cla = res[0]
-    #reg = res[1]
-    print(res)
-    if not isinstance(res, list):
-        res = [res]
-    ris=[]
-    for r in res:
-        ris.append(html.Table([
-            html.Thead(
-                html.Tr([html.Th(col) for col in r.columns])
-            ),
-            html.Tbody([
-                html.Tr([
-                    html.Td(r.iloc[i][col]) for col in r.columns
-                ]) for i in range(min(len(r), r.shape[0]))
-            ])
-        ]))
-        if len(ris) == 1:
-            return html.Div([
-                ris[0]
-            ])
-        else:
-            return html.Div([
-                ris[0], ris[1]
-            ])
+def print_table_graphs(dfs):
+    tables=[]
+    graphs=[]
+    for df in dfs:
+        if df is not None:
+            tables.append(dbc.Table.from_dataframe(df, striped=True, bordered=True, hover=True))
+            #graphs.append(dcc.Graph(figure=df))
 
+    return tables
+'''html.Table([
+                html.Thead(
+                    html.Tr([html.Th(col) for col in df.columns])
+                ),
+                html.Tbody([
+                    html.Tr([
+                        html.Td(df.iloc[i][col]) for col in df.columns
+                    ]) for i in range(min(len(df), df.shape[0]))
+                ])
+            ])'''
 
 def get_lisd_dir(test):
     lis = (os.listdir('./results/'+test))
@@ -102,13 +95,13 @@ def start():
     openmlbenchmark = html.Div([
                     dbc.Card([
                         dbc.CardBody([
-                            html.H4("OpenMlBenchMark", className="card-title"),
+                            html.H4("OpenMl BenchMark", className="card-title"),
                             #html.P("This is some card text", className="card-text"),
                             dbc.FormGroup([
                                 dbc.Label("Numero di DataFrame da testare", width=5),
                                 dbc.Col(
                                     dbc.Input(
-                                        id="ndf", type="number", placeholder="Numero di DF", min=0
+                                        id="ndf", type="number", placeholder="Numero di DF", min=1
                                     ),
                                     width=5,
                                 )
@@ -117,7 +110,7 @@ def start():
                                 dbc.Label("Numero minimo di istanze per ogni DataFrame",  width=5),
                                 dbc.Col(
                                     dbc.Input(
-                                        id="nmore", type="number", placeholder="N minimo di istanze", min=0, max=100000
+                                        id="nmore", type="number", placeholder="N minimo di istanze", min=1, max=100000
                                     ),
                                     width=5,
                                 ),
@@ -126,7 +119,7 @@ def start():
                         ])
                     ], style={"width": "auto"},
                 ),
-                dbc.Card(id='res-becnh-openml')
+                html.Div(id='res-bench-openml')
             ])
 
     kagglebenchmark = html.Div([
@@ -154,7 +147,7 @@ def start():
                     ])
                 ], style={"width": "auto"}
             ),
-            dbc.Card(id='res-bench-kaggle')
+            html.Div(id='res-bench-kaggle')
     ])
 
     testbenchmark = html.Div([
@@ -166,7 +159,7 @@ def start():
                             dbc.Label("ID DataFrame da testare", width=5),
                             dbc.Col(
                                 dbc.Input(
-                                    id="dfid", type="number", placeholder="DataFrame ID", min=0
+                                    id="dfid", type="number", placeholder="DataFrame ID", min=1
                                 ),
                                 width=5,
                             )
@@ -193,21 +186,23 @@ def start():
                     ])
                 ], style={"width": "auto"},
             ),
-        dbc.Card(id='res-becnh-test')
+        html.Div(id='res-bench-test')
     ])
 
     pastresultopenml = html.Div([
         dbc.Select(id='pastresultopenml', options=get_lisd_dir('OpenML'),
             placeholder='Filtra un BenchMark per Data',
         ),
-        dbc.Card(id='result-past-becnh-openml')
+        html.Div(id='result-past-bench-openml'),
+        html.Div(id='graph-past-bench-openml')
     ])
 
     pastresultkaggle = html.Div([
         dbc.Select(id='pastresultkaggle',options=get_lisd_dir('Kaggle'),
             placeholder='Filtra un BenchMark per Data',
         ),
-        dbc.Card(id='result-past-becnh-kaggle')
+        html.Div(id='result-past-bench-kaggle'),
+        html.Div(id='graph-past-bench-kaggle')
     ])
 
 
@@ -250,53 +245,96 @@ def start():
         Input('submit-openml', 'n_clicks'),
         State('nmore', 'value'), State('ndf', 'value'))
     def start_openml(n_clicks, nmore, ndf):
-        res = openml_benchmark(ndf, nmore)
-        return  print_table(res)
+        if nmore is not None and ndf is not None:
+            res = openml_benchmark(ndf, nmore)
+            return  print_table_graphs(res)
+        return 'In attesa di un comando'
 
     @app.callback(
         Output('res-bench-kaggle', 'children'),
         Input('submit-kaggle', 'n_clicks'),
         State('kaggledataset', 'value'))
     def start_kaggle(n_clicks, kaggledataset):
-        #res = kaggle_benchmark(kaggledataset)
-        res = pd.read_csv('./results/OpenML/2021-04-28 19:52:53.106617/classification.csv')
-        return  print_table(res)
-        
+        if kaggledataset is not None:
+            res = kaggle_benchmark(kaggledataset)
+            return  print_table_graphs(res)
+        else:
+            return 'In attesa di un comando'
 
 
     @app.callback(
         Output('res-bench-test', 'children'),
         Input('submit-test', 'n_clicks'),
         State('dfid', 'value'), State('algorithms', 'value'))
-    def start_test(n_clicks,dfid, algorithms):
-        res = test(dfid, algorithms)
-        print('start')
-        print(res)
-        if isinstance(res[1], pd.DataFrame):
-            return html.Table([
-                html.Thead(
-                    html.Tr([html.Th(col) for col in dataframe.columns])
-                ),
-                html.Tbody([
-                    html.Tr([
-                        html.Td(dataframe.iloc[i][col]) for col in dataframe.columns
+    def start_test(n_clicks, dfid, algorithms):
+        if dfid is not None and algorithms is not None:
+            res = test(dfid, algorithms)
+            #print(res)
+            if isinstance(res[1], pd.DataFrame):
+                return html.Table([
+                    html.Thead(
+                        html.Tr([html.Th(col) for col in dataframe.columns])
+                    ),
+                    html.Tbody([
+                        html.Tr([
+                            html.Td(dataframe.iloc[i][col]) for col in dataframe.columns
+                        ])
                     ])
                 ])
-            ])
-        else:
-            if(res[0] == 'classification'):
-                text = 'Accuracy: ' + str(res[1][0]) + '     f1_score: ' + str(res[1][1])
             else:
-                text = 'RMSE: ' + str(res[1][0]) + '     r2_score: ' + str(res[1][1])
-            return html.Div([
-                html.Br(),
-                html.P('Risultati del Dataset: ' + str(dfid) + " utilizzando l'algoritmo: " + str(algorithms)),
-                html.P(text)
-            ])
+                if(res[0] == 'classification'):
+                    text = 'Accuracy: ' + str(res[1][0]) + '     f1_score: ' + str(res[1][1])
+                else:
+                    text = 'RMSE: ' + str(res[1][0]) + '     r2_score: ' + str(res[1][1])
+                return html.Div([
+                    html.Br(),
+                    html.P('Risultati del Dataset: ' + str(dfid) + " utilizzando l'algoritmo: " + str(algorithms)),
+                    html.P(text)
+                ])
+        else:
+            return 'In attesa di un comando'
 
-    @app.callback(Output('result-past-becnh-openml', 'children'), Input('pastresultopenml', 'value'))
+
+#, Output('graph-past-bench-openml', 'children')
+    @app.callback(Output('result-past-bench-openml', 'children'), Input('pastresultopenml', 'value'))
     def retpastbenchopenml(timestamp):
-        return print_table([pd.read_csv('./results/OpenML/'+timestamp+'/classification.csv'),pd.read_csv('./results/OpenML/'+timestamp+'/regression.csv')])
+        print(timestamp)
+        if timestamp is not None:
+            dfs = []
+            scores = [('classification','acc'), ('classification','f1_score'), ('regression','rmse'), ('regression','r2_score')]
+            for score in scores:
+                print('./results/OpenML/'+timestamp+'/'+ score[0] +'/'+ score[1] +'.csv')
+                if os.path.exists('./results/OpenML/'+timestamp+'/'+ score[0] +'/'+ score[1] +'.csv'):
+                    data = pd.read_csv('./results/OpenML/'+timestamp+'/'+ score[0] +'/'+ score[1] +'.csv', delim_whitespace=True)
+                    print(data)
+                    dfs.append(data)
+                else:
+                    dfs.append(None)
+            print(dfs)
+            return (
+                print_table_graphs(dfs)
+            )
+        return ('Nessun dataset selezionato', 'Nessun dataset selezionato')
+
+#
+    @app.callback(Output('result-past-bench-kaggle', 'children'), Output('graph-past-bench-kaggle', 'children') , Input('pastresultkaggle', 'value'))
+    def retpastbenchopenml(timestamp):
+        print(timestamp)
+        if timestamp is not None:
+            dfs = []
+            scores = [['classification','acc'], ['classification','f1_score'], ['regression','rmse'], ['regression','r2_score']]
+            for score in scores:
+                if os.path.exists('./results/Kaggle/'+timestamp+'/'+ score[0] +'/'+ score[1] +'.csv'):
+                    data = pd.read_csv('./results/Kaggle/'+timestamp+'/'+ score[0] +'/'+ score[1] +'.csv')
+                    print(data)
+                    dfs.append(data)
+                else:
+                    dfs.append(None)
+            #print(dfs)
+            return (
+                print_table_graphs(dfs)
+            )
+        return ('Nessun dataset selezionato', 'Nessun dataset selezionato')
 
     app.run_server(debug=True)
 
