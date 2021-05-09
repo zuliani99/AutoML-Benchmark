@@ -305,9 +305,7 @@ def start():
             for score in scores:
                 print('./results/OpenML/'+timestamp+'/'+ score[0] +'/'+ score[1] +'.csv')
                 if os.path.exists('./results/OpenML/'+timestamp+'/'+ score[0] +'/'+ score[1] +'.csv'):
-                    data = pd.read_csv('./results/OpenML/'+timestamp+'/'+ score[0] +'/'+ score[1] +'.csv', delim_whitespace=True)
-                    print(data)
-                    dfs.append(data)
+                    dfs.append(pd.read_csv('./results/OpenML/'+timestamp+'/'+ score[0] +'/'+ score[1] +'.csv'))
                 else:
                     dfs.append(None)
             print(dfs)
@@ -325,9 +323,7 @@ def start():
             scores = [['classification','acc'], ['classification','f1_score'], ['regression','rmse'], ['regression','r2_score']]
             for score in scores:
                 if os.path.exists('./results/Kaggle/'+timestamp+'/'+ score[0] +'/'+ score[1] +'.csv'):
-                    data = pd.read_csv('./results/Kaggle/'+timestamp+'/'+ score[0] +'/'+ score[1] +'.csv')
-                    print(data)
-                    dfs.append(data)
+                    dfs.append(pd.read_csv('./results/Kaggle/'+timestamp+'/'+ score[0] +'/'+ score[1] +'.csv'))
                 else:
                     dfs.append(None)
             #print(dfs)

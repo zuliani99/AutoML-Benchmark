@@ -35,7 +35,7 @@ class Result:
 
     def print_res(self):
         if(not self.res_class_acc.empty and not self.res_class_f1.empty):
-            pathcla = './results/' + self.t + '/' + str(datetime.now() + 'classification')
+            pathcla = './results/' + self.t + '/' + str(datetime.now()).replace(' ', '-') + 'classification'
             os.makedirs(pathcla)
             print('---------------------------------RISULTATI DI CLASSIFICAZIONE ' + self.t + '---------------------------------')
             print(self.res_class_acc)
@@ -46,7 +46,7 @@ class Result:
             #hist(self.res_class, self.t + ' - Classificazione')
             
         if(not self.res_reg_rmse.empty and not self.res_reg.empty_r2):
-            pathreg = './results/' + self.t + '/' + str(datetime.now() + 'regression')
+            pathreg = './results/' + self.t + '/' + str(datetime.now()).replace(' ', '-') + 'regression'
             os.makedirs(pathreg)
             print('\n\n---------------------------------RISULTATI DI REGRESSIONE ' + self.t +'---------------------------------')
             print(self.res_reg_rmse)

@@ -1,11 +1,11 @@
 import pandas as pd
-from usefull_functions import hist
 import os
 from datetime import datetime
 
-path = './results/' + 'OpenML'+ '/' + str(datetime.now())
+path = './results/OpenML/2021-04-28-19:52:53.106617/classification/f1_score.csv'
 print(path)
-os.makedirs(path)
+data = pd.read_csv(path)
+print(len(data.columns))
 
 
 #data = pd.read_csv('/home/riccardo/Desktop/cacca2.csv')
