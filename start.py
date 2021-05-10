@@ -18,47 +18,52 @@ import dash_bootstrap_components as dbc
 import plotly.graph_objects as go
 
 
-def print_table_graphs(dfs_class, dfs_reg):
+def print_table_graphs(dfs):
+    dfs_class = dfs[:2]
+    dfs_reg = dfs[2:]
     tables_graphs=[]
     scatters = []
-    tables_graphs.append(html.H3('Rsiultati Classificazione'))
-    for df in dfs_class:
-        if df is not None:
+    if dfs_class[0] is not None:
+        tables_graphs.append(html.H3('Risultati Classificazione'))
+        for df in dfs_class:
             tables_graphs.append(dbc.Table.from_dataframe(df, striped=True, bordered=True, hover=True))
             for col in df.columns[1:]:
                 scatters.append(go.Scatter(x=df['dataset'], y=df[col], name=col.split('-')[0], mode='lines+markers'))
-    tables_graphs.append(
-                    dbc.Container([
-                        dbc.Row(
-                            [
-                                dbc.Col(dcc.Graph(figure=go.Figure(data=scatters[:5], layout=go.Layout(xaxis = dict(title = 'Datasets'),
-                    yaxis = dict(title = 'Accuracy')))), width=6),
-                                dbc.Col(dcc.Graph(figure=go.Figure(data=scatters[5:], layout=go.Layout(xaxis = dict(title = 'Datasets'),
-                    yaxis = dict(title = 'F1_score')))), width=6),
-                            ]
-                        )
-                    ])
-                )
-    tables_graphs.append(html.Hr())
-    tables_graphs.append(html.H3('Rsiultati Regressione'))
-    for df in dfs_reg:
-        if df is not None:
+        tables_graphs.append(
+                        dbc.Container([
+                            dbc.Row(
+                                [
+                                    dbc.Col(dcc.Graph(figure=go.Figure(data=scatters[:5], layout=go.Layout(xaxis = dict(title = 'Datasets'),
+                        yaxis = dict(title = 'Accuracy')))), width=6),
+                                    dbc.Col(dcc.Graph(figure=go.Figure(data=scatters[5:], layout=go.Layout(xaxis = dict(title = 'Datasets'),
+                        yaxis = dict(title = 'F1_score')))), width=6),
+                                ]
+                            )
+                        ])
+                    )
+    if dfs_reg[0] is not None:
+        tables_graphs.append(html.Hr())
+        tables_graphs.append(html.H3('Risultati Regressione'))
+        for df in dfs_reg:
             tables_graphs.append(dbc.Table.from_dataframe(df, striped=True, bordered=True, hover=True))
             for col in df.columns[1:]:
                 scatters.append(go.Scatter(x=df['dataset'], y=df[col], name=col.split('-')[0], mode='lines+markers'))
-    tables_graphs.append(
-                    dbc.Container([
-                        dbc.Row(
-                            [
-                                dbc.Col(dcc.Graph(figure=go.Figure(data=scatters[10:15], layout=go.Layout(xaxis = dict(title = 'Datasets'),
-                    yaxis = dict(title = 'RMSE')))), width=6),
-                                dbc.Col(dcc.Graph(figure=go.Figure(data=scatters[15:], layout=go.Layout(xaxis = dict(title = 'Datasets'),
-                    yaxis = dict(title = 'R2_score')))), width=6),
-                            ]
-                        )
-                    ])
-                )
+        tables_graphs.append(
+                        dbc.Container([
+                            dbc.Row(
+                                [
+                                    dbc.Col(dcc.Graph(figure=go.Figure(data=scatters[10:15], layout=go.Layout(xaxis = dict(title = 'Datasets'),
+                        yaxis = dict(title = 'RMSE')))), width=6),
+                                    dbc.Col(dcc.Graph(figure=go.Figure(data=scatters[15:], layout=go.Layout(xaxis = dict(title = 'Datasets'),
+                        yaxis = dict(title = 'R2_score')))), width=6),
+                                ]
+                            )
+                        ])
+                    )
     return tables_graphs
+
+
+
 
 def get_lisd_dir(test):
     lis = (os.listdir('./results/'+test))
@@ -141,6 +146,7 @@ def start():
                         ])
                     ], style={"width": "auto"},
                 ),
+                html.Hr(),
                 html.Div(id='res-bench-openml')
             ])
 
@@ -169,6 +175,7 @@ def start():
                     ])
                 ], style={"width": "auto"}
             ),
+            html.Hr(),
             html.Div(id='res-bench-kaggle')
     ])
 
@@ -208,6 +215,7 @@ def start():
                     ])
                 ], style={"width": "auto"},
             ),
+        html.Hr(),
         html.Div(id='res-bench-test')
     ])
 
@@ -269,7 +277,8 @@ def start():
     def start_openml(n_clicks, nmore, ndf):
         if nmore is not None and ndf is not None:
             res = openml_benchmark(ndf, nmore)
-            return  print_table_graphs(res)
+            return print_table_graphs(res)
+            #print_table_graphs_openml(dfs[:2], dfs[2:])
         return 'In attesa di un comando'
 
     @app.callback(
@@ -279,7 +288,7 @@ def start():
     def start_kaggle(n_clicks, kaggledataset):
         if kaggledataset is not None:
             res = kaggle_benchmark(kaggledataset)
-            return  print_table_graphs(res)
+            return print_table_graphs(res)
         else:
             return 'In attesa di un comando'
 
@@ -291,25 +300,15 @@ def start():
     def start_test(n_clicks, dfid, algorithms):
         if dfid is not None and algorithms is not None:
             res = test(dfid, algorithms)
-            #print(res)
+            print(res)
             if isinstance(res[1], pd.DataFrame):
-                return html.Table([
-                    html.Thead(
-                        html.Tr([html.Th(col) for col in dataframe.columns])
-                    ),
-                    html.Tbody([
-                        html.Tr([
-                            html.Td(dataframe.iloc[i][col]) for col in dataframe.columns
-                        ])
-                    ])
-                ])
+                return dbc.Table.from_dataframe(res[1], striped=True, bordered=True, hover=True)
             else:
                 if(res[0] == 'classification'):
                     text = 'Accuracy: ' + str(res[1][0]) + '     f1_score: ' + str(res[1][1])
                 else:
                     text = 'RMSE: ' + str(res[1][0]) + '     r2_score: ' + str(res[1][1])
                 return html.Div([
-                    html.Br(),
                     html.P('Risultati del Dataset: ' + str(dfid) + " utilizzando l'algoritmo: " + str(algorithms)),
                     html.P(text)
                 ])
@@ -332,12 +331,13 @@ def start():
                     dfs.append(None)
             print(dfs)
             return (
-                print_table_graphs(dfs[:2], dfs[2:])
+                #print_table_graphs_openml(dfs[:2], dfs[2:])
+                print_table_graphs(dfs)
             )
         return 'Nessun dataset selezionato'
 
 #
-    @app.callback(Output('result-past-bench-kaggle', 'children'), Output('graph-past-bench-kaggle', 'children') , Input('pastresultkaggle', 'value'))
+    @app.callback(Output('result-past-bench-kaggle', 'children'), Input('pastresultkaggle', 'value'))
     def retpastbenchopenml(timestamp):
         print(timestamp)
         if timestamp is not None:

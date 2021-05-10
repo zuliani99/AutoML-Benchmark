@@ -46,11 +46,11 @@ def test(id, algo):
             print(df.head())
 
             tasks = openml.tasks.list_tasks(data_id=id, output_format="dataframe")
-            print(tasks)
-            if openml.tasks.TaskType.SUPERVISED_CLASSIFICATION in tasks['task_type'] or openml.tasks.TaskType.SUPERVISED_REGRESSION in tasks['task_type']:
-                if openml.tasks.TaskType.SUPERVISED_CLASSIFICATION in tasks['task_type']:
-                    task = 'calssification'
-                elif openml.tasks.TaskType.SUPERVISED_REGRESSION in tasks['task_type']:
+            ts = tasks['task_type'].unique()
+            if 'Supervised Classification' in ts or 'Supervised Regression' in ts:
+                if 'Supervised Classification' in ts:
+                    task = 'classification'
+                elif 'Supervised Regression' in ts:
                     task = 'regression'
 
                 file_dir =  './datasets/' + task + '/'

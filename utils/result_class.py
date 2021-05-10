@@ -56,6 +56,5 @@ class Result:
             self.res_reg_r2.to_csv(pathreg + '/r2.csv', index = False)
             #hist(self.res_reg, self.t + ' - Regressione')
         
-        # Ritorno i dataframe oppure None se sono vuoti, ritorn una una lista di 4 dataframe
-        return self.res_class_acc if not self.res_class_acc.empty else None, self.res_class_f1 if not self.res_class_f1.empty else None,
-        self.res_reg_rmse if not self.res_reg_rmse.empty else None, self.res_reg_r2 if not self.res_reg_r2.empty else None
+        # Ritorno i dataframe oppure None se sono vuoti, ritorna una una lista di 4 dataframe
+        return self.res_class_acc if not self.res_class_acc.empty else None, self.res_class_f1 if not self.res_class_f1.empty else None, self.res_reg_rmse if not self.res_reg_rmse.empty else None, self.res_reg_r2 if not self.res_reg_r2.empty else None
