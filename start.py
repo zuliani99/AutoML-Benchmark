@@ -18,25 +18,47 @@ import dash_bootstrap_components as dbc
 import plotly.graph_objects as go
 
 
-def print_table_graphs(dfs):
-    tables=[]
-    graphs=[]
-    for df in dfs:
+def print_table_graphs(dfs_class, dfs_reg):
+    tables_graphs=[]
+    scatters = []
+    tables_graphs.append(html.H3('Rsiultati Classificazione'))
+    for df in dfs_class:
         if df is not None:
-            tables.append(dbc.Table.from_dataframe(df, striped=True, bordered=True, hover=True))
-            #graphs.append(dcc.Graph(figure=df))
-
-    return tables
-'''html.Table([
-                html.Thead(
-                    html.Tr([html.Th(col) for col in df.columns])
-                ),
-                html.Tbody([
-                    html.Tr([
-                        html.Td(df.iloc[i][col]) for col in df.columns
-                    ]) for i in range(min(len(df), df.shape[0]))
-                ])
-            ])'''
+            tables_graphs.append(dbc.Table.from_dataframe(df, striped=True, bordered=True, hover=True))
+            for col in df.columns[1:]:
+                scatters.append(go.Scatter(x=df['dataset'], y=df[col], name=col.split('-')[0], mode='lines+markers'))
+    tables_graphs.append(
+                    dbc.Container([
+                        dbc.Row(
+                            [
+                                dbc.Col(dcc.Graph(figure=go.Figure(data=scatters[:5], layout=go.Layout(xaxis = dict(title = 'Datasets'),
+                    yaxis = dict(title = 'Accuracy')))), width=6),
+                                dbc.Col(dcc.Graph(figure=go.Figure(data=scatters[5:], layout=go.Layout(xaxis = dict(title = 'Datasets'),
+                    yaxis = dict(title = 'F1_score')))), width=6),
+                            ]
+                        )
+                    ])
+                )
+    tables_graphs.append(html.Hr())
+    tables_graphs.append(html.H3('Rsiultati Regressione'))
+    for df in dfs_reg:
+        if df is not None:
+            tables_graphs.append(dbc.Table.from_dataframe(df, striped=True, bordered=True, hover=True))
+            for col in df.columns[1:]:
+                scatters.append(go.Scatter(x=df['dataset'], y=df[col], name=col.split('-')[0], mode='lines+markers'))
+    tables_graphs.append(
+                    dbc.Container([
+                        dbc.Row(
+                            [
+                                dbc.Col(dcc.Graph(figure=go.Figure(data=scatters[10:15], layout=go.Layout(xaxis = dict(title = 'Datasets'),
+                    yaxis = dict(title = 'RMSE')))), width=6),
+                                dbc.Col(dcc.Graph(figure=go.Figure(data=scatters[15:], layout=go.Layout(xaxis = dict(title = 'Datasets'),
+                    yaxis = dict(title = 'R2_score')))), width=6),
+                            ]
+                        )
+                    ])
+                )
+    return tables_graphs
 
 def get_lisd_dir(test):
     lis = (os.listdir('./results/'+test))
@@ -193,16 +215,16 @@ def start():
         dbc.Select(id='pastresultopenml', options=get_lisd_dir('OpenML'),
             placeholder='Filtra un BenchMark per Data',
         ),
-        html.Div(id='result-past-bench-openml'),
-        html.Div(id='graph-past-bench-openml')
+        html.Hr(),
+        html.Div(id='result-past-bench-openml')
     ])
 
     pastresultkaggle = html.Div([
         dbc.Select(id='pastresultkaggle',options=get_lisd_dir('Kaggle'),
             placeholder='Filtra un BenchMark per Data',
         ),
-        html.Div(id='result-past-bench-kaggle'),
-        html.Div(id='graph-past-bench-kaggle')
+        html.Hr(),
+        html.Div(id='result-past-bench-kaggle')
     ])
 
 
@@ -310,9 +332,9 @@ def start():
                     dfs.append(None)
             print(dfs)
             return (
-                print_table_graphs(dfs)
+                print_table_graphs(dfs[:2], dfs[2:])
             )
-        return ('Nessun dataset selezionato', 'Nessun dataset selezionato')
+        return 'Nessun dataset selezionato'
 
 #
     @app.callback(Output('result-past-bench-kaggle', 'children'), Output('graph-past-bench-kaggle', 'children') , Input('pastresultkaggle', 'value'))
@@ -330,7 +352,7 @@ def start():
             return (
                 print_table_graphs(dfs)
             )
-        return ('Nessun dataset selezionato', 'Nessun dataset selezionato')
+        return 'Nessun dataset selezionato'
 
     app.run_server(debug=True)
 
