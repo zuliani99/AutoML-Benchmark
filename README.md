@@ -22,24 +22,20 @@ mv /home/YOUR_USERNAME/Downloads/kaggle.json /home/YOUR_USERNAME/.kaggle
 ```
 
 ## Usage
-There are three types of operations:
-
+To run the app execute the following line of code:
 ```bash
-python3 start.py --ndfopenml n --morethan m
-``` 
-Where **n** is the number of datasets each for classification task and for regression task and **m** is the number of instances that a dataset at least has. This command will start a benchmark using openml datasets.
-
-```bash
-python3 start.py --dfkaggle list
+python3 start.py
 ```
-Where **list** is a sequence of datasets name separated by a space. This command will start a benchmark using the dataset that you specify.
+Open your favourite browser and go to: [http://127.0.0.1:8050/](http://127.0.0.1:8050/). Here you will be albe to interact with the application.
 
-```bash
-python3 start.py --id df_id --algo algorithm
-```
-Where **df_id** is the id of the dataset fatched in openml and **algo** is the algorithm that we whant to test. This command will run a benchmark on the specified dataset using the specified algorithm.
+There are five types of operations:
 
-```bash
-python3 start.py --help
-```
-This command will display the functions of the app
+1. **OpenML Benchmark:** Here you can choose the number of datasets each for classification task and for regression task and the number of instances that a dataset at least has. This command will start a benchmark using openml datasets.
+
+2. **Kaggle Benchmark:** Here you can choose multiple kaggle's datasets for running a benchmark on them.
+
+3. **Test Benchmark:** Here you can run a benchmark on a specific dataset by insering the *dataset id* and using a single *algorithm* ot all of them by selecting a options
+
+4. **Risulatati Precedenti OpenML:** Here you can navigate between past *OpenML* benchmark by selecting a specific date
+
+5. **Risulatati Precedenti Kaggle:** Here you can navigate between past *Kaggle* benchmark by selecting a specific date
