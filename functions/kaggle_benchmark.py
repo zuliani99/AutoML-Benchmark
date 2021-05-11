@@ -32,6 +32,6 @@ def kaggle_benchmark(list_df):
 
             res_kaggle.run_benchmark((train, test), task, df)
         else:
-            print('\nDataset di kaggle inesistente. Se esistente accertarsi di aver accettato le condizioni della competizione.\n')
-            #return 'Dataset di kaggle inesistente. Se esistente accertarsi di aver accettato le condizioni della competizione.'
+            print('\nDataset kaggle "'+ df +'" inesistente. Se esistente accertarsi di aver accettato le condizioni della competizione.\n')
+            return 'Dataset kaggle "'+ df +'" inesistente. Se esistente accertarsi di aver accettato le condizioni della competizione.'
     return res_kaggle.print_res()

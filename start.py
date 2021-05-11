@@ -3,16 +3,14 @@
 from functions.openml_benchmark import openml_benchmark
 from functions.kaggle_benchmark import kaggle_benchmark
 from functions.test import test
-import sys
 import pandas as pd
-import argparse
 import os
-from termcolor import colored
 
 
 import dash
 import dash_core_components as dcc
 import dash_html_components as html
+from dash.exceptions import PreventUpdate
 from dash.dependencies import Input, Output, State
 import dash_bootstrap_components as dbc
 import plotly.graph_objects as go
@@ -147,7 +145,7 @@ def start():
                     ], style={"width": "auto"},
                 ),
                 html.Hr(),
-                html.Div(id='res-bench-openml')
+                dbc.Spinner(children=[html.Div(id='res-bench-openml')],size="lg", color="primary", type="border", fullscreen=True)
             ])
 
     kagglebenchmark = html.Div([
@@ -176,7 +174,7 @@ def start():
                 ], style={"width": "auto"}
             ),
             html.Hr(),
-            html.Div(id='res-bench-kaggle')
+            dbc.Spinner(children=[html.Div(id='res-bench-kaggle')],size="lg", color="primary", type="border", fullscreen=True)
     ])
 
     testbenchmark = html.Div([
@@ -216,7 +214,7 @@ def start():
                 ], style={"width": "auto"},
             ),
         html.Hr(),
-        html.Div(id='res-bench-test')
+        dbc.Spinner(children=[html.Div(id='res-bench-test')],size="lg", color="primary", type="border", fullscreen=True)
     ])
 
     pastresultopenml = html.Div([
@@ -224,7 +222,7 @@ def start():
             placeholder='Filtra un BenchMark per Data',
         ),
         html.Hr(),
-        html.Div(id='result-past-bench-openml')
+        dbc.Spinner(children=[html.Div(id='result-past-bench-openml')],size="lg", color="primary", type="border", fullscreen=False) 
     ])
 
     pastresultkaggle = html.Div([
@@ -232,7 +230,7 @@ def start():
             placeholder='Filtra un BenchMark per Data',
         ),
         html.Hr(),
-        html.Div(id='result-past-bench-kaggle')
+        dbc.Spinner(children=[html.Div(id='result-past-bench-kaggle')],size="lg", color="primary", type="border", fullscreen=False) 
     ])
 
 
@@ -271,32 +269,33 @@ def start():
 
     
     @app.callback(
-        Output('res-bench-openml', 'children'),
-        Input('submit-openml', 'n_clicks'),
+        [Output('res-bench-openml', 'children')],
+        [Input('submit-openml', 'n_clicks'), Input('res-bench-openml', 'disabled')],
         State('nmore', 'value'), State('ndf', 'value'))
-    def start_openml(n_clicks, nmore, ndf):
+    def start_openml(n_clicks, state_button, nmore, ndf):
+        print(state_button)
         if nmore is not None and ndf is not None:
             res = openml_benchmark(ndf, nmore)
-            return print_table_graphs(res)
-            #print_table_graphs_openml(dfs[:2], dfs[2:])
-        return 'In attesa di un comando'
+            return [print_table_graphs(res)]
+        else:
+            raise PreventUpdate
 
     @app.callback(
-        Output('res-bench-kaggle', 'children'),
-        Input('submit-kaggle', 'n_clicks'),
-        State('kaggledataset', 'value'))
+        [Output('res-bench-kaggle', 'children')],
+        [Input('submit-kaggle', 'n_clicks')],
+        [State('kaggledataset', 'value')])
     def start_kaggle(n_clicks, kaggledataset):
         if kaggledataset is not None:
             res = kaggle_benchmark(kaggledataset)
-            return print_table_graphs(res)
+            return [html.P(res, style={'color':'red'})] if isinstance(res, str) else [print_table_graphs(res)]
         else:
-            return 'In attesa di un comando'
+            raise PreventUpdate
 
 
     @app.callback(
-        Output('res-bench-test', 'children'),
-        Input('submit-test', 'n_clicks'),
-        State('dfid', 'value'), State('algorithms', 'value'))
+        [Output('res-bench-test', 'children')],
+        [Input('submit-test', 'n_clicks')],
+        [State('dfid', 'value'), State('algorithms', 'value')])
     def start_test(n_clicks, dfid, algorithms):
         if dfid is not None and algorithms is not None:
             res = test(dfid, algorithms)
@@ -304,20 +303,23 @@ def start():
             if isinstance(res[1], pd.DataFrame):
                 return dbc.Table.from_dataframe(res[1], striped=True, bordered=True, hover=True)
             else:
-                if(res[0] == 'classification'):
-                    text = 'Accuracy: ' + str(res[1][0]) + '     f1_score: ' + str(res[1][1])
+                if res[0] is None:
+                    return [html.P(res[1], style={'color':'red'})]
                 else:
-                    text = 'RMSE: ' + str(res[1][0]) + '     r2_score: ' + str(res[1][1])
-                return html.Div([
-                    html.P('Risultati del Dataset: ' + str(dfid) + " utilizzando l'algoritmo: " + str(algorithms)),
-                    html.P(text)
-                ])
+                    if(res[0] == 'classification'):
+                        text = 'Accuracy: ' + str(res[1][0]) + '     f1_score: ' + str(res[1][1])
+                    else:
+                        text = 'RMSE: ' + str(res[1][0]) + '     r2_score: ' + str(res[1][1])
+                    return html.Div([
+                        html.P('Risultati del Dataset: ' + str(dfid) + " utilizzando l'algoritmo: " + str(algorithms)),
+                        html.P(text)
+                    ])
         else:
-            return 'In attesa di un comando'
+            raise PreventUpdate
 
 
 #, Output('graph-past-bench-openml', 'children')
-    @app.callback(Output('result-past-bench-openml', 'children'), Input('pastresultopenml', 'value'))
+    @app.callback([Output('result-past-bench-openml', 'children')], [Input('pastresultopenml', 'value')])
     def retpastbenchopenml(timestamp):
         print(timestamp)
         if timestamp is not None:
@@ -330,14 +332,12 @@ def start():
                 else:
                     dfs.append(None)
             print(dfs)
-            return (
-                #print_table_graphs_openml(dfs[:2], dfs[2:])
-                print_table_graphs(dfs)
-            )
-        return 'Nessun dataset selezionato'
+            return [print_table_graphs(dfs)]
+        else:
+            raise PreventUpdate
 
-#
-    @app.callback(Output('result-past-bench-kaggle', 'children'), Input('pastresultkaggle', 'value'))
+
+    @app.callback([Output('result-past-bench-kaggle', 'children')], [Input('pastresultkaggle', 'value')])
     def retpastbenchopenml(timestamp):
         print(timestamp)
         if timestamp is not None:
@@ -349,10 +349,9 @@ def start():
                 else:
                     dfs.append(None)
             #print(dfs)
-            return (
-                print_table_graphs(dfs)
-            )
-        return 'Nessun dataset selezionato'
+            return [print_table_graphs(dfs)]
+        else:
+            raise PreventUpdate
 
     app.run_server(debug=True)
 

@@ -77,4 +77,6 @@ def test(id, algo):
             # ritorno il tipo di task ed il risultato dell'algoritmo -> (acc, f1) o (rmse, r2) oppure il datafrsame con tutti i risultati di ytutti gli algoritmi
             return task, res
     except Exception as e:
-            print(colored('Impossibile scaricare il DataFrame ' + str(id) + ' causa: ' + str(e) + '\n', 'red'))
+        text = 'Impossibile scaricare il DataFrame ' + str(id) + ' causa: ' + str(e)
+        print(colored(text + '\n', 'red'))
+        return None, text

@@ -1,7 +1,6 @@
 import pandas as pd
 from datetime import datetime
 import os
-from utils.usefull_functions import scatter, hist
 from utils.algo_functions import fun_autosklearn, fun_tpot, fun_h2o, fun_autokeras, fun_autogluon
 
 class Result:
@@ -10,7 +9,7 @@ class Result:
         self.res_class_acc = pd.DataFrame({'dataset': [], 'autosklearn-acc': [], 'tpot-acc': [], 'autokeras-acc': [],'h2o-acc': [], 'autogluon-acc': []})
         self.res_class_f1 = pd.DataFrame({'dataset': [], 'autosklearn-f1': [], 'tpot-f1': [], 'autokeras-f1': [], 'h2o-f1': [], 'autogluon-f1': []})
 
-        self.res_reg_reme = pd.DataFrame({'dataset': [], 'autosklearn-rmse': [], 'tpot-rmse': [], 'autokeras-rmse': [], 'h2o-rmse': [],'autogluon-rmse': []})
+        self.res_reg_rmse = pd.DataFrame({'dataset': [], 'autosklearn-rmse': [], 'tpot-rmse': [], 'autokeras-rmse': [], 'h2o-rmse': [],'autogluon-rmse': []})
         self.res_reg_r2 = pd.DataFrame({'dataset': [], 'autosklearn-r2': [], 'tpot-r2': [], 'autokeras-r2': [], 'h2o-r2': [], 'autogluon-r2': []})
 
 
@@ -43,7 +42,6 @@ class Result:
 
             self.res_class_acc.to_csv(pathcla + '/acc.csv', index = False)
             self.res_class_f1.to_csv(pathcla + '/f1.csv', index = False)
-            #hist(self.res_class, self.t + ' - Classificazione')
             
         if(not self.res_reg_rmse.empty and not self.res_reg.empty_r2):
             pathreg = './results/' + self.t + '/' + str(datetime.now()).replace(' ', '-') + 'regression'
@@ -54,7 +52,6 @@ class Result:
 
             self.res_reg_rmse.to_csv(pathreg + '/rmse.csv', index = False)
             self.res_reg_r2.to_csv(pathreg + '/r2.csv', index = False)
-            #hist(self.res_reg, self.t + ' - Regressione')
-        
+
         # Ritorno i dataframe oppure None se sono vuoti, ritorna una una lista di 4 dataframe
         return self.res_class_acc if not self.res_class_acc.empty else None, self.res_class_f1 if not self.res_class_f1.empty else None, self.res_reg_rmse if not self.res_reg_rmse.empty else None, self.res_reg_r2 if not self.res_reg_r2.empty else None
