@@ -27,17 +27,23 @@ def print_table_graphs(dfs):
             tables_graphs.append(dbc.Table.from_dataframe(df, striped=True, bordered=True, hover=True))
             for col in df.columns[1:]:
                 scatters.append(go.Scatter(x=df['dataset'], y=df[col], name=col.split('-')[0], mode='lines+markers'))
+        tables_graphs.append(dbc.Tabs(
+            [
+                dbc.Tab(label="Scatter", tab_id="scatter"),
+                dbc.Tab(label="Histograms", tab_id="histogram"),
+            ],
+            id="tabs",
+            active_tab="scatter",
+        )),
         tables_graphs.append(
-                        dbc.Container([
+                        html.Div(
                             dbc.Row(
                                 [
-                                    dbc.Col(dcc.Graph(figure=go.Figure(data=scatters[:5], layout=go.Layout(xaxis = dict(title = 'Datasets'),
-                        yaxis = dict(title = 'Accuracy')))), width=6),
-                                    dbc.Col(dcc.Graph(figure=go.Figure(data=scatters[5:], layout=go.Layout(xaxis = dict(title = 'Datasets'),
-                        yaxis = dict(title = 'F1_score')))), width=6),
-                                ]
+                                    dbc.Col(dcc.Graph(figure=go.Figure(data=scatters[:5], layout=go.Layout(xaxis = dict(title = 'Datasets'), yaxis = dict(title = 'Accuracy'))))),
+                                    dbc.Col(dcc.Graph(figure=go.Figure(data=scatters[5:], layout=go.Layout(xaxis = dict(title = 'Datasets'), yaxis = dict(title = 'F1_score'))))),
+                                ], align="center"
                             )
-                        ])
+                        )
                     )
     if dfs_reg[0] is not None:
         tables_graphs.append(html.Hr())
@@ -46,17 +52,23 @@ def print_table_graphs(dfs):
             tables_graphs.append(dbc.Table.from_dataframe(df, striped=True, bordered=True, hover=True))
             for col in df.columns[1:]:
                 scatters.append(go.Scatter(x=df['dataset'], y=df[col], name=col.split('-')[0], mode='lines+markers'))
+        tables_graphs.append(dbc.Tabs(
+            [
+                dbc.Tab(label="Scatter", tab_id="scatter"),
+                dbc.Tab(label="Histograms", tab_id="histogram"),
+            ],
+            id="tabs",
+            active_tab="scatter",
+        )),
         tables_graphs.append(
-                        dbc.Container([
+                        html.Div(
                             dbc.Row(
                                 [
-                                    dbc.Col(dcc.Graph(figure=go.Figure(data=scatters[10:15], layout=go.Layout(xaxis = dict(title = 'Datasets'),
-                        yaxis = dict(title = 'RMSE')))), width=6),
-                                    dbc.Col(dcc.Graph(figure=go.Figure(data=scatters[15:], layout=go.Layout(xaxis = dict(title = 'Datasets'),
-                        yaxis = dict(title = 'R2_score')))), width=6),
-                                ]
+                                    dbc.Col(dcc.Graph(figure=go.Figure(data=scatters[10:15], layout=go.Layout(xaxis = dict(title = 'Datasets'), yaxis = dict(title = 'RMSE'))))),
+                                    dbc.Col(dcc.Graph(figure=go.Figure(data=scatters[15:], layout=go.Layout(xaxis = dict(title = 'Datasets'),yaxis = dict(title = 'R2_score'))))),
+                                ], align="center"
                             )
-                        ])
+                        )
                     )
     return tables_graphs
 
@@ -301,7 +313,7 @@ def start():
             res = test(dfid, algorithms)
             print(res)
             if isinstance(res[1], pd.DataFrame):
-                return dbc.Table.from_dataframe(res[1], striped=True, bordered=True, hover=True)
+                return [dbc.Table.from_dataframe(res[1], striped=True, bordered=True, hover=True)]
             else:
                 if res[0] is None:
                     return [html.P(res[1], style={'color':'red'})]
@@ -310,10 +322,10 @@ def start():
                         text = 'Accuracy: ' + str(res[1][0]) + '     f1_score: ' + str(res[1][1])
                     else:
                         text = 'RMSE: ' + str(res[1][0]) + '     r2_score: ' + str(res[1][1])
-                    return html.Div([
+                    return [html.Div([
                         html.P('Risultati del Dataset: ' + str(dfid) + " utilizzando l'algoritmo: " + str(algorithms)),
                         html.P(text)
-                    ])
+                    ])]
         else:
             raise PreventUpdate
 

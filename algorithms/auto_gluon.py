@@ -6,7 +6,7 @@ import numpy as np
 from sklearn.metrics import f1_score
 
 def autogluon(df, task):
-  X, y = return_X_y(df)
+  X, y, ntarget = return_X_y(df)
   
   X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=1)
 
@@ -22,7 +22,15 @@ def autogluon(df, task):
 
   test = X_test
   
-  predictor = TabularPredictor(label=target, path='/home/riccardo/.local/share/Trash').fit(train, time_limit=60, presets=['optimize_for_deployment'])   # TEMPORANEO -> attenzione salvo sul cestino
+  if task == 'classification':
+    if ntarget > 1:
+      pt = 'multiclass'
+    else:
+      pt = 'binary'
+  else:
+    pt = 'regression'
+
+  predictor = TabularPredictor(label=target, path='/home/riccardo/.local/share/Trash', problem_type=pt).fit(train_data=train, time_limit=60, presets=['optimize_for_deployment'])   # TEMPORANEO -> attenzione salvo sul cestino
   results = predictor.fit_summary()
   
   y_pred = predictor.predict(test)

@@ -34,7 +34,7 @@ class Result:
 
     def print_res(self):
         if(not self.res_class_acc.empty and not self.res_class_f1.empty):
-            pathcla = './results/' + self.t + '/' + str(datetime.now()).replace(' ', '-') + 'classification'
+            pathcla = './results/' + self.t + '/' + str(datetime.now()).replace(' ', '-') + '/classification'
             os.makedirs(pathcla)
             print('---------------------------------RISULTATI DI CLASSIFICAZIONE ' + self.t + '---------------------------------')
             print(self.res_class_acc)
@@ -44,7 +44,7 @@ class Result:
             self.res_class_f1.to_csv(pathcla + '/f1.csv', index = False)
             
         if(not self.res_reg_rmse.empty and not self.res_reg.empty_r2):
-            pathreg = './results/' + self.t + '/' + str(datetime.now()).replace(' ', '-') + 'regression'
+            pathreg = './results/' + self.t + '/' + str(datetime.now()).replace(' ', '-') + '/regression'
             os.makedirs(pathreg)
             print('\n\n---------------------------------RISULTATI DI REGRESSIONE ' + self.t +'---------------------------------')
             print(self.res_reg_rmse)

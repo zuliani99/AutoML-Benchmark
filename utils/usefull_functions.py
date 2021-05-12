@@ -16,11 +16,12 @@ def return_X_y(df):
 
         y = df.iloc[:, -n_target].to_frame()
         X = df.iloc[:, :-n_target]
+        return X, y, n_target
     else:
         target = get_target(df[0], df[1])
         y = df[0][target]
         X = df[0].drop([target], axis=1)
-    return X, y
+    return X, y, None
 
 def fill_and_to_category(df):
     for col in df.columns:

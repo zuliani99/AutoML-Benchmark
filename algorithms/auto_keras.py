@@ -37,7 +37,7 @@ def prepare_and_test(X, y, task):
 
 
 def autokeras(df, task):
-  X, y = return_X_y(df)
+  X, y, _ = return_X_y(df)
   if not isinstance(df, pd.DataFrame):
     X = X.apply(LabelEncoder().fit_transform)
   return (prepare_and_test(X, y, task))

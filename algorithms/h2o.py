@@ -42,7 +42,7 @@ def H2O(df, task):
 
   if isinstance(df, pd.DataFrame):
     df = fill_and_to_category(df)
-  X, y = return_X_y(df)
+  X, y, _ = return_X_y(df)
   if not isinstance(df, pd.DataFrame):
     X = X.apply(LabelEncoder().fit_transform)
 
