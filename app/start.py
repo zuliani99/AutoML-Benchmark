@@ -27,14 +27,14 @@ def print_table_graphs(dfs):
             tables_graphs.append(dbc.Table.from_dataframe(df, striped=True, bordered=True, hover=True))
             for col in df.columns[1:]:
                 scatters.append(go.Scatter(x=df['dataset'], y=df[col], name=col.split('-')[0], mode='lines+markers'))
-        tables_graphs.append(dbc.Tabs(
+        '''tables_graphs.append(dbc.Tabs(
             [
                 dbc.Tab(label="Scatter", tab_id="scatter"),
                 dbc.Tab(label="Histograms", tab_id="histogram"),
             ],
             id="tabs",
             active_tab="scatter",
-        )),
+        )),'''
         tables_graphs.append(
                         html.Div(
                             dbc.Row(
@@ -52,14 +52,14 @@ def print_table_graphs(dfs):
             tables_graphs.append(dbc.Table.from_dataframe(df, striped=True, bordered=True, hover=True))
             for col in df.columns[1:]:
                 scatters.append(go.Scatter(x=df['dataset'], y=df[col], name=col.split('-')[0], mode='lines+markers'))
-        tables_graphs.append(dbc.Tabs(
+        '''tables_graphs.append(dbc.Tabs(
             [
                 dbc.Tab(label="Scatter", tab_id="scatter"),
                 dbc.Tab(label="Histograms", tab_id="histogram"),
             ],
             id="tabs",
             active_tab="scatter",
-        )),
+        )),'''
         tables_graphs.append(
                         html.Div(
                             dbc.Row(
