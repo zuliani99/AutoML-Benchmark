@@ -31,7 +31,7 @@ def auto_sklearn(df, task):
       return (accuracy_score(y_test, y_pred), f1_score(y_test, y_pred))
   else:
     automl = autosklearn.regression.AutoSklearnRegressor(
-          time_left_for_this_task=1*60,
+          time_left_for_this_task=3*60,
           per_run_time_limit=30,
           n_jobs=-1
     )

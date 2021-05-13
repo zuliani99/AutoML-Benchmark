@@ -23,8 +23,11 @@ def autogluon(df, task):
   test = X_test
   
   if task == 'classification':
-    if ntarget > 1:
-      pt = 'multiclass'
+    if ntarget is not None:
+      if ntarget > 1:
+        pt = 'multiclass'
+      else:
+        pt = 'binary'
     else:
       pt = 'binary'
   else:
