@@ -16,18 +16,26 @@ import dash_bootstrap_components as dbc
 import plotly.graph_objects as go
 
 
-def print_table_graphs(dfs):
-    dfs_class = dfs[:2]
-    dfs_reg = dfs[2:]
-    tables_graphs=[]
+def retrun_graph_table(dfs, title, scores):
+    ret = []
     scatters = []
-    if dfs_class[0] is not None:
-        tables_graphs.append(html.H3('Risultati Classificazione'))
-        for df in dfs_class:
-            tables_graphs.append(dbc.Table.from_dataframe(df, striped=True, bordered=True, hover=True))
-            for col in df.columns[1:]:
-                scatters.append(go.Scatter(x=df['dataset'], y=df[col], name=col.split('-')[0], mode='lines+markers'))
-        '''tables_graphs.append(dbc.Tabs(
+    ret.append(html.H3(title))
+    for df in dfs:
+        ret.append(dbc.Table.from_dataframe(df, striped=True, bordered=True, hover=True))
+        for col in df.columns[1:]:
+            scatters.append(go.Scatter(x=df['dataset'], y=df[col], name=col.split('-')[0], mode='lines+markers'))
+    ret.append(
+                        html.Div(
+                            dbc.Row(
+                                [
+                                    dbc.Col(dcc.Graph(figure=go.Figure(data=scatters[:5], layout=go.Layout(xaxis = dict(title = 'Datasets'), yaxis = dict(title = scores[0]))))),
+                                    dbc.Col(dcc.Graph(figure=go.Figure(data=scatters[5:], layout=go.Layout(xaxis = dict(title = 'Datasets'), yaxis = dict(title = scores[1]))))),
+                                ], align="center"
+                            )
+                        )
+                    )
+    return ret
+    '''tables_graphs.append(dbc.Tabs(
             [
                 dbc.Tab(label="Scatter", tab_id="scatter"),
                 dbc.Tab(label="Histograms", tab_id="histogram"),
@@ -35,42 +43,34 @@ def print_table_graphs(dfs):
             id="tabs",
             active_tab="scatter",
         )),'''
-        tables_graphs.append(
-                        html.Div(
-                            dbc.Row(
-                                [
-                                    dbc.Col(dcc.Graph(figure=go.Figure(data=scatters[:5], layout=go.Layout(xaxis = dict(title = 'Datasets'), yaxis = dict(title = 'Accuracy'))))),
-                                    dbc.Col(dcc.Graph(figure=go.Figure(data=scatters[5:], layout=go.Layout(xaxis = dict(title = 'Datasets'), yaxis = dict(title = 'F1_score'))))),
-                                ], align="center"
-                            )
-                        )
-                    )
-    if dfs_reg[0] is not None:
-        tables_graphs.append(html.Hr())
-        tables_graphs.append(html.H3('Risultati Regressione'))
-        for df in dfs_reg:
-            tables_graphs.append(dbc.Table.from_dataframe(df, striped=True, bordered=True, hover=True))
-            for col in df.columns[1:]:
-                scatters.append(go.Scatter(x=df['dataset'], y=df[col], name=col.split('-')[0], mode='lines+markers'))
-        '''tables_graphs.append(dbc.Tabs(
-            [
-                dbc.Tab(label="Scatter", tab_id="scatter"),
-                dbc.Tab(label="Histograms", tab_id="histogram"),
-            ],
-            id="tabs",
-            active_tab="scatter",
-        )),'''
-        tables_graphs.append(
-                        html.Div(
-                            dbc.Row(
-                                [
-                                    dbc.Col(dcc.Graph(figure=go.Figure(data=scatters[10:15], layout=go.Layout(xaxis = dict(title = 'Datasets'), yaxis = dict(title = 'RMSE'))))),
-                                    dbc.Col(dcc.Graph(figure=go.Figure(data=scatters[15:], layout=go.Layout(xaxis = dict(title = 'Datasets'),yaxis = dict(title = 'R2_score'))))),
-                                ], align="center"
-                            )
-                        )
-                    )
+
+
+def print_table_graphs(dfs):
+    tables_graphs=[]
+    if dfs[:2][0] is not None:
+        tables_graphs.append(retrun_graph_table(dfs[:2], 'Risultati Classificazione', ['Accuracy', 'F1-score']))
+    if dfs[2:][0] is not None:
+        tables_graphs.append(retrun_graph_table(dfs[2:], 'Risultati Regressione', ['RMSE', 'R2-score']))
     return tables_graphs
+
+
+def get_csv_from_timestamp(timestamp, type):
+    if timestamp is not None:
+        dfs = []
+        scores = [('classification','acc'), ('classification','f1_score'), ('regression','rmse'), ('regression','r2_score')]
+        for score in scores:
+            print('./results/'+ type +'/'+timestamp+'/'+ score[0] +'/'+ score[1] +'.csv')
+            if os.path.exists('./results/'+ type +'/'+timestamp+'/'+ score[0] +'/'+ score[1] +'.csv'):
+                dfs.append(pd.read_csv('./results/'+ type +'/'+timestamp+'/'+ score[0] +'/'+ score[1] +'.csv'))
+            else:
+                dfs.append(None)
+        print(dfs)
+        return print_table_graphs(dfs)
+    else:
+        raise PreventUpdate
+
+
+
 
 
 
@@ -285,7 +285,7 @@ def start():
         [Input('submit-openml', 'n_clicks'), Input('res-bench-openml', 'disabled')],
         State('nmore', 'value'), State('ndf', 'value'))
     def start_openml(n_clicks, state_button, nmore, ndf):
-        print(state_button)
+        #print(state_button)
         if nmore is not None and ndf is not None:
             res = openml_benchmark(ndf, nmore)
             return [print_table_graphs(res)]
@@ -311,7 +311,7 @@ def start():
     def start_test(n_clicks, dfid, algorithms):
         if dfid is not None and algorithms is not None:
             res = test(dfid, algorithms)
-            print(res)
+            #print(res)
             if isinstance(res[1], pd.DataFrame):
                 return [dbc.Table.from_dataframe(res[1], striped=True, bordered=True, hover=True)]
             else:
@@ -330,42 +330,19 @@ def start():
             raise PreventUpdate
 
 
+
 #, Output('graph-past-bench-openml', 'children')
     @app.callback([Output('result-past-bench-openml', 'children')], [Input('pastresultopenml', 'value')])
     def retpastbenchopenml(timestamp):
-        print(timestamp)
-        if timestamp is not None:
-            dfs = []
-            scores = [('classification','acc'), ('classification','f1_score'), ('regression','rmse'), ('regression','r2_score')]
-            for score in scores:
-                print('./results/OpenML/'+timestamp+'/'+ score[0] +'/'+ score[1] +'.csv')
-                if os.path.exists('./results/OpenML/'+timestamp+'/'+ score[0] +'/'+ score[1] +'.csv'):
-                    dfs.append(pd.read_csv('./results/OpenML/'+timestamp+'/'+ score[0] +'/'+ score[1] +'.csv'))
-                else:
-                    dfs.append(None)
-            print(dfs)
-            return [print_table_graphs(dfs)]
-        else:
-            raise PreventUpdate
+        return get_csv_from_timestamp(timestamp, 'OpenML')
 
 
     @app.callback([Output('result-past-bench-kaggle', 'children')], [Input('pastresultkaggle', 'value')])
     def retpastbenchopenml(timestamp):
-        print(timestamp)
-        if timestamp is not None:
-            dfs = []
-            scores = [['classification','acc'], ['classification','f1_score'], ['regression','rmse'], ['regression','r2_score']]
-            for score in scores:
-                if os.path.exists('./results/Kaggle/'+timestamp+'/'+ score[0] +'/'+ score[1] +'.csv'):
-                    dfs.append(pd.read_csv('./results/Kaggle/'+timestamp+'/'+ score[0] +'/'+ score[1] +'.csv'))
-                else:
-                    dfs.append(None)
-            #print(dfs)
-            return [print_table_graphs(dfs)]
-        else:
-            raise PreventUpdate
+        return get_csv_from_timestamp(timestamp, 'Kaggle')
+    '''host='0.0.0.0', port=8050, '''
 
-    app.run_server(host='0.0.0.0', port=8050, debug=True)
+    app.run_server(debug=True)
 
 if __name__ == '__main__':
     start()

@@ -41,9 +41,9 @@ class Result:
             print(self.res_class_f1)
 
             self.res_class_acc.to_csv(pathcla + '/acc.csv', index = False)
-            self.res_class_f1.to_csv(pathcla + '/f1.csv', index = False)
+            self.res_class_f1.to_csv(pathcla + '/f1_score.csv', index = False)
             
-        if(not self.res_reg_rmse.empty and not self.res_reg.empty_r2):
+        if(not self.res_reg_rmse.empty and not self.res_reg_r2.empty):
             pathreg = './results/' + self.t + '/' + str(datetime.now()).replace(' ', '-') + '/regression'
             os.makedirs(pathreg)
             print('\n\n---------------------------------RISULTATI DI REGRESSIONE ' + self.t +'---------------------------------')
@@ -51,7 +51,7 @@ class Result:
             print(self.res_reg_r2)
 
             self.res_reg_rmse.to_csv(pathreg + '/rmse.csv', index = False)
-            self.res_reg_r2.to_csv(pathreg + '/r2.csv', index = False)
+            self.res_reg_r2.to_csv(pathreg + '/r2_score.csv', index = False)
 
         # Ritorno i dataframe oppure None se sono vuoti, ritorna una una lista di 4 dataframe
         return self.res_class_acc if not self.res_class_acc.empty else None, self.res_class_f1 if not self.res_class_f1.empty else None, self.res_reg_rmse if not self.res_reg_rmse.empty else None, self.res_reg_r2 if not self.res_reg_r2.empty else None

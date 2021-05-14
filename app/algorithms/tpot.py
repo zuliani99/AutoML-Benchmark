@@ -25,7 +25,7 @@ def TPOT(df, task):
     y_test = le.fit_transform(y_test)
     y_pred = le.fit_transform(model.predict(X_test))
 
-    if len(np.unique(y_test)) > 2:
+    if len(np.unique(y)) > 2:
       return (accuracy_score(y_test, y_pred), f1_score(y_test, y_pred, average='weighted'))
     else:
       return (accuracy_score(y_test, y_pred), f1_score(y_test, y_pred))

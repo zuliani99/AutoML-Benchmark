@@ -1,9 +1,9 @@
 from autogluon.tabular import TabularDataset, TabularPredictor
 from sklearn.model_selection import train_test_split
 from utils.usefull_functions import return_X_y
+from sklearn.metrics import f1_score
 import pandas as pd
 import numpy as np
-from sklearn.metrics import f1_score
 
 def autogluon(df, task):
   X, y, ntarget = return_X_y(df)
@@ -23,13 +23,12 @@ def autogluon(df, task):
   test = X_test
   
   if task == 'classification':
-    if ntarget is not None:
-      if ntarget > 1:
-        pt = 'multiclass'
-      else:
-        pt = 'binary'
+    if len(y[y.columns[0]].unique()) > 2:
+      pt = 'multiclass'
+      f1 = lambda y_test, y_pred : f1_score(y_test, y_pred, average='weighted')
     else:
       pt = 'binary'
+      f1 = lambda y_test, y_pred : f1_score(y_test, y_pred)
   else:
     pt = 'regression'
 
@@ -49,8 +48,8 @@ def autogluon(df, task):
       f1 = f1_score(y_test, y_pred)
     return (res['accuracy'], f1)'''
     print(res)
-    return (res['accuracy'], res['classification_report']['weighted avg']['f1-score'])
+    return (res['accuracy'], f1(y_test, y_pred))
   else:
     print(res)
-    return (res['root_mean_squared_error'], res['r2_score'])
+    return (res['root_mean_squared_error'], res['r2'])
 

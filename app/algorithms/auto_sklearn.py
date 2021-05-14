@@ -25,7 +25,7 @@ def auto_sklearn(df, task):
     )
     automl.fit(X_train, y_train)
     y_pred = automl.predict(X_test)
-    if len(np.unique(y_test)) > 2:
+    if len(np.unique(y)) > 2:
       return (accuracy_score(y_test, y_pred), f1_score(y_test, y_pred, average='weighted'))
     else:
       return (accuracy_score(y_test, y_pred), f1_score(y_test, y_pred))
