@@ -7,7 +7,6 @@ First of all download the full package or clone it where ever you want. Then all
 ```bash
 sudo apt install install python3-pip
 sudo apt install install default-jre
-sudo apt install install python3-tk
 ```
 
 To install all dependencies run 
