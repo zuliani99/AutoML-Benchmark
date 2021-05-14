@@ -47,9 +47,9 @@ def retrun_graph_table(dfs, title, scores):
 
 def print_table_graphs(dfs):
     tables_graphs=[]
-    if dfs[:2][0] is not None:
+    if dfs[0] is not None:
         tables_graphs.append(retrun_graph_table(dfs[:2], 'Risultati Classificazione', ['Accuracy', 'F1-score']))
-    if dfs[2:][0] is not None:
+    if dfs[2] is not None:
         tables_graphs.append(retrun_graph_table(dfs[2:], 'Risultati Regressione', ['RMSE', 'R2-score']))
     return tables_graphs
 

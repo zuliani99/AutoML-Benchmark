@@ -2,7 +2,7 @@ import pandas as pd
 import numpy as np
 import autokeras as ak
 from sklearn.model_selection import train_test_split
-#from utils.usefull_functions import return_X_y, fill_and_to_category
+from utils.usefull_functions import return_X_y
 from sklearn.metrics import accuracy_score, mean_squared_error, f1_score, r2_score
 from sklearn.preprocessing import LabelEncoder 
 
