@@ -65,7 +65,7 @@ def get_store_and_tables(dfs):
     return store_dict_class, store_dict_reg, tables[0], tables[1]
 
 
-def get_store_past_bech_openml_function(timestamp, type):
+def get_store_past_bech_function(timestamp, type):
     if timestamp is not None:
         dfs = []
         scores = [('classification','acc'), ('classification','f1_score'), ('regression','rmse'), ('regression','r2_score')]
@@ -82,7 +82,8 @@ def get_store_past_bech_openml_function(timestamp, type):
 
 
 
-def render_tab_content_past_bench_openml(active_tab, data, type):
+def render_tab_content(active_tab, data, type): #pathname
+    #render = {'openml': None, 'kaggle': None, 'results-openml': None, 'results-kaggle': None}
     if active_tab and data is not None:
         if active_tab == "scatter":
             return [html.Div(
@@ -93,7 +94,7 @@ def render_tab_content_past_bench_openml(active_tab, data, type):
                                 ], align="center"
                             )
                         )]
-        elif active_tab == "histogram":
+        else: #active_tab == "histogram":
             print(data['histo_'+type[0]])
             print(data['histo_'+type[1]])
             return [html.Div(
@@ -104,6 +105,8 @@ def render_tab_content_past_bench_openml(active_tab, data, type):
                                 ], align="center"
                             )
                         )]
+        #render[pathname] = ret
+        #return render
     return "No tab selected"
 
 
@@ -191,7 +194,13 @@ def start():
                     ], style={"width": "auto"},
                 ),
                 html.Hr(),
-                dbc.Spinner(children=[html.Div(id='res-bench-openml')],size="lg", color="primary", type="border", fullscreen=True)
+                #dbc.Spinner(children=[
+                    #html.Div(id='res-bench-openml')
+                html.Div(id='res-bench-openml-table-class'),
+                html.Div(id='res-bench-openml-graph-class'),
+                html.Div(id='res-bench-openml-table-reg'),
+                html.Div(id='res-bench-openml-graph-reg')
+                #],size="lg", color="primary", type="border", fullscreen=True)
             ])
 
     kagglebenchmark = html.Div([
@@ -220,7 +229,13 @@ def start():
                 ], style={"width": "auto"}
             ),
             html.Hr(),
-            dbc.Spinner(children=[html.Div(id='res-bench-kaggle')],size="lg", color="primary", type="border", fullscreen=True)
+            dbc.Spinner(children=[
+                #html.Div(id='res-bench-kaggle')
+                html.Div(id='res-bench-kaggle-table-class'),
+                html.Div(id='res-bench-kaggle-graph-class'),
+                html.Div(id='res-bench-kaggle-table-reg'),
+                html.Div(id='res-bench-kaggle-graph-reg')
+            ],size="lg", color="primary", type="border", fullscreen=True)
     ])
 
     testbenchmark = html.Div([
@@ -276,11 +291,7 @@ def start():
             html.Div(id='result-past-bench-openml-graph-reg')
         ],size="lg", color="primary", type="border", fullscreen=False) 
     ])
-    
-    '''html.Div(id='result-past-bench-openml-table-class'),
-        html.Div(id='result-past-bench-openml-graph-class'),
-        html.Div(id='result-past-bench-openml-table-reg'),
-        html.Div(id='result-past-bench-openml-graph-reg')'''
+
 
     pastresultkaggle = html.Div([
         dbc.Select(id='pastresultkaggle',options=get_lisd_dir('Kaggle'),
@@ -294,7 +305,14 @@ def start():
 
     content = html.Div(id="page-content", style=CONTENT_STYLE)
 
-    app.layout = html.Div([dcc.Location(id="url"), sidebar, dcc.Store(id="store_class"), dcc.Store(id="store_reg"), content])
+    app.layout = html.Div([
+        dcc.Location(id="url"), sidebar,
+        dcc.Store(id="store_class_openml"), dcc.Store(id="store_reg_openml"),
+        dcc.Store(id="store_class_kaggle"), dcc.Store(id="store_reg_kaggle"),
+        dcc.Store(id="store_class_results_openml"), dcc.Store(id="store_reg_results_openml"),
+        dcc.Store(id="store_class_results_kaggle"), dcc.Store(id="store_reg_results_kaggle"),
+        content
+    ])
     app.validation_layout=html.Div([openmlbenchmark, kagglebenchmark, testbenchmark, pastresultopenml, pastresultkaggle])
 
 
@@ -324,29 +342,46 @@ def start():
             ]
         )
 
-    
-    @app.callback(
-        [Output('res-bench-openml', 'children')],
-        [Input('submit-openml', 'n_clicks'), Input('res-bench-openml', 'disabled')],
+
+    #populiamo i due store
+    @app.callback([
+            #[Output('res-bench-openml', 'children')],
+            Output('store_class_openml', 'data'),
+            Output('store_reg_openml', 'data'),
+            Output('res-bench-openml-table-class', 'children'),
+            Output('res-bench-openml-table-reg', 'children')
+        ], [Input('submit-openml', 'n_clicks')],
         State('nmore', 'value'), State('ndf', 'value'))
-    def start_openml(n_clicks, state_button, nmore, ndf):
+    def start_openml(n_clicks, nmore, ndf):
         #print(state_button)
         if nmore is not None and ndf is not None:
             res = openml_benchmark(ndf, nmore)
-            return [print_table_graphs(res)]
+            #return [print_table_graphs(res)]
+            return get_store_and_tables(res)
         else:
             raise PreventUpdate
 
-    @app.callback(
-        [Output('res-bench-kaggle', 'children')],
-        [Input('submit-kaggle', 'n_clicks')],
+
+
+    #populiamo i due store
+    @app.callback([
+            #[Output('res-bench-kaggle', 'children')],
+            Output('store_class_kaggle', 'data'),
+            Output('store_reg_kaggle', 'data'),
+            Output('res-bench-kaggle-table-class', 'children'),
+            Output('res-bench-kaggle-table-reg', 'children')
+        ], [Input('submit-kaggle', 'n_clicks')],
         [State('kaggledataset', 'value')])
     def start_kaggle(n_clicks, kaggledataset):
         if kaggledataset is not None:
             res = kaggle_benchmark(kaggledataset)
-            return [html.P(res, style={'color':'red'})] if isinstance(res, str) else [print_table_graphs(res)]
+            return [html.P(res, style={'color':'red'})] if isinstance(res, str) else get_store_and_tables(res) #controllare la gestione degli errori
         else:
-            raise PreventUpdate
+            raise [None]
+
+
+
+
 
 
     @app.callback(
@@ -376,46 +411,100 @@ def start():
 
 
 
+
+
+
 #qui aggiorno i store di class e reg e stampo inizialmente le tabelle con i relativi risultati
+#OPNEML
     @app.callback([
-        Output('store_class', 'data'),
-        Output('store_reg', 'data'),
+        Output('store_class_results_openml', 'data'),
+        Output('store_reg_results_openml', 'data'),
         Output('result-past-bench-openml-table-class', 'children'),
         Output('result-past-bench-openml-table-reg', 'children')
     ], [Input('pastresultopenml', 'value')])
     def get_store_past_bech_openml(timestamp):
-        return get_store_past_bech_openml_function(timestamp, 'OpenML')
+        return get_store_past_bech_function(timestamp, 'OpenML')
 
-#modfico stra scatter e histogram i risultati di classificazione
+#KAGGLE
     @app.callback([
-        Output('result-past-bench-openml-graph-class', 'children'),
-    ], [Input("tabs", "active_tab"), Input('store_class', 'data')])
-    def render_tab_content_past_bench_openml_class(active_tab, data):
-        if(data['scatter_class_acc'] is not None):
-            return render_tab_content_past_bench_openml(active_tab, data, ('class_acc', 'class_f1'))
+        Output('store_class_results_kaggle', 'data'),
+        Output('store_reg_results_kaggle', 'data'),
+        Output('result-past-bench-kaggle-table-class', 'children'),
+        Output('result-past-bench-kaggle-table-reg', 'children')
+    ], [Input('pastresultkaggle', 'value')])
+    def get_store_past_bech_kaggle(timestamp):
+        return get_store_past_bech_function(timestamp, 'Kaggle')
+
+
+#questo non lo cambio
+#modfico stra scatter e histogram i risultati di classificazione
+    @app.callback([Output('res-bench-openml-graph-class', 'children'),], [Input("tabs", "active_tab"), Input('store_class_openml', 'data'),])
+    def render_tab_content_class(active_tab, store_class_openml):
+        if(store_class_openml['scatter_class_acc'] is not None):
+            return render_tab_content(active_tab, store_class_openml, ('class_acc', 'class_f1'))
         else:
             return [None]
-        #print(data)
-        #return [None]
+
+
+    @app.callback([Output('res-bench-kaggle-graph-class', 'children'),], [Input("tabs", "active_tab"), Input('store_class_kaggle', 'data'),])
+    def render_tab_content_class(active_tab, store_class_kaggle):
+        if(store_class_kaggle['scatter_class_acc'] is not None):
+            return render_tab_content(active_tab, store_class_kaggle, ('class_acc', 'class_f1'))
+        else:
+            return [None]
+
+    @app.callback([Output('result-past-bench-openml-graph-class', 'children'),], [Input("tabs", "active_tab"), Input('store_class_results_openml', 'data'),])
+    def render_tab_content_class(active_tab, store_class_results_openml):
+        if(store_class_results_openml['scatter_class_acc'] is not None):
+            return render_tab_content(active_tab, store_class_results_openml, ('class_acc', 'class_f1'))
+        else:
+            return [None]
+
+    @app.callback([Output('result-past-bench-kaggle-graph-class', 'children'),], [Input("tabs", "active_tab"), Input('store_class_results_kaggle', 'data'),])
+    def render_tab_content_class(active_tab, store_class_results_kaggle):
+        if(store_class_results_kaggle['scatter_class_acc'] is not None):
+            return render_tab_content(active_tab, store_class_results_kaggle, ('class_acc', 'class_f1'))
+        else:
+            return [None]
+
 
 #modfico stra scatter e histogram i risultati di regressione
-    @app.callback([
-        Output('result-past-bench-openml-graph-reg', 'children')
-    ], [Input("tabs", "active_tab"), Input('store_reg', 'data')])
-    def render_tab_content_past_bench_openml_reg(active_tab, data):
-        if(data['scatter_reg_rmse'] is not None):
-            return render_tab_content_past_bench_openml(active_tab, data, ('reg_rmse', 'reg_r2'))
+    @app.callback([Output('res-bench-openml-graph-reg', 'children'),], [Input("tabs", "active_tab"), Input('store_reg_openml', 'data'),])
+    def render_tab_content_reg(active_tab, store_reg_openml):
+        if(store_reg_openml['scatter_reg_rmse'] is not None):
+            return render_tab_content(active_tab, store_reg_openml, ('reg_rmse', 'reg_r2'))
         else:
             return [None]
-        #return [None]
+
+
+    @app.callback([Output('res-bench-kaggle-graph-reg', 'children'),], [Input("tabs", "active_tab"), Input('store_reg_kaggle', 'data'),])
+    def render_tab_content_reg(active_tab, store_reg_kaggle):
+        if(store_reg_kaggle['scatter_reg_rmse'] is not None):
+            return render_tab_content(active_tab, store_reg_kaggle, ('reg_rmse', 'reg_r2'))
+        else:
+            return [None]
+
+
+    @app.callback([Output('result-past-bench-openml-graph-reg', 'children'),], [Input("tabs", "active_tab"), Input('store_reg_results_openml', 'data'),])
+    def render_tab_content_reg(active_tab, store_reg_results_openml):
+        if(store_reg_results_openml['scatter_reg_rmse'] is not None):
+            return render_tab_content(active_tab, store_reg_results_openml, ('reg_rmse', 'reg_r2'))
+        else:
+            return [None]
+
+
+    @app.callback([Output('result-past-bench-kaggle-graph-reg', 'children'),], [Input("tabs", "active_tab"), Input('store_reg_results_kaggle', 'data'),])
+    def render_tab_content_reg(active_tab, store_reg_results_kaggle):
+        if(store_reg_results_kaggle['scatter_reg_rmse'] is not None):
+            return render_tab_content(active_tab, store_reg_results_kaggle, ('reg_rmse', 'reg_r2'))
+        else:
+            return [None]
 
 
 
-    @app.callback([Output('result-past-bench-kaggle', 'children')], [Input('pastresultkaggle', 'value')])
-    def retpastbenchopenml(timestamp):
-        return get_csv_from_timestamp(timestamp, 'Kaggle')
+
+
     '''host='0.0.0.0', port=8050, '''
-
     app.run_server(debug=True)
 
 if __name__ == '__main__':
