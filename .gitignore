@@ -1,5 +1,3 @@
 .vscode
-*app/algorithms/__pycache__/
-*app/functions/__pycache__/
-*app/utils/__pycache__/
 *.csv
+*.pyc
