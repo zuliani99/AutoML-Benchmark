@@ -3,10 +3,9 @@ Benchmark for some usual automated machine learning, such as: [auto-sklearn](htt
 
 
 ## Installation
-First of all download the full package or clone it where ever you want. Then all you have to do is to run these lines of code in your bash window: 
+First of all download the full package or clone it where ever you want. Then all you have to do is to run thid line of code in your bash window: 
 ```bash
 sudo apt install install python3-pip
-sudo apt install install default-jre
 ```
 
 To install all dependencies run 

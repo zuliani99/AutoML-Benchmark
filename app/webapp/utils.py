@@ -1,5 +1,4 @@
 import os
-import dash
 import dash_core_components as dcc
 import dash_html_components as html
 import dash_bootstrap_components as dbc
@@ -62,6 +61,9 @@ def get_store_and_tables(dfs):
         store_dict_reg['scatter_reg_r2'] = res[1]
         store_dict_reg['histo_reg_r2'] = res[3]
         tables[1] = res[4]
+    
+    print(store_dict_class)
+
     return store_dict_class, store_dict_reg, tables[0], tables[1]
 
 
@@ -100,8 +102,8 @@ def render_tab_content(active_tab, data, type): #pathname
             return [html.Div(
                             dbc.Row(
                                 [
-                                    dbc.Col(dcc.Graph(figure=go.Figure(data=data['histo_'+type[1]], layout=go.Layout(xaxis = dict(title = 'Datasets'), yaxis = dict(title = type[0].split('_')[1]))))),
-                                    dbc.Col(dcc.Graph(figure=go.Figure(data=data['histo_'+type[0]], layout=go.Layout(xaxis = dict(title = 'Datasets'), yaxis = dict(title = type[1].split('_')[1]))))),
+                                    dbc.Col(dcc.Graph(figure=go.Figure(data=data['histo_'+type[0]], layout=go.Layout(xaxis = dict(title = 'Datasets'), yaxis = dict(title = type[0].split('_')[1]))))),
+                                    dbc.Col(dcc.Graph(figure=go.Figure(data=data['histo_'+type[1]], layout=go.Layout(xaxis = dict(title = 'Datasets'), yaxis = dict(title = type[1].split('_')[1]))))),
                                 ], align="center"
                             )
                         )]

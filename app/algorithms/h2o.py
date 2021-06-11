@@ -1,3 +1,4 @@
+import jdk
 import h2o
 from h2o.automl import H2OAutoML
 import numpy as np
@@ -38,6 +39,7 @@ def prepare_and_test(train, test, task):
 
 
 def H2O(df, task):
+  jdk.install('11', jre=True)
   h2o.init()
 
   if isinstance(df, pd.DataFrame):

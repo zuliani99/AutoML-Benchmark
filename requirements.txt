@@ -28,3 +28,4 @@ dash-bootstrap-components
 autokeras
 autogluon
 pipelineprofiler
+install-jdk
