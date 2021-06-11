@@ -29,6 +29,8 @@ def prepare_and_test(train, test, task):
   pred = h2o.as_list(pred)['predict']
   target = h2o.as_list(test[y])
 
+  h2o.shutdown()
+
   if task == 'classification':
     if len(np.unique(target)) > 2:
       return (accuracy_score(target, pred), f1_score(target, pred, average='weighted'))

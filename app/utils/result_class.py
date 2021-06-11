@@ -3,6 +3,7 @@ from datetime import datetime
 import os
 from utils.algo_functions import fun_autosklearn, fun_tpot, fun_h2o, fun_autokeras, fun_autogluon
 
+
 class Result:
     def __init__(self, t):
         self.t = t
@@ -16,8 +17,8 @@ class Result:
     def run_benchmark(self, df, task, df_name):
         res_as = fun_autosklearn(df, task)
         res_t = fun_tpot(df, task)
-        res_h = fun_autokeras(df, task)
-        res_ak = fun_h2o(df, task)
+        res_ak = fun_autokeras(df, task)
+        res_h = fun_h2o(df, task)
         res_ag = fun_autogluon(df, task)
 
         if(task == 'classification'):
@@ -33,8 +34,9 @@ class Result:
 
 
     def print_res(self):
+        date = datetime.now()
         if(not self.res_class_acc.empty and not self.res_class_f1.empty):
-            pathcla = './results/' + self.t + '/' + str(datetime.now()).replace(' ', '-') + '/classification'
+            pathcla = './results/' + self.t + '/' + str(date).replace(' ', '-') + '/classification'
             os.makedirs(pathcla)
             print('---------------------------------RISULTATI DI CLASSIFICAZIONE ' + self.t + '---------------------------------')
             print(self.res_class_acc)
@@ -44,7 +46,7 @@ class Result:
             self.res_class_f1.to_csv(pathcla + '/f1_score.csv', index = False)
             
         if(not self.res_reg_rmse.empty and not self.res_reg_r2.empty):
-            pathreg = './results/' + self.t + '/' + str(datetime.now()).replace(' ', '-') + '/regression'
+            pathreg = './results/' + self.t + '/' + str(date).replace(' ', '-') + '/regression'
             os.makedirs(pathreg)
             print('\n\n---------------------------------RISULTATI DI REGRESSIONE ' + self.t +'---------------------------------')
             print(self.res_reg_rmse)

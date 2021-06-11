@@ -67,13 +67,16 @@ openmlbenchmark = html.Div([
                     ], style={"width": "auto"},
                 ),
                 html.Hr(),
-                #dbc.Spinner(children=[
-                    #html.Div(id='res-bench-openml')
-                html.Div(id='res-bench-openml-table-class'),
-                html.Div(id='res-bench-openml-graph-class'),
-                html.Div(id='res-bench-openml-table-reg'),
-                html.Div(id='res-bench-openml-graph-reg')
-                #],size="lg", color="primary", type="border", fullscreen=True)
+                dbc.Spinner(children=[
+                    html.Div(id='res-bench-openml-table-class'),
+                    dbc.Spinner(children=[
+                        html.Div(id='res-bench-openml-graph-class'),
+                    ],size="lg", color="primary", type="border", fullscreen=False),
+                    html.Div(id='res-bench-openml-table-reg'),
+                    dbc.Spinner(children=[
+                        html.Div(id='res-bench-openml-graph-reg'),
+                    ],size="lg", color="primary", type="border", fullscreen=False),
+                ],size="lg", color="primary", type="border", fullscreen=True)
             ])
 
 kagglebenchmark = html.Div([
@@ -103,11 +106,14 @@ kagglebenchmark = html.Div([
             ),
             html.Hr(),
             dbc.Spinner(children=[
-                #html.Div(id='res-bench-kaggle')
                 html.Div(id='res-bench-kaggle-table-class'),
-                html.Div(id='res-bench-kaggle-graph-class'),
+                dbc.Spinner(children=[
+                    html.Div(id='res-bench-kaggle-graph-class'),
+                ],size="lg", color="primary", type="border", fullscreen=False),
                 html.Div(id='res-bench-kaggle-table-reg'),
-                html.Div(id='res-bench-kaggle-graph-reg')
+                dbc.Spinner(children=[
+                    html.Div(id='res-bench-kaggle-graph-reg'),
+                ],size="lg", color="primary", type="border", fullscreen=False),
             ],size="lg", color="primary", type="border", fullscreen=True)
     ])
 
@@ -159,10 +165,16 @@ pastresultopenml = html.Div([
         
         dbc.Spinner(children=[
             html.Div(id='result-past-bench-openml-table-class'),
+        ],size="lg", color="primary", type="border", fullscreen=False),
+        dbc.Spinner(children=[
             html.Div(id='result-past-bench-openml-graph-class'),
-            html.Div(id='result-past-bench-openml-table-reg'),
-            html.Div(id='result-past-bench-openml-graph-reg')
-        ],size="lg", color="primary", type="border", fullscreen=False) 
+        ],size="lg", color="primary", type="border", fullscreen=False),
+        dbc.Spinner(children=[
+        html.Div(id='result-past-bench-openml-table-reg'),
+        ],size="lg", color="primary", type="border", fullscreen=False),
+        dbc.Spinner(children=[
+            html.Div(id='result-past-bench-openml-graph-reg'),
+        ],size="lg", color="primary", type="border", fullscreen=False),
     ])
 
 
@@ -171,11 +183,17 @@ pastresultkaggle = html.Div([
             placeholder='Filtra un BenchMark per Data',
         ),
         html.Hr(),
-        dbc.Spinner(dbc.Spinner(children=[
+        dbc.Spinner(children=[
             html.Div(id='result-past-bench-kaggle-table-class'),
+        ],size="lg", color="primary", type="border", fullscreen=False),
+        dbc.Spinner(children=[
             html.Div(id='result-past-bench-kaggle-graph-class'),
-            html.Div(id='result-past-bench-kaggle-table-reg'),
-            html.Div(id='result-past-bench-kaggle-graph-reg')
-        ],size="lg", color="primary", type="border", fullscreen=False))
+        ],size="lg", color="primary", type="border", fullscreen=False),
+        dbc.Spinner(children=[
+        html.Div(id='result-past-bench-kaggle-table-reg'),
+        ],size="lg", color="primary", type="border", fullscreen=False),
+        dbc.Spinner(children=[
+            html.Div(id='result-past-bench-kaggle-graph-reg'),
+        ],size="lg", color="primary", type="border", fullscreen=False),
     ]) 
     

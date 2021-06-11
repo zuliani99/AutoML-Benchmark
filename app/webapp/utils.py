@@ -6,6 +6,7 @@ import plotly.graph_objects as go
 from dash.exceptions import PreventUpdate
 import pandas as pd
 
+
 def get_lisd_dir(test):
     lis = (os.listdir('./results/'+test))
     dropdown = []
@@ -32,7 +33,7 @@ def retrun_graph_table(dfs, title, type):
                 dbc.Tab(label="Scatter", tab_id="scatter"),
                 dbc.Tab(label="Histograms", tab_id="histogram"),
             ],
-            id="tabs",
+            id="tabs-"+type,
             active_tab="scatter",
         )
     )

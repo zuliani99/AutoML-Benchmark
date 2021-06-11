@@ -91,39 +91,39 @@ def start():
 
 
 #modfico stra scatter e histogram i risultati di classificazione
-    @app.callback([Output('res-bench-openml-graph-class', 'children')], [Input("tabs", "active_tab"), Input('store_class_openml', 'data')])
+    @app.callback([Output('res-bench-openml-graph-class', 'children')], [Input("tabs-class", "active_tab"), Input('store_class_openml', 'data')])
     def render_tab_content_class(active_tab, store_class_openml):
         return render_tab_content_function(active_tab, store_class_openml, ('class_acc', 'class_f1'))
 
-    @app.callback([Output('res-bench-kaggle-graph-class', 'children')], [Input("tabs", "active_tab"), Input('store_class_kaggle', 'data')])
+    @app.callback([Output('res-bench-kaggle-graph-class', 'children')], [Input("tabs-class", "active_tab"), Input('store_class_kaggle', 'data')])
     def render_tab_content_class(active_tab, store_class_kaggle):
         return render_tab_content_function(active_tab, store_class_kaggle, ('class_acc', 'class_f1'))
 
-    @app.callback([Output('result-past-bench-openml-graph-class', 'children')], [Input("tabs", "active_tab"), Input('store_class_results_openml', 'data')])
+    @app.callback([Output('result-past-bench-openml-graph-class', 'children')], [Input("tabs-class", "active_tab"), Input('store_class_results_openml', 'data')])
     def render_tab_content_class(active_tab, store_class_results_openml):
         return render_tab_content_function(active_tab, store_class_results_openml, ('class_acc', 'class_f1'))
 
-    @app.callback([Output('result-past-bench-kaggle-graph-class', 'children')], [Input("tabs", "active_tab"), Input('store_class_results_kaggle', 'data')])
+    @app.callback([Output('result-past-bench-kaggle-graph-class', 'children')], [Input("tabs-class", "active_tab"), Input('store_class_results_kaggle', 'data')])
     def render_tab_content_class(active_tab, store_class_results_kaggle):
         return render_tab_content_function(active_tab, store_class_results_kaggle, ('class_acc', 'class_f1'))
 
 
 #modfico stra scatter e histogram i risultati di regressione
-    @app.callback([Output('res-bench-openml-graph-reg', 'children')], [Input("tabs", "active_tab"), Input('store_reg_openml', 'data')])
+    @app.callback([Output('res-bench-openml-graph-reg', 'children')], [Input("tabs-reg", "active_tab"), Input('store_reg_openml', 'data')])
     def render_tab_content_reg(active_tab, store_reg_openml):
         return render_tab_content_function(active_tab, store_reg_openml, ('reg_rmse', 'reg_r2'))
 
 
-    @app.callback([Output('res-bench-kaggle-graph-reg', 'children')], [Input("tabs", "active_tab"), Input('store_reg_kaggle', 'data')])
+    @app.callback([Output('res-bench-kaggle-graph-reg', 'children')], [Input("tabs-reg", "active_tab"), Input('store_reg_kaggle', 'data')])
     def render_tab_content_reg(active_tab, store_reg_kaggle):
         return render_tab_content_function(active_tab, store_reg_kaggle, ('reg_rmse', 'reg_r2'))
 
-    @app.callback([Output('result-past-bench-openml-graph-reg', 'children')], [Input("tabs", "active_tab"), Input('store_reg_results_openml', 'data')])
+    @app.callback([Output('result-past-bench-openml-graph-reg', 'children')], [Input("tabs-reg", "active_tab"), Input('store_reg_results_openml', 'data')])
     def render_tab_content_reg(active_tab, store_reg_results_openml):
         return render_tab_content_function(active_tab, store_reg_results_openml, ('reg_rmse', 'reg_r2'))
 
 
-    @app.callback([Output('result-past-bench-kaggle-graph-reg', 'children')], [Input("tabs", "active_tab"), Input('store_reg_results_kaggle', 'data')])
+    @app.callback([Output('result-past-bench-kaggle-graph-reg', 'children')], [Input("tabs-reg", "active_tab"), Input('store_reg_results_kaggle', 'data')])
     def render_tab_content_reg(active_tab, store_reg_results_kaggle):
         return render_tab_content_function(active_tab, store_reg_results_kaggle, ('reg_rmse', 'reg_r2'))
 
