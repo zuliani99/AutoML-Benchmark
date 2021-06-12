@@ -4,7 +4,12 @@ from zipfile import ZipFile
 from utils.result_class import Result
 import os
 
-datasets = [('titanic', 'classification'), ('tabular-playground-series-mar-2021', 'classification')]
+datasets = [
+    ('titanic', 'classification'),
+    ('tabular-playground-series-mar-2021', 'classification'),
+    ('mercedes-benz-greener-manufacturing', 'regression'),
+    ('restaurant-revenue-prediction', 'regression')
+]
 
 def kaggle_benchmark(list_df):
     api = KaggleApi()
@@ -21,14 +26,36 @@ def kaggle_benchmark(list_df):
 
             api.competition_download_files(df, path=path)
 
+            #estraggo le cartelle di train test e submission
             zf = ZipFile(path + '/' + df + '.zip')
-            zf.extractall(path) #save files in selected folder
+            zf.extractall(path) 
             zf.close()
 
             os.remove(path + '/' + df + '.zip')
 
+            file_extracted = (os.listdir(path))
+            print(file_extracted)
+
+            for file in file_extracted:
+                #print(file, is_zipfile(file))
+                splitted = file.split('.')
+                print(splitted)
+                if(splitted[len(splitted)-1] == 'zip'):
+                    print('sono dentro')
+                    zf = ZipFile(path + '/' + file)
+                    zf.extractall(path) 
+                    os.remove(path  + '/' + file)
+            zf.close()
+
             train = pd.read_csv(path + '/train.csv')
             test = pd.read_csv(path + '/test.csv')
+
+            leaderboard = api.competition_view_leaderboard(df)
+            '''
+            ritorna la leaderboard da capire come la ritorna
+            devo inserire il migliore nella tabella risultante così posso vedere come sono andati gli altri algoritmi
+            '''
+            print(leaderboard)
 
             res_kaggle.run_benchmark((train, test), task, df)
         else:

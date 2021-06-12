@@ -7,6 +7,10 @@ import dash_html_components as html
 from dash.dependencies import Input, Output, State
 import dash_bootstrap_components as dbc
 
+import os
+os.environ['KAGGLE_USERNAME'] = "zullle" # username from the json file
+os.environ['KAGGLE_KEY'] = "24df22da033e9547780e278280a6ae2b" # key from the json file
+
 from webapp.frontend import sidebar, openmlbenchmark, kagglebenchmark, testbenchmark, pastresultopenml, pastresultkaggle
 from webapp.backend import render_page_content_function, start_openml_function, start_kaggle_function, start_test_function, render_tab_content_function
 from webapp.utils import get_store_past_bech_function 
@@ -134,3 +138,4 @@ def start():
 
 if __name__ == '__main__':
     start()
+    

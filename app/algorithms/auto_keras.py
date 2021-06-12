@@ -37,6 +37,7 @@ def prepare_and_test(X, y, task):
 
 
 def autokeras(df, task):
+  pd.options.mode.chained_assignment = None
   X, y, _ = return_X_y(df)
   if not isinstance(df, pd.DataFrame):
     X = X.apply(LabelEncoder().fit_transform)

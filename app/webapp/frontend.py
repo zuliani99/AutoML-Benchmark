@@ -91,7 +91,9 @@ kagglebenchmark = html.Div([
                                     id='kaggledataset',
                                     options=[
                                         {'label': 'Titanic', 'value': 'titanic'},
-                                        {'label': 'altro', 'value': 'altro'}
+                                        {'label': 'Tabular Playground', 'value': 'tabular-playground-series-mar-2021'},
+                                        {'label': 'Mercedes Greener Manufactoring', 'value': 'mercedes-benz-greener-manufacturing'},
+                                        {'label': 'Restaurant Revenue Prediction', 'value': 'restaurant-revenue-prediction'}
                                     ],
                                     placeholder="Seleziona Dataframe",
                                     value=None,

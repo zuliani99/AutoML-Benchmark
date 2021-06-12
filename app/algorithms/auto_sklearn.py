@@ -7,6 +7,7 @@ import numpy as np
 from utils.usefull_functions import return_X_y, fill_and_to_category
 
 def auto_sklearn(df, task):
+  pd.options.mode.chained_assignment = None
   #categorical, binary, nuymerical features
 
   if isinstance(df, pd.DataFrame):

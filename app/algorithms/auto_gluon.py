@@ -3,10 +3,10 @@ from sklearn.model_selection import train_test_split
 from utils.usefull_functions import return_X_y
 from sklearn.metrics import f1_score
 import pandas as pd
-import numpy as np
 
 
 def autogluon(df, task):
+  pd.options.mode.chained_assignment = None
   X, y, ntarget = return_X_y(df)
   
   X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=1)
