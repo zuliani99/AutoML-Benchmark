@@ -1,5 +1,5 @@
 # AutoML-Benchmark
-Benchmark for some usual automated machine learning, such as: [auto-sklearn](https://automl.github.io/auto-sklearn/master/), [auto-keras](https://autokeras.com/), [h20](https://docs.h2o.ai/h2o/latest-stable/h2o-docs/automl.html), [tpot](http://epistasislab.github.io/tpot/) and [autogluon](http://epistasislab.github.io/tpot/)
+Benchmark for some usual automated machine learning, such as: [auto-sklearn](https://automl.github.io/auto-sklearn/master/), [auto-keras](https://autokeras.com/), [h20](https://docs.h2o.ai/h2o/latest-stable/h2o-docs/automl.html), [tpot](http://epistasislab.github.io/tpot/) and [autogluon](http://epistasislab.github.io/tpot/). All visualized via a responsive Dash Web Application.
 
 
 ## Installation
@@ -13,18 +13,12 @@ To install all dependencies run
 make install
 ```
 
-Then you have to sing in [kaggle](https://www.kaggle.com/) or create a new. After this step you have to download you api token by moving into these page *Your Profile* -> *Account* -> *Create New API Token* and download the JSON file.
-And as last command you have to move the API Token into the *.kaggle* folder, you can do this by you own or run this line of command in your bash
-```bash
-mv /home/YOUR_USERNAME/Downloads/kaggle.json /home/YOUR_USERNAME/.kaggle
-```
-
 ## Usage
 To run the app execute the following line of code:
 ```bash
 python3 start.py
 ```
-Open your favourite browser and go to: [http://127.0.0.1:8050/](http://127.0.0.1:8050/). Here you will be albe to interact with the application.
+Open your favourite browser and go to: [http://127.0.0.1:8050/](http://127.0.0.1:8050/). Here you will be albe to interact with the application
 
 There are five types of operations:
 
