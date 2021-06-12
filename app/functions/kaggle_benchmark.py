@@ -34,14 +34,14 @@ def kaggle_benchmark(list_df):
             os.remove(path + '/' + df + '.zip')
 
             file_extracted = (os.listdir(path))
-            print(file_extracted)
+            #print(file_extracted)
 
             for file in file_extracted:
                 #print(file, is_zipfile(file))
                 splitted = file.split('.')
-                print(splitted)
+                #print(splitted)
                 if(splitted[len(splitted)-1] == 'zip'):
-                    print('sono dentro')
+                    #print('sono dentro')
                     zf = ZipFile(path + '/' + file)
                     zf.extractall(path) 
                     os.remove(path  + '/' + file)
