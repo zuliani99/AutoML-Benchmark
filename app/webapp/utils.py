@@ -11,7 +11,8 @@ def get_lisd_dir(test):
     lis = (os.listdir('./results/'+test))
     dropdown = []
     for l in lis:
-        dropdown.append({'label': l, 'value': l})
+        if l != '.gitignore':
+            dropdown.append({'label': l, 'value': l})
     return dropdown
 
 
@@ -45,7 +46,7 @@ def retrun_graph_table(dfs, title, type):
 def get_store_and_tables(dfs):
     store_dict_class = {'scatter_class_acc': None, 'histo_class_acc': None, 'scatter_class_f1': None, 'histo_class_f1': None}
     store_dict_reg = {'scatter_reg_rmse': None, 'histo_reg_rmse': None, 'scatter_reg_r2': None, 'histo_reg_r2': None}
-    tables = [None, None]
+    tables = [[None], [None]]
     if dfs[0] is not None:
         #tables_graphs.append(retrun_graph_table(dfs[:2], 'Risultati Classificazione', ['Accuracy', 'F1-score']))
         res = retrun_graph_table(dfs[:2], 'Risultati Classificazione', 'class')
@@ -54,6 +55,15 @@ def get_store_and_tables(dfs):
         store_dict_class['scatter_class_f1'] = res[1]
         store_dict_class['histo_class_f1'] = res[3]
         tables[0] = res[4]
+    else:
+        tables[0].append(
+            dbc.Tabs(
+                [],
+                id="tabs-class",
+                active_tab="",
+                style={'hidden':'true'}
+            )
+        )
     if dfs[2] is not None:
         #tables_graphs.append(retrun_graph_table(dfs[2:], 'Risultati Regressione', ['RMSE', 'R2-score']))
         res = retrun_graph_table(dfs[2:], 'Risultati Regressione', 'reg')
@@ -62,6 +72,15 @@ def get_store_and_tables(dfs):
         store_dict_reg['scatter_reg_r2'] = res[1]
         store_dict_reg['histo_reg_r2'] = res[3]
         tables[1] = res[4]
+    else:
+        tables[1].append(
+            dbc.Tabs(
+                [],
+                id="tabs-reg",
+                active_tab="",
+                style={'hidden':'true'}
+            )
+        )
     
     print(store_dict_class)
 

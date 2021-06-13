@@ -13,7 +13,7 @@ SIDEBAR_STYLE = {
         "bottom": 0,
         "width": "20rem",
         "padding": "2rem 1rem",
-        "background-color": "#f8f9fa",
+        "backgroundColor": "#f8f9fa",
     }
 
 sidebar = html.Div(
@@ -185,6 +185,7 @@ pastresultkaggle = html.Div([
             placeholder='Filtra un BenchMark per Data',
         ),
         html.Hr(),
+
         dbc.Spinner(children=[
             html.Div(id='result-past-bench-kaggle-table-class'),
         ],size="lg", color="primary", type="border", fullscreen=False),

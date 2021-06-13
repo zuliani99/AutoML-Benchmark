@@ -21,8 +21,8 @@ def start():
     #server = app.server
 
     CONTENT_STYLE = {
-        "margin-left": "22rem",
-        "margin-right": "2rem",
+        "marginLeft": "22rem",
+        "marginRight": "2rem",
         "padding": "2rem 1rem",
     }
 
@@ -134,7 +134,7 @@ def start():
 
 
     '''host='0.0.0.0', port=8050, '''
-    app.run_server(host='0.0.0.0', port=8080, debug=True)
+    app.run_server(debug=True)
 
 if __name__ == '__main__':
     start()
