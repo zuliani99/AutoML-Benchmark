@@ -18,7 +18,7 @@ from webapp.utils import get_store_past_bech_function
 
 def start():
     app = dash.Dash(__name__, external_stylesheets=[dbc.themes.BOOTSTRAP], suppress_callback_exceptions=True)
-    server = app.server
+    #server = app.server
 
     CONTENT_STYLE = {
         "margin-left": "22rem",
@@ -134,7 +134,7 @@ def start():
 
 
     '''host='0.0.0.0', port=8050, '''
-    app.run_server(debug=True)
+    app.run_server(host='0.0.0.0', port=8080, debug=True)
 
 if __name__ == '__main__':
     start()
