@@ -22,7 +22,7 @@ def kaggle_benchmark(list_df):
         if (df, 'classification') in datasets or (df, 'regression') in datasets:
             task = 'classification' if (df, 'classification') in datasets else 'regression'
             print('------------------Dataset name: ' + df + ' - Task: ' + task + '------------------')
-            path = './datasets/kaggle/' + df
+            path = './datasets/Kaggle/' + df
 
             api.competition_download_files(df, path=path)
 

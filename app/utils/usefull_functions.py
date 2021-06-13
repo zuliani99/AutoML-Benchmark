@@ -48,7 +48,7 @@ def get_df_list(datalist, n_df, task):
     list_df = []
     for row in datalist:
         try:
-            if not os.path.exists('./datasets/'+ task +'/' + str(row) + '.csv'):
+            if not os.path.exists('./datasets/OpenML/'+ task +'/' + str(row) + '.csv'):
                 X, y = fetch_openml(data_id=row, as_frame=True, return_X_y=True, cache=True)
                 if y is not None:
                     if not isinstance(y, pd.DataFrame):
@@ -64,7 +64,7 @@ def get_df_list(datalist, n_df, task):
 
                     df['n_target'] = len(y.columns)
 
-                    file_dir = './datasets/'+ task +'/'
+                    file_dir = './datasets/OpenML/'+ task +'/'
 
                     if n_df > 0:
                         print('------------------Dataset ID: ' + str(row) + '------------------')
@@ -85,7 +85,7 @@ def get_df_list(datalist, n_df, task):
                 if n_df > 0:
                     print('------------------Dataset ID: ' + str(row) + '------------------')
                     print('-------------------------Dataset già presente-------------------------\n')
-                    list_df.append('./datasets/'+ task +'/' + str(row) + '.csv')
+                    list_df.append(file_dir + str(row) + '.csv')
                     n_df-=1
 
         except Exception as e:
