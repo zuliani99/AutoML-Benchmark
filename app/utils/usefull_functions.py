@@ -48,6 +48,9 @@ def get_df_list(datalist, n_df, task):
     list_df = []
     for row in datalist:
         try:
+
+            file_dir = './datasets/OpenML/'+ task +'/'
+
             if not os.path.exists('./datasets/OpenML/'+ task +'/' + str(row) + '.csv'):
                 X, y = fetch_openml(data_id=row, as_frame=True, return_X_y=True, cache=True)
                 if y is not None:
@@ -64,7 +67,7 @@ def get_df_list(datalist, n_df, task):
 
                     df['n_target'] = len(y.columns)
 
-                    file_dir = './datasets/OpenML/'+ task +'/'
+                    
 
                     if n_df > 0:
                         print('------------------Dataset ID: ' + str(row) + '------------------')

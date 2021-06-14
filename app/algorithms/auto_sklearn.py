@@ -6,6 +6,10 @@ import pandas as pd
 import numpy as np
 from utils.usefull_functions import return_X_y, fill_and_to_category
 
+def get_stat(automl):
+  automl.sprint_statistics()
+  automl.show_models()
+
 def auto_sklearn(df, task):
   pd.options.mode.chained_assignment = None
   #categorical, binary, nuymerical features
@@ -26,6 +30,9 @@ def auto_sklearn(df, task):
     )
     automl.fit(X_train, y_train)
     y_pred = automl.predict(X_test)
+
+    get_stat(automl) # necessario il salvataggio
+
     if len(np.unique(y)) > 2:
       return (accuracy_score(y_test, y_pred), f1_score(y_test, y_pred, average='weighted'))
     else:
@@ -39,6 +46,8 @@ def auto_sklearn(df, task):
     automl.fit(X_train, y_train)
     y_pred = automl.predict(X_test)
     
+    get_stat(automl) # necessario il salvataggio
+
     return (np.sqrt(mean_squared_error(y_test, y_pred)), r2_score(y_test, y_pred))
 
   
