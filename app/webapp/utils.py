@@ -17,16 +17,16 @@ def get_lisd_dir(test):
 
 
 
-def retrun_graph_table(dfs, title, type):
+def retrun_graph_table(dfs, title, t):
     scatters = []
     histos = []
     table = [html.H3(title)]
     for df in dfs:
         table.append(dbc.Table.from_dataframe(df, striped=True, bordered=True, hover=True))
         for col in df.columns[1:]:
-            #print(type(df['dataset']))
             scatters.append(go.Scatter(x=df['dataset'], y=df[col], name=col.split('-')[0], mode='lines+markers'))
-            histos.append(go.Histogram(x=df['dataset'], y=df[col], name=col.split('-')[0]))
+            histos.append(go.Bar(x=df['dataset'], y=df[col], name=col.split('-')[0]))
+        
 
     table.append(
         dbc.Tabs(
@@ -34,7 +34,7 @@ def retrun_graph_table(dfs, title, type):
                 dbc.Tab(label="Scatter", tab_id="scatter"),
                 dbc.Tab(label="Histograms", tab_id="histogram"),
             ],
-            id="tabs-"+type,
+            id="tabs-"+t,
             active_tab="scatter",
         )
     )
@@ -82,7 +82,7 @@ def get_store_and_tables(dfs):
             )
         )
     
-    print(store_dict_class)
+    #print(store_dict_class)
 
     return store_dict_class, store_dict_reg, tables[0], tables[1]
 
@@ -97,7 +97,7 @@ def get_store_past_bech_function(timestamp, type):
                 dfs.append(pd.read_csv('./results/'+ type +'/'+timestamp+'/'+ score[0] +'/'+ score[1] +'.csv'))
             else:
                 dfs.append(None)
-        print(dfs)
+        #print(dfs)
         return get_store_and_tables(dfs)
     else:
         raise PreventUpdate
@@ -117,8 +117,8 @@ def render_tab_content(active_tab, data, type): #pathname
                             )
                         )]
         else: #active_tab == "histogram":
-            print(data['histo_'+type[0]])
-            print(data['histo_'+type[1]])
+            #print(data['histo_'+type[0]])
+            #print(data['histo_'+type[1]])
             return [html.Div(
                             dbc.Row(
                                 [
