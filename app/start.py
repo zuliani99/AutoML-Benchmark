@@ -20,6 +20,8 @@ def start():
     app = dash.Dash(__name__, external_stylesheets=[dbc.themes.BOOTSTRAP], suppress_callback_exceptions=True)
     #server = app.server
 
+    algorithms = ['autosklearn', 'h2o', 'tpot', 'autokeras', 'autogluon']
+
     CONTENT_STYLE = {
         "marginLeft": "22rem",
         "marginRight": "2rem",
@@ -131,7 +133,30 @@ def start():
     def render_tab_content_reg(active_tab, store_reg_results_kaggle):
         return render_tab_content_function(active_tab, store_reg_results_kaggle, ('reg_rmse', 'reg_r2'))
 
+    @app.callback(
+        [Output(f"collapse-{algo}", "is_open") for algo in algorithms],
+        [Input(f"{algo}-options", "n_clicks") for algo in algorithms],
+        [State(f"collapse-{algo}", "is_open") for algo in algorithms],
+    )
+    def collapse_alogrithms_options(n1, n2, n3, n4, n5, is_open1, is_open2, is_open3, is_open4, is_open5):
+        ctx = dash.callback_context
 
+        if not ctx.triggered:
+            return [False, False, False, False, False]
+        else:
+            button_id = ctx.triggered[0]["prop_id"].split(".")[0]
+        
+        if button_id == "autosklearn-options" and n1:
+            return [not is_open1, False, False, False, False]
+        elif button_id == "h2o-options" and n2:
+            return [False, not is_open2, False, False, False]
+        elif button_id == "tpot-options" and n3:
+            return [False, False, not is_open3, False, False]
+        elif button_id == "autokeras-options" and n4:
+            return [False, False, False, not is_open4, False]
+        elif button_id == "autogluon-options" and n5:
+            return [False, False, False, False, not is_open5]
+        return [False, False, False, False, False]
 
     '''host='0.0.0.0', port=8050, '''
     app.run_server(debug=True)

@@ -3,7 +3,7 @@ import dash_core_components as dcc
 import dash_html_components as html
 import dash_bootstrap_components as dbc
 
-from .utils import get_lisd_dir
+from .utils import get_lisd_dir, create_collapse
 
 
 SIDEBAR_STYLE = {
@@ -62,6 +62,12 @@ openmlbenchmark = html.Div([
                                     width=5,
                                 ),
                             ],row=True),
+                            create_collapse('AutoSklearn', 'Minuti', 1),
+                            create_collapse('H2O', 'Minuti', 1),
+                            create_collapse('TPOT', 'Generazioni', 5),
+                            create_collapse('AutoKeras', 'Epoche', 10),
+                            create_collapse('AutoGluon', 'Minuti', 1),
+
                             dbc.Button("Avvia BenchMark", id='submit-openml', color="primary", className="mr-1")
                         ])
                     ], style={"width": "auto"},
@@ -102,6 +108,12 @@ kagglebenchmark = html.Div([
                                 width=5,
                             )
                         ],row=True),
+                        create_collapse('AutoSklearn', 'Minuti', 1),
+                        create_collapse('H2O', 'Minuti', 1),
+                        create_collapse('TPOT', 'Generazioni', 5),
+                        create_collapse('AutoKeras', 'Epoche', 10),
+                        create_collapse('AutoGluon', 'Minuti', 1),
+
                         dbc.Button("Avvia BenchMark", id='submit-kaggle', color="primary", className="mr-1")
                     ])
                 ], style={"width": "auto"}

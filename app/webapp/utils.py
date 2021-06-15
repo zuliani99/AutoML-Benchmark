@@ -139,3 +139,32 @@ def render_tab_content(active_tab, data, type): #pathname
         #render[pathname] = ret
         #return render
     return "No tab selected"
+
+
+def create_collapse(algo, measure, min):
+    return dbc.Card(
+                                [
+                                    dbc.CardHeader(
+                                        html.H2(
+                                            dbc.Button(
+                                                algo + " Options",
+                                                color="link",
+                                                id=algo.lower()+"-options",
+                                            )
+                                        )
+                                    ),
+                                    dbc.Collapse(
+                                        dbc.CardBody([
+                                            dbc.FormGroup([
+                                                dbc.Label("Tempo d'esecuzione in "+measure,  width=5),
+                                                dbc.Col([
+                                                    dbc.InputGroup([
+                                                        dbc.Input( id=algo.lower()+"-minutes", type="number", value=min, placeholder=measure, min=min, max=100000),
+                                                        dbc.InputGroupAddon("minimum " + str(min), addon_type="prepend")]
+                                                    ),
+                                                ], width=5),
+                                            ],row=True),
+                                        ]), id="collapse-"+algo.lower()
+                                    ),
+                                ]
+                            )
