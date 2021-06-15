@@ -9,6 +9,7 @@ from utils.usefull_functions import return_X_y, fill_and_to_category
 
 #devo fare datacleaning: pulizia nel senso nan -> fill_nan
 def TPOT(df, task):
+
   pd.options.mode.chained_assignment = None
   if isinstance(df, pd.DataFrame):
     df = fill_and_to_category(df)

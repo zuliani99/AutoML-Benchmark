@@ -38,14 +38,14 @@ def start_openml_function(nmore, ndf):
         if nmore is not None and ndf is not None:
             res = openml_benchmark(ndf, nmore)
             #return [print_table_graphs(res)]
-            return get_store_and_tables(res)
+            return get_store_and_tables(res, 'OpenML')
         else:
             raise PreventUpdate
 
 def start_kaggle_function(kaggledataset):
         if kaggledataset is not None:
             res = kaggle_benchmark(kaggledataset)
-            return [html.P(res, style={'color':'red'})] if isinstance(res, str) else get_store_and_tables(res) #controllare la gestione degli errori
+            return [html.P(res, style={'color':'red'})] if isinstance(res, str) else get_store_and_tables(res, 'Kaggle') #controllare la gestione degli errori
         else:
             raise PreventUpdate
 

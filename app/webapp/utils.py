@@ -17,13 +17,14 @@ def get_lisd_dir(test):
 
 
 
-def retrun_graph_table(dfs, title, t):
+def retrun_graph_table(dfs, title, task, t):
     scatters = []
     histos = []
     table = [html.H3(title)]
     for df in dfs:
         table.append(dbc.Table.from_dataframe(df, striped=True, bordered=True, hover=True))
         for col in df.columns[1:]:
+            print(col)
             scatters.append(go.Scatter(x=df['dataset'], y=df[col], name=col.split('-')[0], mode='lines+markers'))
             histos.append(go.Bar(x=df['dataset'], y=df[col], name=col.split('-')[0]))
         
@@ -34,22 +35,29 @@ def retrun_graph_table(dfs, title, t):
                 dbc.Tab(label="Scatter", tab_id="scatter"),
                 dbc.Tab(label="Histograms", tab_id="histogram"),
             ],
-            id="tabs-"+t,
+            id="tabs-"+task,
             active_tab="scatter",
         )
     )
     #table.append(html.Div(id='result-past-bench-openml-graph-'+type))
 
-    # acc f1 acc f1
-    return scatters[:5], scatters[5:], histos[:5], histos[5:], table
+    # acc f1 acc f1 / rmse r2 rmse r2
+    #return scatters[:5], scatters[5:], histos[:5], histos[5:], table if t == 'OpenML' else scatters[:6], scatters[5:], histos[:6], histos[5:], table
+    print(scatters)
+    print(histos)
+    if(t == 'Kaggle'): 
+        return scatters[:6], scatters[6:], histos[:6], histos[6:], table
+    else:
+        return scatters[:5], scatters[5:], histos[:5], histos[5:], table
 
-def get_store_and_tables(dfs):
+def get_store_and_tables(dfs, type):
+    print(dfs)
     store_dict_class = {'scatter_class_acc': None, 'histo_class_acc': None, 'scatter_class_f1': None, 'histo_class_f1': None}
     store_dict_reg = {'scatter_reg_rmse': None, 'histo_reg_rmse': None, 'scatter_reg_r2': None, 'histo_reg_r2': None}
     tables = [[None], [None]]
     if dfs[0] is not None:
         #tables_graphs.append(retrun_graph_table(dfs[:2], 'Risultati Classificazione', ['Accuracy', 'F1-score']))
-        res = retrun_graph_table(dfs[:2], 'Risultati Classificazione', 'class')
+        res = retrun_graph_table(dfs[:2], 'Risultati Classificazione', 'class', type)
         store_dict_class['scatter_class_acc'] = res[0]
         store_dict_class['histo_class_acc'] = res[2]
         store_dict_class['scatter_class_f1'] = res[1]
@@ -66,7 +74,7 @@ def get_store_and_tables(dfs):
         )
     if dfs[2] is not None:
         #tables_graphs.append(retrun_graph_table(dfs[2:], 'Risultati Regressione', ['RMSE', 'R2-score']))
-        res = retrun_graph_table(dfs[2:], 'Risultati Regressione', 'reg')
+        res = retrun_graph_table(dfs[2:], 'Risultati Regressione', 'reg', type)
         store_dict_reg['scatter_reg_rmse'] = res[0]
         store_dict_reg['histo_reg_rmse'] = res[2]
         store_dict_reg['scatter_reg_r2'] = res[1]
@@ -98,7 +106,7 @@ def get_store_past_bech_function(timestamp, type):
             else:
                 dfs.append(None)
         #print(dfs)
-        return get_store_and_tables(dfs)
+        return get_store_and_tables(dfs, type)
     else:
         raise PreventUpdate
 
@@ -108,6 +116,7 @@ def render_tab_content(active_tab, data, type): #pathname
     #render = {'openml': None, 'kaggle': None, 'results-openml': None, 'results-kaggle': None}
     if active_tab and data is not None:
         if active_tab == "scatter":
+            print(data['scatter_'+type[0]])
             return [html.Div(
                             dbc.Row(
                                 [
@@ -117,7 +126,7 @@ def render_tab_content(active_tab, data, type): #pathname
                             )
                         )]
         else: #active_tab == "histogram":
-            #print(data['histo_'+type[0]])
+            print(data['histo_'+type[0]])
             #print(data['histo_'+type[1]])
             return [html.Div(
                             dbc.Row(

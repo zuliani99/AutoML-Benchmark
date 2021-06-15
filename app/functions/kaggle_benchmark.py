@@ -55,9 +55,12 @@ def kaggle_benchmark(list_df):
             ritorna la leaderboard da capire come la ritorna
             devo inserire il migliore nella tabella risultante così posso vedere come sono andati gli altri algoritmi
             '''
-            print(leaderboard)
 
-            res_kaggle.run_benchmark((train, test), task, df)
+            print('STO PER STAMPARE LACLASSFICA DEL DATASET')
+            leader = leaderboard['submissions'][0]
+            print(leader['teamName'], leader['score'])
+
+            res_kaggle.run_benchmark((train, test), task, df, {'name': leader['teamName'], 'score': leader['score']})
         else:
             print('\nDataset kaggle "'+ df +'" inesistente. Se esistente accertarsi di aver accettato le condizioni della competizione.\n')
             return 'Dataset kaggle "'+ df +'" inesistente. Se esistente accertarsi di aver accettato le condizioni della competizione.'

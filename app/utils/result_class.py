@@ -14,7 +14,7 @@ class Result:
         self.res_reg_r2 = pd.DataFrame({'dataset': [], 'autosklearn-r2': [], 'tpot-r2': [], 'autokeras-r2': [], 'h2o-r2': [], 'autogluon-r2': []})
 
 
-    def run_benchmark(self, df, task, df_name):
+    def run_benchmark(self, df, task, df_name, leader):
         res_as = fun_autosklearn(df, task)
         res_t = fun_tpot(df, task)
         res_ak = fun_autokeras(df, task)
@@ -22,12 +22,18 @@ class Result:
         res_ag = fun_autogluon(df, task)
 
         if(task == 'classification'):
-            new_row_acc = {'dataset': df_name, 'autosklearn-acc': res_as[0], 'tpot-acc': res_t[0], 'autokeras-acc': res_ak[0], 'h2o-acc': res_h[0], 'autogluon-acc': res_ag[0]}
+            if(leader is not None):
+                new_row_acc = {'dataset': df_name, 'autosklearn-acc': res_as[0], 'tpot-acc': res_t[0], 'autokeras-acc': res_ak[0], 'h2o-acc': res_h[0], 'autogluon-acc': res_ag[0], leader['name']: leader['score']}
+            else:
+                new_row_acc = {'dataset': df_name, 'autosklearn-acc': res_as[0], 'tpot-acc': res_t[0], 'autokeras-acc': res_ak[0], 'h2o-acc': res_h[0], 'autogluon-acc': res_ag[0]}
             new_row_f1 = {'dataset': df_name, 'autosklearn-f1': res_as[1], 'tpot-f1': res_t[1], 'autokeras-f1': res_ak[1], 'h2o-f1': res_h[1], 'autogluon-f1': res_ag[1]}
             self.res_class_acc = self.res_class_acc.append(new_row_acc, ignore_index=True)
             self.res_class_f1 = self.res_class_f1.append(new_row_f1, ignore_index=True)
         else:
-            new_row_rmse = {'dataset': df_name, 'autosklearn-rmse': res_as[0], 'tpot-rmse': res_t[0], 'autokeras-rmse': res_ak[0], 'h2o-rmse': res_h[0], 'autogluon-rmse': res_ag[0]}
+            if(leader is not None):
+                new_row_rmse = {'dataset': df_name, 'autosklearn-rmse': res_as[0], 'tpot-rmse': res_t[0], 'autokeras-rmse': res_ak[0], 'h2o-rmse': res_h[0], 'autogluon-rmse': res_ag[0], leader['name']: leader['score']}
+            else:
+                new_row_rmse = {'dataset': df_name, 'autosklearn-rmse': res_as[0], 'tpot-rmse': res_t[0], 'autokeras-rmse': res_ak[0], 'h2o-rmse': res_h[0], 'autogluon-rmse': res_ag[0]}
             new_row_r2 = {'dataset': df_name, 'autosklearn-r2': res_as[1], 'tpot-r2': res_t[1], 'autokeras-r2': res_ak[1], 'h2o-r2': res_h[1], 'autogluon-r2': res_ag[1]}
             self.res_reg_rmse = self.res_reg_rmse.append(new_row_rmse, ignore_index=True)
             self.res_reg_r2 = self.res_reg_r2.append(new_row_r2, ignore_index=True)
