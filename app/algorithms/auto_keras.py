@@ -7,7 +7,7 @@ from sklearn.metrics import accuracy_score, mean_squared_error, f1_score, r2_sco
 from sklearn.preprocessing import LabelEncoder 
 
 
-def prepare_and_test(X, y, task):
+def prepare_and_test(X, y, task, timelife):
   X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=1)
 
   if isinstance(y_train, pd.Series):
@@ -21,7 +21,7 @@ def prepare_and_test(X, y, task):
   else:
     clf = ak.StructuredDataRegressor(overwrite=True, max_trials=3, directory='/home/riccardo/.local/share/Trash')#attenzione salvo sul cestino
     
-  clf.fit(X_train, y_train, validation_split=0.15, epochs=10)
+  clf.fit(X_train, y_train, validation_split=0.15, epochs=timelife)
   y_pred = clf.predict(X_test)
 
   if task == 'classification':
@@ -36,10 +36,10 @@ def prepare_and_test(X, y, task):
     return (np.sqrt(mean_squared_error(y_test, y_pred)), r2_score(y_test, y_pred))
 
 
-def autokeras(df, task):
+def autokeras(df, task, timelife):
   pd.options.mode.chained_assignment = None
   X, y, _ = return_X_y(df)
   if not isinstance(df, pd.DataFrame):
     #X = X.apply(LabelEncoder().fit_transform)
     X = fill_and_to_category(X)
-  return (prepare_and_test(X, y, task))
+  return (prepare_and_test(X, y, task, timelife))

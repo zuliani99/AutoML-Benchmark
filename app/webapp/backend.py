@@ -33,10 +33,10 @@ def render_page_content_function(pathname):
             ]
         )
 
-def start_openml_function(nmore, ndf):
+def start_openml_function(nmore, ndf, options):
         #print(state_button)
         if nmore is not None and ndf is not None:
-            res = openml_benchmark(ndf, nmore)
+            res = openml_benchmark(ndf, nmore, options)
             #return [print_table_graphs(res)]
             return get_store_and_tables(res, 'OpenML')
         else:
@@ -77,3 +77,24 @@ def render_tab_content_function(active_tab, data, scores):
         return render_tab_content(active_tab, data, scores)
     else:
         return [None]
+
+
+def collapse_alogrithms_options_function(n1, n2, n3, n4, n5, is_open1, is_open2, is_open3, is_open4, is_open5):
+    ctx = dash.callback_context
+
+    if not ctx.triggered:
+        return [False, False, False, False, False]
+    else:
+        button_id = ctx.triggered[0]["prop_id"].split(".")[0]
+        
+    if button_id == "autosklearn-options" and n1:
+        return [not is_open1, False, False, False, False]
+    elif button_id == "h2o-options" and n2:
+        return [False, not is_open2, False, False, False]
+    elif button_id == "tpot-options" and n3:
+        return [False, False, not is_open3, False, False]
+    elif button_id == "autokeras-options" and n4:
+        return [False, False, False, not is_open4, False]
+    elif button_id == "autogluon-options" and n5:
+        return [False, False, False, False, not is_open5]
+    return [False, False, False, False, False]

@@ -6,7 +6,8 @@ import numpy as np
 from utils.result_class import Result
 from termcolor import colored
 
-def openml_benchmark(df_n, morethan):
+def openml_benchmark(df_n, morethan, options):
+    print(df_n, morethan)
     list_df = []
     res_openml = Result('OpenML')
 
@@ -34,7 +35,7 @@ def openml_benchmark(df_n, morethan):
         df = pd.read_csv(d)
                 
         print('---------------------------------Dataset: ' + d + '---------------------------------')
-        res_openml.run_benchmark(df, str_path[3], str_path[4], None)
+        res_openml.run_benchmark(df, str_path[3], str_path[4], None, options)
         print(colored('--------------------------------- Riga inserita ---------------------------------', 'green'))
 
     return res_openml.print_res()

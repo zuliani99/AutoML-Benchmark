@@ -7,7 +7,7 @@ from utils.usefull_functions import return_X_y, fill_and_to_category
 from sklearn.preprocessing import LabelEncoder 
 from sklearn.metrics import accuracy_score, mean_squared_error, f1_score, r2_score
 
-def prepare_and_test(train, test, task):
+def prepare_and_test(train, test, task, timelife):
   x = train.columns
   y = train.columns[train.shape[1]-1]
   x.remove(y)
@@ -18,7 +18,7 @@ def prepare_and_test(train, test, task):
     train[y] = train[y].asfactor()
     test[y] = test[y].asfactor()
 
-  aml = H2OAutoML(max_runtime_secs=1*60, nfolds=15, max_models=20, seed=1)
+  aml = H2OAutoML(max_runtime_secs=timelife*60, nfolds=15, max_models=20, seed=1) #secondi
   aml.train(x, y, training_frame=train)
   lb = aml.leaderboard
   lb = h2o.as_list(lb)
@@ -28,7 +28,7 @@ def prepare_and_test(train, test, task):
   pred = h2o.as_list(pred)['predict']
   target = h2o.as_list(test[y])
 
-  h2o.shutdown()
+  h2o.cluster().shutdown()
 
   if task == 'classification':
     if len(np.unique(target)) > 2:
@@ -39,7 +39,7 @@ def prepare_and_test(train, test, task):
     return (np.sqrt(mean_squared_error(target, pred)), r2_score(target, pred))
 
 
-def H2O(df, task):
+def H2O(df, task, timelife):
   pd.options.mode.chained_assignment = None
   h2o.init()
 
@@ -64,4 +64,4 @@ def H2O(df, task):
   train = h2o.H2OFrame(train)
   test = h2o.H2OFrame(test)
 
-  return(prepare_and_test(train, test, task))
+  return(prepare_and_test(train, test, task, timelife))

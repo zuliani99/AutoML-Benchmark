@@ -5,7 +5,7 @@ from sklearn.metrics import f1_score
 import pandas as pd
 
 
-def autogluon(df, task):
+def autogluon(df, task, timelife):
   pd.options.mode.chained_assignment = None
   X, y, ntarget = return_X_y(df)
 
@@ -35,8 +35,8 @@ def autogluon(df, task):
       f1 = lambda y_test, y_pred : f1_score(y_test, y_pred)
   else:
     pt = 'regression'
-
-  predictor = TabularPredictor(label=target, path='/home/riccardo/.local/share/Trash', problem_type=pt).fit(train_data=train, time_limit=60, presets=['optimize_for_deployment'])   # TEMPORANEO -> attenzione salvo sul cestino
+                                                                                                                              #prende secondi
+  predictor = TabularPredictor(label=target, path='/home/riccardo/.local/share/Trash', problem_type=pt).fit(train_data=train, time_limit=timelife*60, presets=['optimize_for_deployment'])   # TEMPORANEO -> attenzione salvo sul cestino
   results = predictor.fit_summary()
   
   y_pred = predictor.predict(test)

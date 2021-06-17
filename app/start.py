@@ -12,7 +12,7 @@ os.environ['KAGGLE_USERNAME'] = "zullle" # username from the json file
 os.environ['KAGGLE_KEY'] = "24df22da033e9547780e278280a6ae2b" # key from the json file
 
 from webapp.frontend import sidebar, openmlbenchmark, kagglebenchmark, testbenchmark, pastresultopenml, pastresultkaggle
-from webapp.backend import render_page_content_function, start_openml_function, start_kaggle_function, start_test_function, render_tab_content_function
+from webapp.backend import render_page_content_function, start_openml_function, start_kaggle_function, start_test_function, render_tab_content_function, collapse_alogrithms_options_function
 from webapp.utils import get_store_past_bech_function 
 
 
@@ -51,10 +51,17 @@ def start():
     @app.callback(
         [Output('store_class_openml', 'data'), Output('store_reg_openml', 'data'), Output('res-bench-openml-table-class', 'children'), Output('res-bench-openml-table-reg', 'children')],
         [Input('submit-openml', 'n_clicks')],
-        [State('nmore', 'value'), State('ndf', 'value')]
+        [State('nmore', 'value'), State('ndf', 'value'), State("autosklearn-timelife", "value"), State("h2o-timelife", "value"), State("tpot-timelife", "value"), State("autokeras-timelife", "value"), State("autogluon-timelife", "value")]
     )
-    def start_openml(n_clicks, nmore, ndf):
-        return start_openml_function(nmore, ndf)
+    def start_openml(n_clicks, nmore, ndf, as_tl, h2o_tl, t_tl, ak_tl, ag_tl):
+        options = {
+            'autosklearn': as_tl,
+            'h2o': h2o_tl,
+            'tpot': t_tl,
+            'autokeras': ak_tl,
+            'autogluon': ag_tl 
+        }
+        return start_openml_function(nmore, ndf, options)
 
 
 
@@ -139,24 +146,8 @@ def start():
         [State(f"collapse-{algo}", "is_open") for algo in algorithms],
     )
     def collapse_alogrithms_options(n1, n2, n3, n4, n5, is_open1, is_open2, is_open3, is_open4, is_open5):
-        ctx = dash.callback_context
+        return collapse_alogrithms_options_function(n1, n2, n3, n4, n5, is_open1, is_open2, is_open3, is_open4, is_open5)
 
-        if not ctx.triggered:
-            return [False, False, False, False, False]
-        else:
-            button_id = ctx.triggered[0]["prop_id"].split(".")[0]
-        
-        if button_id == "autosklearn-options" and n1:
-            return [not is_open1, False, False, False, False]
-        elif button_id == "h2o-options" and n2:
-            return [False, not is_open2, False, False, False]
-        elif button_id == "tpot-options" and n3:
-            return [False, False, not is_open3, False, False]
-        elif button_id == "autokeras-options" and n4:
-            return [False, False, False, not is_open4, False]
-        elif button_id == "autogluon-options" and n5:
-            return [False, False, False, False, not is_open5]
-        return [False, False, False, False, False]
 
     '''host='0.0.0.0', port=8050, '''
     app.run_server(debug=True)

@@ -10,7 +10,7 @@ def get_stat(automl):
   automl.sprint_statistics()
   automl.show_models()
 
-def auto_sklearn(df, task):
+def auto_sklearn(df, task, timelife):
   pd.options.mode.chained_assignment = None
   #categorical, binary, nuymerical features
 
@@ -24,7 +24,7 @@ def auto_sklearn(df, task):
   
   if(task == 'classification'):
     automl = autosklearn.classification.AutoSklearnClassifier(
-          time_left_for_this_task=1*60,
+          time_left_for_this_task=timelife*60,  #secondi
           per_run_time_limit=30,
           n_jobs=-1
     )
@@ -39,7 +39,7 @@ def auto_sklearn(df, task):
       return (accuracy_score(y_test, y_pred), f1_score(y_test, y_pred))
   else:
     automl = autosklearn.regression.AutoSklearnRegressor(
-          time_left_for_this_task=3*60,
+          time_left_for_this_task=timelife*60, #secondi
           per_run_time_limit=30,
           n_jobs=-1
     )

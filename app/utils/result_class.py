@@ -13,13 +13,17 @@ class Result:
         self.res_reg_rmse = pd.DataFrame({'dataset': [], 'autosklearn-rmse': [], 'tpot-rmse': [], 'autokeras-rmse': [], 'h2o-rmse': [],'autogluon-rmse': []})
         self.res_reg_r2 = pd.DataFrame({'dataset': [], 'autosklearn-r2': [], 'tpot-r2': [], 'autokeras-r2': [], 'h2o-r2': [], 'autogluon-r2': []})
 
+        self.options = None
 
-    def run_benchmark(self, df, task, df_name, leader):
-        res_as = fun_autosklearn(df, task)
-        res_t = fun_tpot(df, task)
-        res_ak = fun_autokeras(df, task)
-        res_h = fun_h2o(df, task)
-        res_ag = fun_autogluon(df, task)
+
+    def run_benchmark(self, df, task, df_name, leader, options):
+        res_as = fun_autosklearn(df, task, options['autosklearn'])
+        res_t = fun_tpot(df, task, options['tpot'])
+        res_ak = fun_autokeras(df, task, options['autokeras'])
+        res_h = fun_h2o(df, task, options['h2o'])
+        res_ag = fun_autogluon(df, task, options['autogluon'])
+
+        self.options = pd.DataFrame({'autosklearn': options['autosklearn'], 'h2o': options['h2o'], 'tpot': options['tpot'], 'autokeras': options['autokeras'], 'autogluon': options['autogluon']}, ignore_index=True)
 
         if(task == 'classification'):
             if(leader is not None):
@@ -61,5 +65,7 @@ class Result:
             self.res_reg_rmse.to_csv(pathreg + '/rmse.csv', index = False)
             self.res_reg_r2.to_csv(pathreg + '/r2_score.csv', index = False)
 
+        self.options.to_csv('./results/' + self.t + '/' + str(date).replace(' ', '-')+ '/options.csv', index = False)
+
         # Ritorno i dataframe oppure None se sono vuoti, ritorna una una lista di 4 dataframe
-        return self.res_class_acc if not self.res_class_acc.empty else None, self.res_class_f1 if not self.res_class_f1.empty else None, self.res_reg_rmse if not self.res_reg_rmse.empty else None, self.res_reg_r2 if not self.res_reg_r2.empty else None
+        return self.res_class_acc if not self.res_class_acc.empty else None, self.res_class_f1 if not self.res_class_f1.empty else None, self.res_reg_rmse if not self.res_reg_rmse.empty else None, self.res_reg_r2 if not self.res_reg_r2.empty else None, self.options
