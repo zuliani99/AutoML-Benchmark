@@ -44,11 +44,11 @@ def retrun_graph_table(dfs, title, task, t, opts):
     opts = opts.to_dict()
     options = [
         html.Div([
-            html.P(["Tempo d'esecuzione per Autosklearn: " + str(opts['autosklearn'][0]) + " minuti"]),
-            html.P(["Tempo d'esecuzione per TPOT: " + str(opts['tpot'][0]) + " generazioni"]),
-            html.P(["Tempo d'esecuzione per H2O: " + str(opts['h2o'][0]) + " minuti"]),
-            html.P(["Tempo d'esecuzione per AutoKeras: " + str(opts['autokeras'][0]) + " epoche"]),
-            html.P(["Tempo d'esecuzione per AutoGluon: " + str(opts['autogluon'][0]) + " minuti"]),
+            html.P(["Running time for Autosklearn: " + str(opts['autosklearn'][0]) + " minute/s"]),
+            html.P(["Running time for TPOT: " + str(opts['tpot'][0]) + " generation/s"]),
+            html.P(["Running time for H2O: " + str(opts['h2o'][0]) + " minute/s"]),
+            html.P(["Running time for AutoKeras: " + str(opts['autokeras'][0]) + " epoch/s"]),
+            html.P(["TRunning time for AutoGluon: " + str(opts['autogluon'][0]) + " minute/s"]),
         ])
     ]
 
@@ -70,7 +70,7 @@ def get_store_and_tables(dfs, type):
     tables = [[None], [None]]
     if dfs[0] is not None:
         #tables_graphs.append(retrun_graph_table(dfs[:2], 'Risultati Classificazione', ['Accuracy', 'F1-score']))
-        res = retrun_graph_table(dfs[:2], 'Risultati Classificazione', 'class', type, dfs[4])
+        res = retrun_graph_table(dfs[:2], 'Classification Results', 'class', type, dfs[4])
         store_dict_class['scatter_class_acc'] = res[0]
         store_dict_class['histo_class_acc'] = res[2]
         store_dict_class['scatter_class_f1'] = res[1]
@@ -88,7 +88,7 @@ def get_store_and_tables(dfs, type):
         )
     if dfs[2] is not None:
         #tables_graphs.append(retrun_graph_table(dfs[2:], 'Risultati Regressione', ['RMSE', 'R2-score']))
-        res = retrun_graph_table(dfs[2:4], 'Risultati Regressione', 'reg', type, dfs[4])
+        res = retrun_graph_table(dfs[2:4], 'Regression Results', 'reg', type, dfs[4])
         store_dict_reg['scatter_reg_rmse'] = res[0]
         store_dict_reg['histo_reg_rmse'] = res[2]
         store_dict_reg['scatter_reg_r2'] = res[1]
@@ -176,11 +176,11 @@ def create_collapse(algo, measure, min):
                                     dbc.Collapse(
                                         dbc.CardBody([
                                             dbc.FormGroup([
-                                                dbc.Label("Tempo d'esecuzione in "+measure,  width=5),
+                                                dbc.Label("Runnung time in "+measure,  width=5),
                                                 dbc.Col([
                                                     dbc.InputGroup([
                                                         dbc.Input( id=algo.lower()+"-timelife", type="number", value=min, placeholder=measure, min=min, max=100000),
-                                                        dbc.InputGroupAddon("minimum " + str(min), addon_type="prepend")]
+                                                        dbc.InputGroupAddon("at least " + str(min), addon_type="prepend")]
                                                     ),
                                                 ], width=5),
                                             ],row=True),

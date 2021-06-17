@@ -21,7 +21,7 @@ sidebar = html.Div(
             html.H2("AutoML BenchMark", className="display-4"),
             html.Hr(),
             html.P(
-                "Scegli il Benchmark da effettuare", className="lead"
+                "Choose the Benchmark to be made", className="lead"
             ),
             dbc.Nav(
                 [
@@ -29,8 +29,8 @@ sidebar = html.Div(
                     dbc.NavLink("OpenML Benchmark", href="/openml", active="exact"),
                     dbc.NavLink("Kaggle BenchMark", href="/kaggle", active="exact"),
                     dbc.NavLink("Test BenchMark", href="/test", active="exact"),
-                    dbc.NavLink("Risultati Precedenti OpenML", href="/results-openml", active="exact"),
-                    dbc.NavLink("Risultati Precedenti Kaggle", href="/results-kaggle", active="exact"),
+                    dbc.NavLink("Past Results OpenML", href="/results-openml", active="exact"),
+                    dbc.NavLink("Past Results Kaggle", href="/results-kaggle", active="exact"),
                 ],
                 vertical=True,
                 pills=True,
@@ -45,28 +45,32 @@ openmlbenchmark = html.Div([
                             html.H4("OpenMl BenchMark", className="card-title"),
                             #html.P("This is some card text", className="card-text"),
                             dbc.FormGroup([
-                                dbc.Label("Numero di DataFrame da testare", width=5),
-                                dbc.Col(
-                                    dbc.Input(
-                                        id="ndf", type="number", placeholder="Numero di DF", min=1
-                                    ),
-                                    width=5,
-                                )
+                                dbc.Label("Number of dataframe to test", width=5),
+                                dbc.Col([
+                                    dbc.InputGroup([
+                                        dbc.Input(
+                                            id="ndf", type="number", placeholder="Number of DF", min=1
+                                        ),
+                                        dbc.InputGroupAddon("at least 1", addon_type="prepend"),
+                                    ])
+                                ],width=5)
                             ],row=True),
                             dbc.FormGroup([
-                                dbc.Label("Numero minimo di istanze per ogni DataFrame",  width=5),
-                                dbc.Col(
-                                    dbc.Input(
-                                        id="nmore", type="number", placeholder="N minimo di istanze", min=1, max=100000
-                                    ),
-                                    width=5,
-                                ),
+                                dbc.Label("Minimum number of instances for each DataFrame",  width=5),
+                                dbc.Col([
+                                    dbc.InputGroup([
+                                        dbc.Input(
+                                            id="nmore", type="number", placeholder="Number of instances", min=50, max=100000
+                                        ),
+                                        dbc.InputGroupAddon("at least 50", addon_type="prepend"),
+                                    ])
+                                ],width=5),
                             ],row=True),
-                            create_collapse('AutoSklearn', 'Minuti', 1),
-                            create_collapse('H2O', 'Minuti', 1),
-                            create_collapse('TPOT', 'Generazioni', 5),
-                            create_collapse('AutoKeras', 'Epoche', 10),
-                            create_collapse('AutoGluon', 'Minuti', 1),
+                            create_collapse('AutoSklearn', 'Minutes', 1),
+                            create_collapse('H2O', 'Minutes', 1),
+                            create_collapse('TPOT', 'Generations', 5),
+                            create_collapse('AutoKeras', 'Epochs', 10),
+                            create_collapse('AutoGluon', 'Minutes', 1),
 
                             dbc.Button("Avvia BenchMark", id='submit-openml', color="primary", className="mr-1")
                         ])
@@ -91,7 +95,7 @@ kagglebenchmark = html.Div([
                         html.H4("Kaggle BenchMark", className="card-title"),
                         #html.P("This is some card text", className="card-text"),
                         dbc.FormGroup([
-                            dbc.Label("Numero di DataFrame da testare", width=5),
+                            dbc.Label("Number of dataframe to test", width=5),
                             dbc.Col(
                                 dcc.Dropdown(
                                     id='kaggledataset',
@@ -101,18 +105,18 @@ kagglebenchmark = html.Div([
                                         {'label': 'Mercedes Greener Manufactoring', 'value': 'mercedes-benz-greener-manufacturing'},
                                         {'label': 'Restaurant Revenue Prediction', 'value': 'restaurant-revenue-prediction'}
                                     ],
-                                    placeholder="Seleziona Dataframe",
+                                    placeholder="Select a Dataframe",
                                     value=None,
                                     multi=True
                                 ),
                                 width=5,
                             )
                         ],row=True),
-                        create_collapse('AutoSklearn', 'Minuti', 1),
-                        create_collapse('H2O', 'Minuti', 1),
-                        create_collapse('TPOT', 'Generazioni', 5),
-                        create_collapse('AutoKeras', 'Epoche', 10),
-                        create_collapse('AutoGluon', 'Minuti', 1),
+                        create_collapse('AutoSklearn', 'Minutes', 1),
+                        create_collapse('H2O', 'Minutes', 1),
+                        create_collapse('TPOT', 'Generations', 5),
+                        create_collapse('AutoKeras', 'Epochs', 10),
+                        create_collapse('AutoGluon', 'Minutes', 1),
 
                         dbc.Button("Avvia BenchMark", id='submit-kaggle', color="primary", className="mr-1")
                     ])
@@ -137,7 +141,7 @@ testbenchmark = html.Div([
                         html.H4("Test BenchMark", className="card-title"),
                         #html.P("This is some card text", className="card-text"),
                         dbc.FormGroup([
-                            dbc.Label("ID DataFrame da testare", width=5),
+                            dbc.Label("DataFrame Id to test", width=5),
                             dbc.Col(
                                 dbc.Input(
                                     id="dfid", type="number", placeholder="DataFrame ID", min=1
@@ -146,7 +150,7 @@ testbenchmark = html.Div([
                             )
                         ],row=True),
                         dbc.FormGroup([
-                            dbc.Label("Algoritmo da utilizzare",  width=5),
+                            dbc.Label("Algorithms to use",  width=5),
                             dbc.Col(
                                 dcc.Dropdown(
                                     id='algorithms',
@@ -156,7 +160,7 @@ testbenchmark = html.Div([
                                         {'label': 'TPOT', 'value': 'tpot'},
                                         {'label': 'AutoKears', 'value': 'autokeras'},
                                         {'label': 'AutoGluon', 'value': 'autogluon'},
-                                        {'label': 'Tutti', 'value': 'all'}
+                                        {'label': 'All', 'value': 'all'}
                                     ],
                                     value='autosklearn'
                                 ),
@@ -173,7 +177,7 @@ testbenchmark = html.Div([
 
 pastresultopenml = html.Div([
         dbc.Select(id='pastresultopenml', options=get_lisd_dir('OpenML'),
-            placeholder='Filtra un BenchMark per Data',
+            placeholder='Filter a BenchMark by Date',
         ),
         html.Hr(),
         
@@ -193,8 +197,8 @@ pastresultopenml = html.Div([
 
 
 pastresultkaggle = html.Div([
-        dbc.Select(id='pastresultkaggle',options=get_lisd_dir('Kaggle'),
-            placeholder='Filtra un BenchMark per Data',
+        dbc.Select(id='pastresultkaggle', options=get_lisd_dir('Kaggle'),
+            placeholder='Filter a BenchMark by Date',
         ),
         html.Hr(),
 

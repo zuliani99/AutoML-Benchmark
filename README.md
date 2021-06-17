@@ -28,6 +28,6 @@ There are five types of operations:
 
 3. **Test Benchmark:** Here you can run a benchmark on a specific dataset by insering the *dataset id* and using a single *algorithm* ot all of them by selecting a options
 
-4. **Risulatati Precedenti OpenML:** Here you can navigate between past *OpenML* benchmark by selecting a specific date
+4. **Past Results OpenML:** Here you can navigate between past *OpenML* benchmark by selecting a specific date
 
-5. **Risulatati Precedenti Kaggle:** Here you can navigate between past *Kaggle* benchmark by selecting a specific date
+5. **RPast Results Kaggle:** Here you can navigate between past *Kaggle* benchmark by selecting a specific date
