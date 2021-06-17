@@ -3,8 +3,6 @@ astunparse==1.6.3
 attrs==21.2.0
 auto-sklearn==0.12.6
 autocfg==0.0.8
-mxnet==0.2.0
-autogluon==0.2.0
 autogluon-contrib-nlp==0.0.1b20210201
 autogluon.core==0.2.0
 autogluon.extra==0.2.0
