@@ -69,10 +69,17 @@ def start():
     @app.callback(
         [Output('store_class_kaggle', 'data'), Output('store_reg_kaggle', 'data'), Output('res-bench-kaggle-table-class', 'children'), Output('res-bench-kaggle-table-reg', 'children')],
         [Input('submit-kaggle', 'n_clicks')],
-        [State('kaggledataset', 'value')]
+        [State('kaggledataset', 'value'), State("autosklearn-timelife", "value"), State("h2o-timelife", "value"), State("tpot-timelife", "value"), State("autokeras-timelife", "value"), State("autogluon-timelife", "value")]
     )
-    def start_kaggle(n_clicks, kaggledataset):
-        return start_kaggle_function(kaggledataset)
+    def start_kaggle(n_clicks, kaggledataset, as_tl, h2o_tl, t_tl, ak_tl, ag_tl):
+        options = {
+            'autosklearn': as_tl,
+            'h2o': h2o_tl,
+            'tpot': t_tl,
+            'autokeras': ak_tl,
+            'autogluon': ag_tl 
+        }
+        return start_kaggle_function(kaggledataset, options)
 
 
     @app.callback(

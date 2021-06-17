@@ -30,4 +30,4 @@ There are five types of operations:
 
 4. **Past Results OpenML:** Here you can navigate between past *OpenML* benchmark by selecting a specific date
 
-5. **RPast Results Kaggle:** Here you can navigate between past *Kaggle* benchmark by selecting a specific date
+5. **Past Results Kaggle:** Here you can navigate between past *Kaggle* benchmark by selecting a specific date

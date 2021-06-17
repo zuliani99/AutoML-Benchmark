@@ -42,9 +42,9 @@ def start_openml_function(nmore, ndf, options):
         else:
             raise PreventUpdate
 
-def start_kaggle_function(kaggledataset):
+def start_kaggle_function(kaggledataset, options):
         if kaggledataset is not None:
-            res = kaggle_benchmark(kaggledataset)
+            res = kaggle_benchmark(kaggledataset, options)
             return [html.P(res, style={'color':'red'})] if isinstance(res, str) else get_store_and_tables(res, 'Kaggle') #controllare la gestione degli errori
         else:
             raise PreventUpdate
