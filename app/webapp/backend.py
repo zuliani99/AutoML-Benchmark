@@ -3,7 +3,7 @@ import dash_core_components as dcc
 import dash_html_components as html
 import dash_bootstrap_components as dbc
 from dash.exceptions import PreventUpdate
-from .frontend import openmlbenchmark, kagglebenchmark, testbenchmark, pastresultopenml, pastresultkaggle
+from .frontend import openmlbenchmark, kagglebenchmark, testbenchmark, pastresultopenml, pastresultkaggle, home
 from .utils import get_store_and_tables, render_tab_content
 from functions.openml_benchmark import openml_benchmark
 from functions.kaggle_benchmark import kaggle_benchmark
@@ -14,7 +14,7 @@ import plotly.graph_objects as go
 
 def render_page_content_function(pathname):
         if pathname == "/":
-            return html.P('HOME')
+            return home
         elif pathname == "/openml":
             return openmlbenchmark
         elif pathname == "/kaggle":

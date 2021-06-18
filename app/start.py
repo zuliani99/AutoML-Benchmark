@@ -18,7 +18,8 @@ from webapp.utils import get_store_past_bech_function, render_collapse_options
 
 def start():
     app = dash.Dash(__name__, external_stylesheets=[dbc.themes.BOOTSTRAP], suppress_callback_exceptions=True)
-    #server = app.server
+    
+    app.title = 'AutoML Benchmark'
 
     algorithms = ['autosklearn', 'h2o', 'tpot', 'autokeras', 'autogluon']
 
