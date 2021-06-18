@@ -11,24 +11,24 @@ from algorithms.h2o import H2O
 from termcolor import colored
 import openml
 
-def switch(algo, df, task):
+def switch(algo, df, task, options):
     return {
-        'autosklearn': lambda df, task: auto_sklearn(df, task),
-        'tpot': lambda df, task: TPOT(df, task),
-        'h2o': lambda df, task: H2O(df, task),
-        'autokeras': lambda df, task: autokeras(df, task),
-        'autogluon': lambda df, task: autogluon(df, task),
-        'all': lambda df, task: pd.DataFrame.from_dict({'autosklearn': auto_sklearn(df, task),
-                                                        'tpot': TPOT(df, task),
-                                                        'autokeras': autokeras(df, task),
-                                                        'h2o': H2O(df, task),
-                                                        'autogluon': autogluon(df, task)})
+        'autosklearn': lambda df, task: auto_sklearn(df, task, int(options['autosklearn']['time'])),
+        'tpot': lambda df, task: TPOT(df, task, int(options['tpot']['time'])),
+        'h2o': lambda df, task: H2O(df, task, int(options['h2o']['time'])),
+        'autokeras': lambda df, task: autokeras(df, task, int(options['autokeras']['time'])),
+        'autogluon': lambda df, task: autogluon(df, task, int(options['autogluon']['time'])),
+        'all': lambda df, task: pd.DataFrame.from_dict({'autosklearn': auto_sklearn(df, task, int(options['autosklearn']['time'])),
+                                                        'tpot': TPOT(df, task, int(options['tpot']['time'])),
+                                                        'autokeras': autokeras(df, task, int(options['h2o']['time'])),
+                                                        'h2o': H2O(df, task, int(options['autokeras']['time'])),
+                                                        'autogluon': autogluon(df, task, int(options['autogluon']['time']))})
     }.get(algo)(df, task)
 
-def test(id, algo):
+def test(id, algo, options):
     print('----------------'+str(id)+'-----------'+str(algo)+'-------------')
     try:
-        if not os.path.exists('./datasets/classification/' + str(id) + '.csv') and not os.path.exists('./datasets/regression/' + str(id) + '.csv'):
+        if not os.path.exists('./datasets/OpenML/classification/' + str(id) + '.csv') and not os.path.exists('./datasets/OpenML/regression/' + str(id) + '.csv'):
             X, y = fetch_openml(data_id=id, as_frame=True, return_X_y=True, cache=True)
             if not isinstance(y, pd.DataFrame):
                 y = y.to_frame()
@@ -56,23 +56,23 @@ def test(id, algo):
                 file_dir =  './datasets/' + task + '/'
                 fullname = os.path.join(file_dir, str(id) + '.csv')
                 df.to_csv(fullname, index=False, header=True)
-                res = switch(algo, df, task)
+                res = switch(algo, df, task, options)
                 print(task, res)
                 return task, res
             else:
                 return None, None            
         else:
-            if os.path.exists('./datasets/classification/' + str(id) + '.csv'):
+            if os.path.exists('./datasets/OpenML/classification/' + str(id) + '.csv'):
                 task = 'classification'
-                path = './datasets/classification/' + str(id) + '.csv'
+                path = './datasets/OpenML/classification/' + str(id) + '.csv'
             else:
                 task = 'regression'
-                path = './datasets/regression/' + str(id) + '.csv'
+                path = './datasets/OpenML/regression/' + str(id) + '.csv'
             
             df = pd.read_csv(path)
 
             print(df.head())
-            res = switch(algo, df, task)
+            res = switch(algo, df, task, options)
             print(task, res)
             # ritorno il tipo di task ed il risultato dell'algoritmo -> (acc, f1) o (rmse, r2) oppure il datafrsame con tutti i risultati di ytutti gli algoritmi
             return task, res

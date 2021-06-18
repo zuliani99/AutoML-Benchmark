@@ -161,7 +161,7 @@ def render_tab_content(active_tab, data, type): #pathname
     return "No tab selected"
 
 
-def create_collapse(algo, measure, min):
+def create_collapse(algo, measure, min, disabled):
     return dbc.Card(
                                 [
                                     dbc.CardHeader(
@@ -170,6 +170,7 @@ def create_collapse(algo, measure, min):
                                                 algo + " Options",
                                                 color="link",
                                                 id=algo.lower()+"-options",
+                                                disabled=disabled
                                             )
                                         )
                                     ),
@@ -188,3 +189,12 @@ def create_collapse(algo, measure, min):
                                     ),
                                 ]
                             )
+def render_collapse_options(choice):
+    return {
+        'autosklearn': [False, True, True, True, True],
+        'h2o': [True, False, True, True, True],
+        'tpot': [True, True, False, True, True],
+        'autokeras': [True, True, True, False, True],
+        'autogluon':[True, True, True, True, False],
+        'all': [False, False, False, False, False],
+    }.get(choice)

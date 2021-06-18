@@ -13,7 +13,7 @@ os.environ['KAGGLE_KEY'] = "24df22da033e9547780e278280a6ae2b" # key from the jso
 
 from webapp.frontend import sidebar, openmlbenchmark, kagglebenchmark, testbenchmark, pastresultopenml, pastresultkaggle
 from webapp.backend import render_page_content_function, start_openml_function, start_kaggle_function, start_test_function, render_tab_content_function, collapse_alogrithms_options_function
-from webapp.utils import get_store_past_bech_function 
+from webapp.utils import get_store_past_bech_function, render_collapse_options
 
 
 def start():
@@ -21,6 +21,7 @@ def start():
     #server = app.server
 
     algorithms = ['autosklearn', 'h2o', 'tpot', 'autokeras', 'autogluon']
+
 
     CONTENT_STYLE = {
         "marginLeft": "22rem",
@@ -85,13 +86,20 @@ def start():
     @app.callback(
         [Output('res-bench-test', 'children')],
         [Input('submit-test', 'n_clicks')],
-        [State('dfid', 'value'), State('algorithms', 'value')]
+        [State('dfid', 'value'), State('algorithms', 'value'), State("autosklearn-timelife", "value"), State("h2o-timelife", "value"), State("tpot-timelife", "value"), State("autokeras-timelife", "value"), State("autogluon-timelife", "value")]
     )
-    def start_test(n_clicks, dfid, algorithms):
-        return start_test_function(dfid, algorithms)
+    def start_test(n_clicks, dfid, algorithms, as_tl, h2o_tl, t_tl, ak_tl, ag_tl):
+        options = {
+            'autosklearn': {'time': as_tl, 'type': 'minute/s'},
+            'h2o': {'time': h2o_tl, 'type': 'minute/s'},
+            'tpot': {'time': t_tl, 'type': 'generation/s'},
+            'autokeras': {'time': ak_tl, 'type': 'epoch/s'},
+            'autogluon': {'time': ag_tl, 'type': 'minute/s'},
+        }
+        return start_test_function(dfid, algorithms, options)
 
 
-
+    
 #qui aggiorno i store di class e reg e stampo inizialmente le tabelle con i relativi risultati
 #OPNEML
     @app.callback(
@@ -155,6 +163,13 @@ def start():
     def collapse_alogrithms_options(n1, n2, n3, n4, n5, is_open1, is_open2, is_open3, is_open4, is_open5):
         return collapse_alogrithms_options_function(n1, n2, n3, n4, n5, is_open1, is_open2, is_open3, is_open4, is_open5)
 
+
+    @app.callback(
+        [Output(f"{algo}-options", "disabled") for algo in algorithms],
+        [Input("algorithms", "value")],
+    )
+    def disable_buttons_collapse(choice):
+        return render_collapse_options(choice)
 
     '''host='0.0.0.0', port=8050, '''
     app.run_server(host='0.0.0.0', port=8050, debug=True)

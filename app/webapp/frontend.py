@@ -66,13 +66,9 @@ openmlbenchmark = html.Div([
                                     ])
                                 ],width=5),
                             ],row=True),
-                            create_collapse('AutoSklearn', 'Minutes', 1),
-                            create_collapse('H2O', 'Minutes', 1),
-                            create_collapse('TPOT', 'Generations', 5),
-                            create_collapse('AutoKeras', 'Epochs', 10),
-                            create_collapse('AutoGluon', 'Minutes', 1),
+                            create_collapse('AutoSklearn', 'Minutes', 1, False), create_collapse('H2O', 'Minutes', 1, False), create_collapse('TPOT', 'Generations', 5, False), create_collapse('AutoKeras', 'Epochs', 10, False), create_collapse('AutoGluon', 'Minutes', 1, False),
 
-                            dbc.Button("Avvia BenchMark", id='submit-openml', color="primary", className="mr-1")
+                            dbc.Button("Start BenchMark", id='submit-openml', color="primary", className="mr-1")
                         ])
                     ], style={"width": "auto"},
                 ),
@@ -112,13 +108,9 @@ kagglebenchmark = html.Div([
                                 width=5,
                             )
                         ],row=True),
-                        create_collapse('AutoSklearn', 'Minutes', 1),
-                        create_collapse('H2O', 'Minutes', 1),
-                        create_collapse('TPOT', 'Generations', 5),
-                        create_collapse('AutoKeras', 'Epochs', 10),
-                        create_collapse('AutoGluon', 'Minutes', 1),
+                        create_collapse('AutoSklearn', 'Minutes', 1, False), create_collapse('H2O', 'Minutes', 1, False), create_collapse('TPOT', 'Generations', 5, False), create_collapse('AutoKeras', 'Epochs', 10, False), create_collapse('AutoGluon', 'Minutes', 1, False),
 
-                        dbc.Button("Avvia BenchMark", id='submit-kaggle', color="primary", className="mr-1")
+                        dbc.Button("Start BenchMark", id='submit-kaggle', color="primary", className="mr-1")
                     ])
                 ], style={"width": "auto"}
             ),
@@ -167,7 +159,9 @@ testbenchmark = html.Div([
                                 width=5,
                             ),
                         ],row=True),
-                        dbc.Button("Avvia BenchMark", id='submit-test', color="primary", className="mr-1")
+                        dbc.Button("Start BenchMark", id='submit-test', color="primary", className="mr-1"),
+                        #html.Div(id='collapse-test')
+                        create_collapse('AutoSklearn', 'Minutes', 1, False), create_collapse('H2O', 'Minutes', 1, True), create_collapse('TPOT', 'Generations', 5, True), create_collapse('AutoKeras', 'Epochs', 10, True), create_collapse('AutoGluon', 'Minutes', 1, True),
                     ])
                 ], style={"width": "auto"},
             ),
