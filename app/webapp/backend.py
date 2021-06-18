@@ -9,6 +9,7 @@ from functions.openml_benchmark import openml_benchmark
 from functions.kaggle_benchmark import kaggle_benchmark
 from functions.test import test
 import pandas as pd
+import plotly.graph_objects as go
 
 
 def render_page_content_function(pathname):
@@ -55,10 +56,33 @@ def start_test_function(dfid, algorithms, options):
             res = test(dfid, algorithms, options)
             #print(res)
             if isinstance(res[1], pd.DataFrame):
-                #quando ho scelto di far partire il test benchmarck con tutti gli algoritmi
+                first_score = res[1].iloc[:1]
+                second_score = res[1].iloc[1:]
+                bars = {'first': [], 'second': []}
+                titles = []            
+                if(res[0] == 'classification'):
+                    titles = ['Accuracy Score:', 'F1 Score:']
+                else:
+                    titles = ['RMSE Score:', 'R2 Score:']
+                for col in first_score:
+                    bars['first'].append(go.Bar(y=first_score[col], name=col.split('-')[0])) #attenzione alla x, ora l'ho rimossa
+                    bars['second'].append(go.Bar(y=second_score[col], name=col.split('-')[0]))
                 return [
-                    html.H4('Test Results form DataFrame ' + dfid),
-                    dbc.Table.from_dataframe(res[1], striped=True, bordered=True, hover=True)
+                    html.Div([
+                        html.H2('Test Results form DataFrame ' + str(dfid)),
+                        html.H4(titles[0]),
+                        dbc.Table.from_dataframe(first_score, striped=True, bordered=True, hover=True),
+                        html.H4(titles[1]),
+                        dbc.Table.from_dataframe(second_score, striped=True, bordered=True, hover=True),
+                        html.Div(
+                            dbc.Row(
+                                [
+                                    dbc.Col(dcc.Graph(figure=go.Figure(data=bars['first'], layout=go.Layout(xaxis = dict(title = 'Datasets'), yaxis = dict(title = titles[0]))))),
+                                    dbc.Col(dcc.Graph(figure=go.Figure(data=bars['second'], layout=go.Layout(xaxis = dict(title = 'Datasets'), yaxis = dict(title = titles[1]))))),
+                                ], align="center"
+                            )
+                        )
+                    ])
                 ]
             else:
                 if res[0] is None:

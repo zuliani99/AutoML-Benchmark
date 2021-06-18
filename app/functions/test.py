@@ -53,7 +53,7 @@ def test(id, algo, options):
                 elif 'Supervised Regression' in ts:
                     task = 'regression'
 
-                file_dir =  './datasets/' + task + '/'
+                file_dir =  './datasets/OpenML/' + task + '/'
                 fullname = os.path.join(file_dir, str(id) + '.csv')
                 df.to_csv(fullname, index=False, header=True)
                 res = switch(algo, df, task, options)
