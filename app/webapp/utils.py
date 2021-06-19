@@ -48,7 +48,7 @@ def retrun_graph_table(dfs, title, task, t, opts):
             html.P(["Running time for TPOT: " + str(opts['tpot'][0]) + " generation/s"]),
             html.P(["Running time for H2O: " + str(opts['h2o'][0]) + " minute/s"]),
             html.P(["Running time for AutoKeras: " + str(opts['autokeras'][0]) + " epoch/s"]),
-            html.P(["TRunning time for AutoGluon: " + str(opts['autogluon'][0]) + " minute/s"]),
+            html.P(["Running time for AutoGluon: " + str(opts['autogluon'][0]) + " minute/s"]),
         ])
     ]
 

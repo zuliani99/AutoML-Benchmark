@@ -93,7 +93,7 @@ def start_test_function(dfid, algorithms, options):
                     else:
                         text = 'RMSE: ' + str(res[1][0]) + '     r2_score: ' + str(res[1][1])
                     return [html.Div([
-                        html.P('Dataframe results ' + str(dfid) + " by using the algorithm: " + str(algorithms) + "with running time: " + str(options[algorithms]['time']) + " " + str(options[algorithms]['type'])),
+                        html.P('Dataframe results ' + str(dfid) + " by using the algorithm: " + str(algorithms) + " with running time: " + str(options[algorithms]['time']) + " " + str(options[algorithms]['type'])),
                         html.P(text),
                     ])]
         else:

@@ -3,6 +3,7 @@ from sklearn.model_selection import train_test_split
 from utils.usefull_functions import return_X_y
 from sklearn.metrics import f1_score
 import pandas as pd
+import shutil
 
 
 def autogluon(df, task, timelife):
@@ -35,13 +36,17 @@ def autogluon(df, task, timelife):
       f1 = lambda y_test, y_pred : f1_score(y_test, y_pred)
   else:
     pt = 'regression'
-                                                                                                                              #prende secondi
-  predictor = TabularPredictor(label=target, path='/home/riccardo/.local/share/Trash', problem_type=pt).fit(train_data=train, time_limit=timelife*60, presets=['optimize_for_deployment'])   # TEMPORANEO -> attenzione salvo sul cestino
+    #, path='/home/riccardo/.local/share/Trash'
+  predictor = TabularPredictor(label=target , problem_type=pt).fit(train_data=train, time_limit=timelife*60, presets=['optimize_for_deployment'])   # TEMPORANEO -> attenzione salvo sul cestino
   results = predictor.fit_summary()
   
   y_pred = predictor.predict(test)
 
+  pipelines = (predictor.leaderboard(df, silent=True)) # sono queste
+
   res = predictor.evaluate_predictions(y_true=y_test.squeeze(), y_pred=y_pred, auxiliary_metrics=True)
+
+  shutil.rmtree('./AutogluonModels')
 
   if(task == 'classification'):
     '''y_test = le.fit_transform(y_test)
@@ -52,8 +57,8 @@ def autogluon(df, task, timelife):
       f1 = f1_score(y_test, y_pred)
     return (res['accuracy'], f1)'''
     print(res)
-    return (res['accuracy'], f1(y_test, y_pred))
+    return (res['accuracy'], f1(y_test, y_pred), pipelines)
   else:
     print(res)
-    return (res['root_mean_squared_error'], res['r2'])
+    return (res['root_mean_squared_error'], res['r2'], pipelines)
 

@@ -7,8 +7,7 @@ import numpy as np
 from utils.usefull_functions import return_X_y, fill_and_to_category
 
 def get_stat(automl):
-  automl.sprint_statistics()
-  automl.show_models()
+  return (automl.show_models())
 
 def auto_sklearn(df, task, timelife):
   pd.options.mode.chained_assignment = None
@@ -31,12 +30,13 @@ def auto_sklearn(df, task, timelife):
     automl.fit(X_train, y_train)
     y_pred = automl.predict(X_test)
 
-    get_stat(automl) # necessario il salvataggio
+  
+    pipelines = automl.show_models()
 
     if len(np.unique(y)) > 2:
-      return (accuracy_score(y_test, y_pred), f1_score(y_test, y_pred, average='weighted'))
+      return (accuracy_score(y_test, y_pred), f1_score(y_test, y_pred, average='weighted'), pipelines)
     else:
-      return (accuracy_score(y_test, y_pred), f1_score(y_test, y_pred))
+      return (accuracy_score(y_test, y_pred), f1_score(y_test, y_pred), pipelines)
   else:
     automl = autosklearn.regression.AutoSklearnRegressor(
           time_left_for_this_task=timelife*60, #secondi
@@ -46,9 +46,9 @@ def auto_sklearn(df, task, timelife):
     automl.fit(X_train, y_train)
     y_pred = automl.predict(X_test)
     
-    get_stat(automl) # necessario il salvataggio
+    pipelines = automl.show_models()
 
-    return (np.sqrt(mean_squared_error(y_test, y_pred)), r2_score(y_test, y_pred))
+    return (np.sqrt(mean_squared_error(y_test, y_pred)), r2_score(y_test, y_pred), pipelines)
 
   
 #print(automl.sprint_statistics())

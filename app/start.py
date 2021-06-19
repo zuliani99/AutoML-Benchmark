@@ -7,6 +7,7 @@ import dash_html_components as html
 from dash.dependencies import Input, Output, State
 import dash_bootstrap_components as dbc
 
+#import multiprocessing
 import os
 os.environ['KAGGLE_USERNAME'] = "zullle" # username from the json file
 os.environ['KAGGLE_KEY'] = "24df22da033e9547780e278280a6ae2b" # key from the json file
@@ -38,6 +39,7 @@ def start():
         dcc.Store(id="store_class_kaggle"), dcc.Store(id="store_reg_kaggle"),
         dcc.Store(id="store_class_results_openml"), dcc.Store(id="store_reg_results_openml"),
         dcc.Store(id="store_class_results_kaggle"), dcc.Store(id="store_reg_results_kaggle"),
+        dcc.Store(id="store_pipelines_class"), dcc.Store(id="store_pipelines_reg"),
         content
     ])
 
@@ -176,5 +178,6 @@ def start():
     app.run_server(host='0.0.0.0', port=8050, debug=True)
 
 if __name__ == '__main__':
+    #multiprocessing.set_start_method('forkserver')
     start()
     
