@@ -14,20 +14,27 @@ def get_lisd_dir(test):
             dropdown.append({'label': l, 'value': l})
     return dropdown
 
-
+def get_pipelines_button(df):
+    ret = []
+    for i in range(0, df.shape[0]):
+        ret.append([html.Div([dbc.Button("Pipelines", id={
+                'type': "open-Pipelines",
+                'index': str(df['dataset'][i])
+            }, value=str(df['dataset'][i]), className="mr-1", n_clicks=0)])])
+    return ret
 
 def retrun_graph_table(dfs, title, task, t, opts):
     scatters = []
     histos = []
     table = [html.H3(title)]
     for df in dfs:
-        df['pipelines'] = [html.Div([dbc.Button("Pipelines", id="open-Pipelines", value=str(df['dataset'][0]), className="mr-1", n_clicks=0)])]
+        df['pipelines'] = get_pipelines_button(df)
         table.append(dbc.Table.from_dataframe(df, striped=True, bordered=True, hover=True))
         for col in df.columns[1:-1]:
             #print(col)
             scatters.append(go.Scatter(x=df['dataset'], y=df[col], name=col.split('-')[0], mode='lines+markers'))
             histos.append(go.Bar(x=df['dataset'], y=df[col], name=col.split('-')[0]))
-        
+    
 
     table.append(
         dbc.Tabs(
@@ -124,6 +131,7 @@ def get_store_past_bech_function(timestamp, type):
         dfs.append(pd.read_csv('./results/'+ type +'/'+timestamp+'/options.csv'))
         for t in ('classification', 'regression'):
             dfs.append(pd.read_csv('./results/'+ type +'/'+timestamp+'/'+ t + '/pipelines.csv').to_json(orient="split"))
+        print(dfs[5], dfs[6])
         return get_store_and_tables(dfs, type)
     else:
         raise PreventUpdate

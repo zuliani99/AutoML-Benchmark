@@ -78,6 +78,20 @@ There are five types of operations:
 ''')
 
 openmlbenchmark = html.Div([
+    dbc.Modal(
+            [
+                dbc.ModalHeader("Header"),
+                dbc.ModalBody(id='modalbody-pipelines'),
+                dbc.ModalFooter(
+                    dbc.Button(
+                        "Close", id="close-lg", className="ml-auto", n_clicks=0
+                    )
+                ),
+            ],
+            id="modal-pipelines",
+            size="lg",
+            is_open=False,
+        ),
                     dbc.Card([
                         dbc.CardBody([
                             html.H4("OpenMl BenchMark", className="card-title"),
@@ -124,6 +138,20 @@ openmlbenchmark = html.Div([
             ])
 
 kagglebenchmark = html.Div([
+    dbc.Modal(
+            [
+                dbc.ModalHeader("Header"),
+                dbc.ModalBody(id='modalbody-pipelines'),
+                dbc.ModalFooter(
+                    dbc.Button(
+                        "Close", id="close-lg", className="ml-auto", n_clicks=0
+                    )
+                ),
+            ],
+            id="modal-pipelines",
+            size="lg",
+            is_open=False,
+        ),
                 dbc.Card([
                     dbc.CardBody([
                         html.H4("Kaggle BenchMark", className="card-title"),
@@ -166,6 +194,20 @@ kagglebenchmark = html.Div([
     ])
 
 testbenchmark = html.Div([
+    dbc.Modal(
+            [
+                dbc.ModalHeader("Header"),
+                dbc.ModalBody(id='modalbody-pipelines'),
+                dbc.ModalFooter(
+                    dbc.Button(
+                        "Close", id="close-lg", className="ml-auto", n_clicks=0
+                    )
+                ),
+            ],
+            id="modal-pipelines",
+            size="lg",
+            is_open=False,
+        ),
         dbc.Card([
                     dbc.CardBody([
                         html.H4("Test BenchMark", className="card-title"),
@@ -214,7 +256,7 @@ pastresultopenml = html.Div([
                 dbc.ModalBody(id='modalbody-pipelines'),
                 dbc.ModalFooter(
                     dbc.Button(
-                        "Close", id="close-lg", className="ml-auto", n_clicks=0
+                        "Close", id={"type": "close-lg", 'index': 'pipelines'}, className="ml-auto", n_clicks=0
                     )
                 ),
             ],
@@ -227,15 +269,15 @@ pastresultopenml = html.Div([
         ),
         html.Hr(),
         
-        dbc.Spinner(children=[
-            html.Div(id='result-past-bench-openml-table-class'),
-        ],size="lg", color="primary", type="border", fullscreen=False),
+        #dbc.Spinner(children=[
+        html.Div(id='result-past-bench-openml-table-class'),
+        #],size="lg", color="primary", type="border", fullscreen=False),
         dbc.Spinner(children=[
             html.Div(id='result-past-bench-openml-graph-class'),
         ],size="lg", color="primary", type="border", fullscreen=False),
-        dbc.Spinner(children=[
+        #dbc.Spinner(children=[
         html.Div(id='result-past-bench-openml-table-reg'),
-        ],size="lg", color="primary", type="border", fullscreen=False),
+        #],size="lg", color="primary", type="border", fullscreen=False),
         dbc.Spinner(children=[
             html.Div(id='result-past-bench-openml-graph-reg'),
         ],size="lg", color="primary", type="border", fullscreen=False),
@@ -243,6 +285,20 @@ pastresultopenml = html.Div([
 
 
 pastresultkaggle = html.Div([
+        dbc.Modal(
+            [
+                dbc.ModalHeader("Header"),
+                dbc.ModalBody(id='modalbody-pipelines'),
+                dbc.ModalFooter(
+                    dbc.Button(
+                        "Close", id="close-lg", className="ml-auto", n_clicks=0
+                    )
+                ),
+            ],
+            id="modal-pipelines",
+            size="lg",
+            is_open=False,
+        ),
         dbc.Select(id='pastresultkaggle', options=get_lisd_dir('Kaggle'),
             placeholder='Filter a BenchMark by Date',
         ),

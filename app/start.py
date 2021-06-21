@@ -4,8 +4,9 @@
 import dash
 import dash_core_components as dcc
 import dash_html_components as html
-from dash.dependencies import Input, Output, State
+from dash.dependencies import Input, Output, State, ALL, MATCH
 import dash_bootstrap_components as dbc
+from dash.exceptions import PreventUpdate
 
 #import multiprocessing
 import os
@@ -16,13 +17,14 @@ from webapp.frontend import sidebar, openmlbenchmark, kagglebenchmark, testbench
 from webapp.backend import render_page_content_function, start_openml_function, start_kaggle_function, start_test_function, render_tab_content_function, collapse_alogrithms_options_function
 from webapp.utils import get_store_past_bech_function, render_collapse_options
 
-
-def start(app):
+def start():
+    app = dash.Dash(__name__, external_stylesheets=[dbc.themes.BOOTSTRAP], suppress_callback_exceptions=True)
     
     app.title = 'AutoML Benchmark'
 
     algorithms = ['autosklearn', 'h2o', 'tpot', 'autokeras', 'autogluon']
 
+    pipelines_buttons = [0,0,0,0]
 
     CONTENT_STYLE = {
         "marginLeft": "22rem",
@@ -105,8 +107,8 @@ def start(app):
 
 
     
-#qui aggiorno i store di class e reg e stampo inizialmente le tabelle con i relativi risultati
-#OPNEML
+    #qui aggiorno i store di class e reg e stampo inizialmente le tabelle con i relativi risultati
+    #OPNEML
     @app.callback(
         [Output('store_class_results_openml', 'data'), Output('store_reg_results_openml', 'data'), Output('result-past-bench-openml-table-class', 'children'), Output('result-past-bench-openml-table-reg', 'children'), Output('store_pipelines_results_class_openml', 'data'), Output('store_pipelines_results_reg_openml', 'data')],
         [Input('pastresultopenml', 'value')]
@@ -114,7 +116,7 @@ def start(app):
     def get_store_past_bech_openml(timestamp):
         return get_store_past_bech_function(timestamp, 'OpenML')
 
-#KAGGLE
+    #KAGGLE
     @app.callback(
         [Output('store_class_results_kaggle', 'data'), Output('store_reg_results_kaggle', 'data'), Output('result-past-bench-kaggle-table-class', 'children'), Output('result-past-bench-kaggle-table-reg', 'children'), Output('store_pipelines_results_class_kaggle', 'data'), Output('store_pipelines_results_reg_kaggle', 'data')],
         [Input('pastresultkaggle', 'value')]
@@ -123,7 +125,7 @@ def start(app):
         return get_store_past_bech_function(timestamp, 'Kaggle')
 
 
-#modfico stra scatter e histogram i risultati di classificazione
+    #modfico stra scatter e histogram i risultati di classificazione
     @app.callback([Output('res-bench-openml-graph-class', 'children')], [Input("tabs-class", "active_tab"), Input('store_class_openml', 'data')])
     def render_tab_content_class(active_tab, store_class_openml):
         return render_tab_content_function(active_tab, store_class_openml, ('class_acc', 'class_f1'))
@@ -141,7 +143,7 @@ def start(app):
         return render_tab_content_function(active_tab, store_class_results_kaggle, ('class_acc', 'class_f1'))
 
 
-#modfico stra scatter e histogram i risultati di regressione
+    #modfico stra scatter e histogram i risultati di regressione
     @app.callback([Output('res-bench-openml-graph-reg', 'children')], [Input("tabs-reg", "active_tab"), Input('store_reg_openml', 'data')])
     def render_tab_content_reg(active_tab, store_reg_openml):
         return render_tab_content_function(active_tab, store_reg_openml, ('reg_rmse', 'reg_r2'))
@@ -176,23 +178,50 @@ def start(app):
     def disable_buttons_collapse(choice):
         return render_collapse_options(choice)
 
+    
     @app.callback(
-        [Output("modal-pipelines", "is_open"), Output('modalbody-pipelines', 'children')],
-        [Input('store_pipelines_results_class_openml', 'data'), Input('store_pipelines_results_reg_openml', 'data'), Input("open-Pipelines", "n_clicks"), Input("close-lg", "n_clicks"), Input("open-Pipelines", "value")],
+        [Output("modal-pipelines", "is_open"), Output('modalbody-pipelines', 'children'),
+        Output({"type": "open-Pipelines", "index": ALL}, "n_clicks"),
+        Output({"type": "close-lg", "index": ALL}, "n_clicks")],
+        [Input('store_pipelines_results_class_openml', 'data'),
+        Input('store_pipelines_results_reg_openml', 'data'),
+        Input({"type": "open-Pipelines", "index": ALL}, "n_clicks"),
+        Input({"type": "close-lg", "index": ALL}, "n_clicks"),
+        Input({"type": "open-Pipelines", "index": ALL}, "valuse")],
         [State("modal-pipelines", "is_open")]
     )
     def show_hide_pipelines(store_pipelines_class, store_pipelines_reg, n1, n2, name, is_open):
-        print(n1, n2, name, is_open)
-        if n1 or n2:
-            return (not is_open, None)         
-        return (is_open, store_pipelines_class)
+        #print('ATTENZIONEEEEEEEEEEEEE')
+        print(n1, n2)
+        print(name, is_open)
+        if (n1 == [] or n2 == []):
+            raise PreventUpdate
+        else:
+            if 1 in n1[0:int(len(n1)/2)]:
+                print('class')
+                ret = []
+                for i in range(0, len(n1)):
+                    ret.append(0)
+                print(ret)
+                return (not is_open, store_pipelines_class, ret, [0])
+            if 1 in n1[int(len(n1)/2) : len(n1)]:
+                print('reg')
+                ret = []
+                for i in range(0, len(n1)):
+                    ret.append(0)
+                    print(ret)
+                return (not is_open, store_pipelines_reg, ret, [0])
+            if n2[0] > 0:
+                print('bho')
+                return (not is_open, None, n1, [0])
+        print('sono qua')
+        #return (is_open, None, n1)
+        raise PreventUpdate
 
 
-    '''host='0.0.0.0', port=8050, '''
     app.run_server(host='0.0.0.0', port=8050, debug=True)
 
 if __name__ == '__main__':
-    #multiprocessing.set_start_method('forkserver')
-    app = dash.Dash(__name__, external_stylesheets=[dbc.themes.BOOTSTRAP], suppress_callback_exceptions=True)
-    start(app)
+    start()
+    
     
