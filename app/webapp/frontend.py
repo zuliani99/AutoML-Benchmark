@@ -208,6 +208,20 @@ testbenchmark = html.Div([
     ])
 
 pastresultopenml = html.Div([
+        dbc.Modal(
+            [
+                dbc.ModalHeader("Header"),
+                dbc.ModalBody(id='modalbody-pipelines'),
+                dbc.ModalFooter(
+                    dbc.Button(
+                        "Close", id="close-lg", className="ml-auto", n_clicks=0
+                    )
+                ),
+            ],
+            id="modal-pipelines",
+            size="lg",
+            is_open=False,
+        ),
         dbc.Select(id='pastresultopenml', options=get_lisd_dir('OpenML'),
             placeholder='Filter a BenchMark by Date',
         ),

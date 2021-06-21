@@ -77,4 +77,12 @@ class Result:
         self.options.to_csv('./results/' + self.t + '/' + str(date).replace(' ', '-')+ '/options.csv', index = False)
 
         # Ritorno i dataframe oppure None se sono vuoti, ritorna una una lista di 4 dataframe
-        return self.res_class_acc if not self.res_class_acc.empty else None, self.res_class_f1 if not self.res_class_f1.empty else None, self.res_reg_rmse if not self.res_reg_rmse.empty else None, self.res_reg_r2 if not self.res_reg_r2.empty else None, self.options
+        return (
+            self.res_class_acc if not self.res_class_acc.empty else None, 
+            self.res_class_f1 if not self.res_class_f1.empty else None, 
+            self.res_reg_rmse if not self.res_reg_rmse.empty else None, 
+            self.res_reg_r2 if not self.res_reg_r2.empty else None, 
+            self.options,
+            self.pipelines_class if not self.pipelines_class.empty else None, 
+            self.pipelines_reg if not self.pipelines_reg.empty else None, 
+        )

@@ -17,8 +17,7 @@ from webapp.backend import render_page_content_function, start_openml_function, 
 from webapp.utils import get_store_past_bech_function, render_collapse_options
 
 
-def start():
-    app = dash.Dash(__name__, external_stylesheets=[dbc.themes.BOOTSTRAP], suppress_callback_exceptions=True)
+def start(app):
     
     app.title = 'AutoML Benchmark'
 
@@ -39,7 +38,10 @@ def start():
         dcc.Store(id="store_class_kaggle"), dcc.Store(id="store_reg_kaggle"),
         dcc.Store(id="store_class_results_openml"), dcc.Store(id="store_reg_results_openml"),
         dcc.Store(id="store_class_results_kaggle"), dcc.Store(id="store_reg_results_kaggle"),
-        dcc.Store(id="store_pipelines_class"), dcc.Store(id="store_pipelines_reg"),
+        dcc.Store(id="store_pipelines_class_openml"), dcc.Store(id="store_pipelines_reg_openml"),
+        dcc.Store(id="store_pipelines_class_kaggle"), dcc.Store(id="store_pipelines_reg_kaggle"),
+        dcc.Store(id="store_pipelines_results_class_openml"), dcc.Store(id="store_pipelines_results_reg_openml"),
+        dcc.Store(id="store_pipelines_results_class_kaggle"), dcc.Store(id="store_pipelines_results_reg_kaggle"),
         content
     ])
 
@@ -51,9 +53,9 @@ def start():
         return render_page_content_function(pathname)
 
 
-    #populiamo i due store
+    #populiamo i 4 store
     @app.callback(
-        [Output('store_class_openml', 'data'), Output('store_reg_openml', 'data'), Output('res-bench-openml-table-class', 'children'), Output('res-bench-openml-table-reg', 'children')],
+        [Output('store_class_openml', 'data'), Output('store_reg_openml', 'data'), Output('res-bench-openml-table-class', 'children'), Output('res-bench-openml-table-reg', 'children'), Output('store_pipelines_class_openml', 'data'), Output('store_pipelines_reg_openml', 'data')],
         [Input('submit-openml', 'n_clicks')],
         [State('nmore', 'value'), State('ndf', 'value'), State("autosklearn-timelife", "value"), State("h2o-timelife", "value"), State("tpot-timelife", "value"), State("autokeras-timelife", "value"), State("autogluon-timelife", "value")]
     )
@@ -69,9 +71,9 @@ def start():
 
 
 
-    #populiamo i due store
+    #populiamo i 4 store
     @app.callback(
-        [Output('store_class_kaggle', 'data'), Output('store_reg_kaggle', 'data'), Output('res-bench-kaggle-table-class', 'children'), Output('res-bench-kaggle-table-reg', 'children')],
+        [Output('store_class_kaggle', 'data'), Output('store_reg_kaggle', 'data'), Output('res-bench-kaggle-table-class', 'children'), Output('res-bench-kaggle-table-reg', 'children'), Output('store_pipelines_class_kaggle', 'data'), Output('store_pipelines_reg_kaggle', 'data')],
         [Input('submit-kaggle', 'n_clicks')],
         [State('kaggledataset', 'value'), State("autosklearn-timelife", "value"), State("h2o-timelife", "value"), State("tpot-timelife", "value"), State("autokeras-timelife", "value"), State("autogluon-timelife", "value")]
     )
@@ -106,7 +108,7 @@ def start():
 #qui aggiorno i store di class e reg e stampo inizialmente le tabelle con i relativi risultati
 #OPNEML
     @app.callback(
-        [Output('store_class_results_openml', 'data'), Output('store_reg_results_openml', 'data'), Output('result-past-bench-openml-table-class', 'children'), Output('result-past-bench-openml-table-reg', 'children')],
+        [Output('store_class_results_openml', 'data'), Output('store_reg_results_openml', 'data'), Output('result-past-bench-openml-table-class', 'children'), Output('result-past-bench-openml-table-reg', 'children'), Output('store_pipelines_results_class_openml', 'data'), Output('store_pipelines_results_reg_openml', 'data')],
         [Input('pastresultopenml', 'value')]
     )
     def get_store_past_bech_openml(timestamp):
@@ -114,7 +116,7 @@ def start():
 
 #KAGGLE
     @app.callback(
-        [Output('store_class_results_kaggle', 'data'), Output('store_reg_results_kaggle', 'data'), Output('result-past-bench-kaggle-table-class', 'children'), Output('result-past-bench-kaggle-table-reg', 'children')],
+        [Output('store_class_results_kaggle', 'data'), Output('store_reg_results_kaggle', 'data'), Output('result-past-bench-kaggle-table-class', 'children'), Output('result-past-bench-kaggle-table-reg', 'children'), Output('store_pipelines_results_class_kaggle', 'data'), Output('store_pipelines_results_reg_kaggle', 'data')],
         [Input('pastresultkaggle', 'value')]
     )
     def get_store_past_bech_kaggle(timestamp):
@@ -174,10 +176,23 @@ def start():
     def disable_buttons_collapse(choice):
         return render_collapse_options(choice)
 
+    @app.callback(
+        [Output("modal-pipelines", "is_open"), Output('modalbody-pipelines', 'children')],
+        [Input('store_pipelines_results_class_openml', 'data'), Input('store_pipelines_results_reg_openml', 'data'), Input("open-Pipelines", "n_clicks"), Input("close-lg", "n_clicks"), Input("open-Pipelines", "value")],
+        [State("modal-pipelines", "is_open")]
+    )
+    def show_hide_pipelines(store_pipelines_class, store_pipelines_reg, n1, n2, name, is_open):
+        print(n1, n2, name, is_open)
+        if n1 or n2:
+            return (not is_open, None)         
+        return (is_open, store_pipelines_class)
+
+
     '''host='0.0.0.0', port=8050, '''
     app.run_server(host='0.0.0.0', port=8050, debug=True)
 
 if __name__ == '__main__':
     #multiprocessing.set_start_method('forkserver')
-    start()
+    app = dash.Dash(__name__, external_stylesheets=[dbc.themes.BOOTSTRAP], suppress_callback_exceptions=True)
+    start(app)
     

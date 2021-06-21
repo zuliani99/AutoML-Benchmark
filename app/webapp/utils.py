@@ -6,7 +6,6 @@ import plotly.graph_objects as go
 from dash.exceptions import PreventUpdate
 import pandas as pd
 
-
 def get_lisd_dir(test):
     lis = (os.listdir('./results/'+test))
     dropdown = []
@@ -22,9 +21,10 @@ def retrun_graph_table(dfs, title, task, t, opts):
     histos = []
     table = [html.H3(title)]
     for df in dfs:
+        df['pipelines'] = [html.Div([dbc.Button("Pipelines", id="open-Pipelines", value=str(df['dataset'][0]), className="mr-1", n_clicks=0)])]
         table.append(dbc.Table.from_dataframe(df, striped=True, bordered=True, hover=True))
-        for col in df.columns[1:]:
-            print(col)
+        for col in df.columns[1:-1]:
+            #print(col)
             scatters.append(go.Scatter(x=df['dataset'], y=df[col], name=col.split('-')[0], mode='lines+markers'))
             histos.append(go.Bar(x=df['dataset'], y=df[col], name=col.split('-')[0]))
         
@@ -63,7 +63,7 @@ def retrun_graph_table(dfs, title, task, t, opts):
     else:
         return scatters[:5], scatters[5:], histos[:5], histos[5:], table, options 
 
-def get_store_and_tables(dfs, type):
+def get_store_and_tables(dfs, type):  # dfs sono i risultati della calsse result_class
     print(dfs)
     store_dict_class = {'scatter_class_acc': None, 'histo_class_acc': None, 'scatter_class_f1': None, 'histo_class_f1': None, 'options_class': None}
     store_dict_reg = {'scatter_reg_rmse': None, 'histo_reg_rmse': None, 'scatter_reg_r2': None, 'histo_reg_r2': None, 'options_reg': None}
@@ -107,7 +107,7 @@ def get_store_and_tables(dfs, type):
     
     #print(store_dict_class)
 
-    return store_dict_class, store_dict_reg, tables[0], tables[1]
+    return store_dict_class, store_dict_reg, tables[0], tables[1], dfs[5], dfs[6]
 
 
 def get_store_past_bech_function(timestamp, type):
@@ -122,6 +122,8 @@ def get_store_past_bech_function(timestamp, type):
                 dfs.append(None)
         #print(dfs)
         dfs.append(pd.read_csv('./results/'+ type +'/'+timestamp+'/options.csv'))
+        for t in ('classification', 'regression'):
+            dfs.append(pd.read_csv('./results/'+ type +'/'+timestamp+'/'+ t + '/pipelines.csv').to_json(orient="split"))
         return get_store_and_tables(dfs, type)
     else:
         raise PreventUpdate
