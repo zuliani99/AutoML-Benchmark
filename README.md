@@ -18,7 +18,7 @@ To run the app execute the following line of code:
 ```bash
 python3 start.py
 ```
-Open your favourite browser and go to: [http://127.0.0.1:8050/](http://127.0.0.1:8050/). Here you will be albe to interact with the application
+Open your favourite browser and go to: [http://0.0.0.0:8050/](http://0.0.0.0:8050/). Here you will be albe to interact with the application
 
 There are five types of operations:
 
