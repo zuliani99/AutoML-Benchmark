@@ -19,104 +19,90 @@ def get_pipelines_button(df, task):
     ret = []
     for i in range(0, df.shape[0]):
         print(str(df['dataset'][i]))
-        ret.append([html.Div([dbc.Button("Pipelines", id={
+        ret.append([dbc.Modal(
+                [
+                    dbc.ModalHeader("Pipelines"),
+                    dbc.ModalBody(id={
+                                'type': "body-modal-Pipelines",
+                                'index': task+'-'+str(df['dataset'][i])
+                            }),
+                    dbc.ModalFooter(
+                        dbc.Button(
+                            "Close", id={
+                                'type': "close-modal-Pipelines",
+                                'index': task+'-'+str(df['dataset'][i])
+                            }, className="ml-auto", n_clicks=0
+                        )
+                    ),
+                ],
+                id={
+                    'type': "modal-Pipelines",
+                    'index': task+'-'+str(df['dataset'][i])
+                },
+                size="lg",
+                is_open=False,
+            ),html.Div([dbc.Button("Pipelines", id={
                 'type': "open-Pipelines",
                 'index': task+'-'+str(df['dataset'][i])
-            }, value=str(df['dataset'][i]), className="mr-1", n_clicks=0)])])
+            }, value=task+'-'+str(df['dataset'][i]), className="mr-1", n_clicks=0)])])
     return ret
 
-def retrun_graph_table(dfs, title, task, t, opts):
+def retrun_graph_table(dfs, pipelines, title, task, t, opts, scores):
     scatters = []
     histos = []
     table = [html.H3(title)]
-    for df in dfs:
-        df['pipelines'] = get_pipelines_button(df, df.columns[1].split('-')[1])
-        table.append(dbc.Table.from_dataframe(df, striped=True, bordered=True, hover=True))
-        for col in df.columns[1:-1]:
-            #print(col)
-            scatters.append(go.Scatter(x=df['dataset'], y=df[col], name=col.split('-')[0], mode='lines+markers'))
-            histos.append(go.Bar(x=df['dataset'], y=df[col], name=col.split('-')[0]))
-    
-
-    table.append(
-        dbc.Tabs(
-            [
-                dbc.Tab(label="Histograms", tab_id="histogram"),
-                dbc.Tab(label="Scatter", tab_id="scatter"),
-                dbc.Tab(label="Algorithm Options", tab_id="algo-options"),
-            ],
-            id="tabs-"+task,
-            active_tab="histogram",
-        )
-    )
-
-    opts = opts.to_dict()
-    options = [
-        html.Div([
-            html.P(["Running time for Autosklearn: " + str(opts['autosklearn'][0]) + " minute/s"]),
-            html.P(["Running time for TPOT: " + str(opts['tpot'][0]) + " generation/s"]),
-            html.P(["Running time for H2O: " + str(opts['h2o'][0]) + " minute/s"]),
-            html.P(["Running time for AutoKeras: " + str(opts['autokeras'][0]) + " epoch/s"]),
-            html.P(["Running time for AutoGluon: " + str(opts['autogluon'][0]) + " minute/s"]),
-        ])
-    ]
-
-    #table.append(html.Div(id='result-past-bench-openml-graph-'+type))
-
-    # acc f1 acc f1 / rmse r2 rmse r2
-    #return scatters[:5], scatters[5:], histos[:5], histos[5:], table if t == 'OpenML' else scatters[:6], scatters[5:], histos[:6], histos[5:], table
-    #print(scatters)
-    #print(histos)
-    if(t == 'Kaggle'): 
-        return scatters[:6], scatters[6:], histos[:6], histos[6:], table, options
+    if(dfs[0] is None or dfs[1] is None):
+        return {'scatter_'+scores[0]: None, 'histo_'+scores[0]: None, 'scatter_'+scores[1]: None, 'histo_'+scores[1]: None, 'options': None}, None, dbc.Tabs( [], id="tabs-class", active_tab="", style={'hidden':'true'} )
     else:
-        return scatters[:5], scatters[5:], histos[:5], histos[5:], table, options 
+        for df in dfs:
+            df['pipelines'] = get_pipelines_button(df, df.columns[1].split('-')[1])
+            table.append(dbc.Table.from_dataframe(df, striped=True, bordered=True, hover=True))
+            for col in df.columns[1:-1]:
+                #print(col)
+                scatters.append(go.Scatter(x=df['dataset'], y=df[col], name=col.split('-')[0], mode='lines+markers'))
+                histos.append(go.Bar(x=df['dataset'], y=df[col], name=col.split('-')[0]))
+        
 
-def get_store_and_tables(dfs, type):  # dfs sono i risultati della calsse result_class
-    print(dfs)
-    store_dict_class = {'scatter_class_acc': None, 'histo_class_acc': None, 'scatter_class_f1': None, 'histo_class_f1': None, 'options_class': None}
-    store_dict_reg = {'scatter_reg_rmse': None, 'histo_reg_rmse': None, 'scatter_reg_r2': None, 'histo_reg_r2': None, 'options_reg': None}
+        table.append(
+            dbc.Tabs(
+                [
+                    dbc.Tab(label="Histograms", tab_id="histogram"),
+                    dbc.Tab(label="Scatter", tab_id="scatter"),
+                    dbc.Tab(label="Algorithm Options", tab_id="algo-options"),
+                ],
+                id="tabs-"+task,
+                active_tab="histogram",
+            )
+        )
+
+        opts = opts.to_dict()
+        options = [
+            html.Div([
+                html.P(["Running time for Autosklearn: " + str(opts['autosklearn'][0]) + " minute/s"]),
+                html.P(["Running time for TPOT: " + str(opts['tpot'][0]) + " generation/s"]),
+                html.P(["Running time for H2O: " + str(opts['h2o'][0]) + " minute/s"]),
+                html.P(["Running time for AutoKeras: " + str(opts['autokeras'][0]) + " epoch/s"]),
+                html.P(["Running time for AutoGluon: " + str(opts['autogluon'][0]) + " minute/s"]),
+            ])
+        ]
+
+        
+        limit = 5 if t == 'Kaggle' else 6 # 6 perchè c'è il leader per i kaggle
+        return {
+            'scatter_'+scores[0]: scatters[:limit], 'histo_'+scores[0]: histos[:limit], 'scatter_'+scores[1]: scatters[limit:], 'histo_'+scores[1]: histos[limit:], 'options': options
+        }, pipelines, table
+
+
+def get_store_and_tables(dfs, type):
+    res_class_acc, res_class_f1, res_reg_rmse, res_reg_r2, pipelines_class, pipelines_reg, options = dfs # scomposizione
+    store_dict= { 'class': {}, 'reg': {} }
+    store_pipelines = { 'class': {}, 'reg': {} }
     tables = [[None], [None]]
-    if dfs[0] is not None:
-        #tables_graphs.append(retrun_graph_table(dfs[:2], 'Risultati Classificazione', ['Accuracy', 'F1-score']))
-        res = retrun_graph_table(dfs[:2], 'Classification Results', 'class', type, dfs[4])
-        store_dict_class['scatter_class_acc'] = res[0]
-        store_dict_class['histo_class_acc'] = res[2]
-        store_dict_class['scatter_class_f1'] = res[1]
-        store_dict_class['histo_class_f1'] = res[3]
-        store_dict_class['options_class'] = res[5]
-        tables[0] = res[4]
-    else:
-        tables[0].append(
-            dbc.Tabs(
-                [],
-                id="tabs-class",
-                active_tab="",
-                style={'hidden':'true'}
-            )
-        )
-    if dfs[2] is not None:
-        #tables_graphs.append(retrun_graph_table(dfs[2:], 'Risultati Regressione', ['RMSE', 'R2-score']))
-        res = retrun_graph_table(dfs[2:4], 'Regression Results', 'reg', type, dfs[4])
-        store_dict_reg['scatter_reg_rmse'] = res[0]
-        store_dict_reg['histo_reg_rmse'] = res[2]
-        store_dict_reg['scatter_reg_r2'] = res[1]
-        store_dict_reg['histo_reg_r2'] = res[3]
-        store_dict_reg['options_reg'] = res[5]
-        tables[1] = res[4]
-    else:
-        tables[1].append(
-            dbc.Tabs(
-                [],
-                id="tabs-reg",
-                active_tab="",
-                style={'hidden':'true'}
-            )
-        )
-    
-    #print(store_dict_class)
 
-    return store_dict_class, store_dict_reg, tables[0], tables[1], dfs[5], dfs[6]
+    store_dict['class'], store_pipelines['class'], tables[0] = retrun_graph_table([res_class_acc, res_class_f1], pipelines_class, 'Classification Results', 'class', type, options, ('acc', 'f1'))
+    store_dict['reg'], store_pipelines['reg'], tables[1] = retrun_graph_table([res_reg_rmse, res_reg_r2], pipelines_reg, 'Regression Results', 'reg', type, options, ('rmse', 'r2'))
+
+    return store_dict['class'], store_dict['reg'], store_pipelines['class'], store_pipelines['reg'], tables[0], tables[1]
 
 
 def get_store_past_bech_function(timestamp, type):
@@ -130,10 +116,10 @@ def get_store_past_bech_function(timestamp, type):
             else:
                 dfs.append(None)
         #print(dfs)
-        dfs.append(pd.read_csv('./results/'+ type +'/'+timestamp+'/options.csv'))
         for t in ('classification', 'regression'):
-            dfs.append(pd.read_csv('./results/'+ type +'/'+timestamp+'/'+ t + '/pipelines.csv').to_json(orient="split"))
-        print(dfs[5], dfs[6])
+            dfs.append(pd.read_csv('./results/'+ type +'/'+timestamp+'/'+ t + '/pipelines.csv').to_dict())
+        dfs.append(pd.read_csv('./results/'+ type +'/'+timestamp+'/options.csv'))
+        #print(dfs[5], dfs[6])
         return get_store_and_tables(dfs, type)
     else:
         raise PreventUpdate
@@ -141,35 +127,30 @@ def get_store_past_bech_function(timestamp, type):
 
 
 def render_tab_content(active_tab, data, type): #pathname
-    #render = {'openml': None, 'kaggle': None, 'results-openml': None, 'results-kaggle': None}
     if active_tab and data is not None:
         if active_tab == "scatter":
-            print(data['scatter_'+type[0]])
             return [html.Div(
                             dbc.Row(
                                 [
-                                    dbc.Col(dcc.Graph(figure=go.Figure(data=data['scatter_'+type[0]], layout=go.Layout(xaxis = dict(title = 'Datasets'), yaxis = dict(title = type[0].split('_')[1]))))),
-                                    dbc.Col(dcc.Graph(figure=go.Figure(data=data['scatter_'+type[1]], layout=go.Layout(xaxis = dict(title = 'Datasets'), yaxis = dict(title = type[1].split('_')[1]))))),
+                                    dbc.Col(dcc.Graph(figure=go.Figure(data=data['scatter_'+type[0]], layout=go.Layout(xaxis = dict(title = 'Datasets'), yaxis = dict(title = type[0]))))),
+                                    dbc.Col(dcc.Graph(figure=go.Figure(data=data['scatter_'+type[1]], layout=go.Layout(xaxis = dict(title = 'Datasets'), yaxis = dict(title = type[1]))))),
                                 ], align="center"
                             )
                         )]
         elif active_tab == "histogram":
-            print(data['histo_'+type[0]])
-            #print(data['histo_'+type[1]])
             return [html.Div(
                             dbc.Row(
                                 [
-                                    dbc.Col(dcc.Graph(figure=go.Figure(data=data['histo_'+type[0]], layout=go.Layout(xaxis = dict(title = 'Datasets'), yaxis = dict(title = type[0].split('_')[1]))))),
-                                    dbc.Col(dcc.Graph(figure=go.Figure(data=data['histo_'+type[1]], layout=go.Layout(xaxis = dict(title = 'Datasets'), yaxis = dict(title = type[1].split('_')[1]))))),
+                                    dbc.Col(dcc.Graph(figure=go.Figure(data=data['histo_'+type[0]], layout=go.Layout(xaxis = dict(title = 'Datasets'), yaxis = dict(title = type[0]))))),
+                                    dbc.Col(dcc.Graph(figure=go.Figure(data=data['histo_'+type[1]], layout=go.Layout(xaxis = dict(title = 'Datasets'), yaxis = dict(title = type[1]))))),
                                 ], align="center"
                             )
                         )]
         else:
             return [
-                data['options_'+type[0].split('_')[0]]
+                data['options']
             ]
-        #render[pathname] = ret
-        #return render
+
     return "No tab selected"
 
 
@@ -210,3 +191,30 @@ def render_collapse_options(choice):
         'autogluon':[True, True, True, True, False],
         'all': [False, False, False, False, False],
     }.get(choice)
+
+
+def get_body_for_modal(pipeline, df_name):
+    body = []
+    df = pd.DataFrame.from_dict(pipeline)
+    col = df.columns
+    index = df.index
+    condition = df['dataset'] == df_name
+    row = index[condition].tolist()
+    pipeline = df.iloc[int(row[0])]
+    for i, name in enumerate(col[1:]):
+        body.append(html.Div([
+        html.H4(name),
+        html.P(pipeline[i])
+    ]))
+    return body
+
+
+def show_hide_pipelines_function(store_pipelines_class, store_pipelines_reg, n1, n2, value, is_open):
+        if n1 or n2:
+            score = value.split('-')[0]
+            df_name = value.split('-')[1]
+            if score in ['acc', 'f1']:
+                return not is_open, get_body_for_modal(store_pipelines_class, df_name)
+            else:
+                return not is_open, get_body_for_modal(store_pipelines_reg, df_name)
+        return is_open, None

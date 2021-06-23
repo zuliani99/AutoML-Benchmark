@@ -38,7 +38,6 @@ def start_openml_function(nmore, ndf, options):
         #print(state_button)
         if nmore is not None and ndf is not None:
             res = openml_benchmark(ndf, nmore, options)
-            #return [print_table_graphs(res)]
             return get_store_and_tables(res, 'OpenML')
         else:
             raise PreventUpdate
