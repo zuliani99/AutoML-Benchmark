@@ -78,20 +78,6 @@ There are five types of operations:
 ''')
 
 openmlbenchmark = html.Div([
-    dbc.Modal(
-            [
-                dbc.ModalHeader("Header"),
-                dbc.ModalBody(id='modalbody-pipelines'),
-                dbc.ModalFooter(
-                    dbc.Button(
-                        "Close", id="close-lg", className="ml-auto", n_clicks=0
-                    )
-                ),
-            ],
-            id="modal-pipelines",
-            size="lg",
-            is_open=False,
-        ),
                     dbc.Card([
                         dbc.CardBody([
                             html.H4("OpenMl BenchMark", className="card-title"),
@@ -138,20 +124,6 @@ openmlbenchmark = html.Div([
             ])
 
 kagglebenchmark = html.Div([
-    dbc.Modal(
-            [
-                dbc.ModalHeader("Header"),
-                dbc.ModalBody(id='modalbody-pipelines'),
-                dbc.ModalFooter(
-                    dbc.Button(
-                        "Close", id="close-lg", className="ml-auto", n_clicks=0
-                    )
-                ),
-            ],
-            id="modal-pipelines",
-            size="lg",
-            is_open=False,
-        ),
                 dbc.Card([
                     dbc.CardBody([
                         html.H4("Kaggle BenchMark", className="card-title"),
@@ -194,20 +166,6 @@ kagglebenchmark = html.Div([
     ])
 
 testbenchmark = html.Div([
-    dbc.Modal(
-            [
-                dbc.ModalHeader("Header"),
-                dbc.ModalBody(id='modalbody-pipelines'),
-                dbc.ModalFooter(
-                    dbc.Button(
-                        "Close", id="close-lg", className="ml-auto", n_clicks=0
-                    )
-                ),
-            ],
-            id="modal-pipelines",
-            size="lg",
-            is_open=False,
-        ),
         dbc.Card([
                     dbc.CardBody([
                         html.H4("Test BenchMark", className="card-title"),
@@ -250,20 +208,6 @@ testbenchmark = html.Div([
     ])
 
 pastresultopenml = html.Div([
-        dbc.Modal(
-            [
-                dbc.ModalHeader("Header"),
-                dbc.ModalBody(id='modalbody-pipelines'),
-                dbc.ModalFooter(
-                    dbc.Button(
-                        "Close", id={"type": "close-lg", 'index': 'pipelines'}, className="ml-auto", n_clicks=0
-                    )
-                ),
-            ],
-            id="modal-pipelines",
-            size="lg",
-            is_open=False,
-        ),
         dbc.Select(id='pastresultopenml', options=get_lisd_dir('OpenML'),
             placeholder='Filter a BenchMark by Date',
         ),
@@ -285,20 +229,6 @@ pastresultopenml = html.Div([
 
 
 pastresultkaggle = html.Div([
-        dbc.Modal(
-            [
-                dbc.ModalHeader("Header"),
-                dbc.ModalBody(id='modalbody-pipelines'),
-                dbc.ModalFooter(
-                    dbc.Button(
-                        "Close", id="close-lg", className="ml-auto", n_clicks=0
-                    )
-                ),
-            ],
-            id="modal-pipelines",
-            size="lg",
-            is_open=False,
-        ),
         dbc.Select(id='pastresultkaggle', options=get_lisd_dir('Kaggle'),
             placeholder='Filter a BenchMark by Date',
         ),

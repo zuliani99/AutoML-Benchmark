@@ -14,12 +14,14 @@ def get_lisd_dir(test):
             dropdown.append({'label': l, 'value': l})
     return dropdown
 
-def get_pipelines_button(df):
+def get_pipelines_button(df, task):
+    #print(task)
     ret = []
     for i in range(0, df.shape[0]):
+        print(str(df['dataset'][i]))
         ret.append([html.Div([dbc.Button("Pipelines", id={
                 'type': "open-Pipelines",
-                'index': str(df['dataset'][i])
+                'index': task+'-'+str(df['dataset'][i])
             }, value=str(df['dataset'][i]), className="mr-1", n_clicks=0)])])
     return ret
 
@@ -28,7 +30,7 @@ def retrun_graph_table(dfs, title, task, t, opts):
     histos = []
     table = [html.H3(title)]
     for df in dfs:
-        df['pipelines'] = get_pipelines_button(df)
+        df['pipelines'] = get_pipelines_button(df, df.columns[1].split('-')[1])
         table.append(dbc.Table.from_dataframe(df, striped=True, bordered=True, hover=True))
         for col in df.columns[1:-1]:
             #print(col)

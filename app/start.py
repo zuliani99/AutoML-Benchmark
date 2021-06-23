@@ -24,8 +24,6 @@ def start():
 
     algorithms = ['autosklearn', 'h2o', 'tpot', 'autokeras', 'autogluon']
 
-    pipelines_buttons = [0,0,0,0]
-
     CONTENT_STYLE = {
         "marginLeft": "22rem",
         "marginRight": "2rem",
@@ -178,17 +176,19 @@ def start():
     def disable_buttons_collapse(choice):
         return render_collapse_options(choice)
 
+
+    app.run_server(host='0.0.0.0', port=8050, debug=True)
     
-    @app.callback(
-        [Output("modal-pipelines", "is_open"), Output('modalbody-pipelines', 'children'),
-        Output({"type": "open-Pipelines", "index": ALL}, "n_clicks"),
-        Output({"type": "close-lg", "index": ALL}, "n_clicks")],
+'''    @app.callback(
+        [Output({"type":"modal-pipelines", "index": MATCH}, "is_open"), Output({"type": 'modalbody-pipelines', "index": MATCH}, 'children'),
+        Output({"type": "open-Pipelines", "index": MATCH}, "n_clicks"),
+        Output({"type": "close-lg", "index": MATCH}, "n_clicks")],
         [Input('store_pipelines_results_class_openml', 'data'),
         Input('store_pipelines_results_reg_openml', 'data'),
-        Input({"type": "open-Pipelines", "index": ALL}, "n_clicks"),
-        Input({"type": "close-lg", "index": ALL}, "n_clicks"),
-        Input({"type": "open-Pipelines", "index": ALL}, "valuse")],
-        [State("modal-pipelines", "is_open")]
+        Input({"type": "open-Pipelines", "index": MATCH}, "n_clicks"),
+        Input({"type": "close-lg", "index": MATCH}, "n_clicks"),
+        Input({"type": "open-Pipelines", "index": MATCH}, "valuse")],
+        [State({"type":"modal-pipelines", "index": MATCH}, "is_open")]
     )
     def show_hide_pipelines(store_pipelines_class, store_pipelines_reg, n1, n2, name, is_open):
         #print('ATTENZIONEEEEEEEEEEEEE')
@@ -217,9 +217,9 @@ def start():
         print('sono qua')
         #return (is_open, None, n1)
         raise PreventUpdate
+'''
 
-
-    app.run_server(host='0.0.0.0', port=8050, debug=True)
+    
 
 if __name__ == '__main__':
     start()
