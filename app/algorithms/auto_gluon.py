@@ -52,13 +52,11 @@ def autogluon(df, task, timelife):
     '''y_test = le.fit_transform(y_test)
     y_pred = le.fit_transform(y_pred)
     if len(np.unique(y_pred)) > 2:
-      f1 = f1_score(y_test, y_pred, average='weighted')
+      f1 = f1_score(y_test, y_pred, average='weighted')s
     else:
       f1 = f1_score(y_test, y_pred)
     return (res['accuracy'], f1)'''
-    print(res)
     return (res['accuracy'], f1(y_test, y_pred), pipelines)
   else:
-    print(res)
     return (res['root_mean_squared_error'], res['r2'], pipelines)
 

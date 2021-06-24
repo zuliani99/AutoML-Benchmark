@@ -34,14 +34,10 @@ def kaggle_benchmark(list_df, options):
             os.remove(path + '/' + df + '.zip')
 
             file_extracted = (os.listdir(path))
-            #print(file_extracted)
 
             for file in file_extracted:
-                #print(file, is_zipfile(file))
                 splitted = file.split('.')
-                #print(splitted)
                 if(splitted[len(splitted)-1] == 'zip'):
-                    #print('sono dentro')
                     zf = ZipFile(path + '/' + file)
                     zf.extractall(path) 
                     os.remove(path  + '/' + file)
@@ -56,7 +52,7 @@ def kaggle_benchmark(list_df, options):
             devo inserire il migliore nella tabella risultante così posso vedere come sono andati gli altri algoritmi
             '''
 
-            print('STO PER STAMPARE LACLASSFICA DEL DATASET')
+            print('STO PER STAMPARE LA CLASSFICA DEL DATASET')
             leader = leaderboard['submissions'][0]
             print(leader['teamName'], leader['score'])
 

@@ -49,7 +49,3 @@ def auto_sklearn(df, task, timelife):
     pipelines = automl.show_models()
 
     return (np.sqrt(mean_squared_error(y_test, y_pred)), r2_score(y_test, y_pred), pipelines)
-
-  
-#print(automl.sprint_statistics())
-#print(automl.show_models())

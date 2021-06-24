@@ -6,7 +6,7 @@ from algorithms.auto_gluon import autogluon
 from termcolor import colored
 
 def fun_autosklearn(df, task, timelife):
-    res_autosklearn = (0.0, 0.0)
+    res_autosklearn = (0.0, 0.0, None)
     print("--------------------------------AUTOSKLEARN--------------------------------")
     try:
         res_autosklearn = (auto_sklearn(df, task, timelife))
@@ -19,7 +19,7 @@ def fun_autosklearn(df, task, timelife):
 
 
 def fun_tpot(df, task, timelife):
-    res_tpot = (0.0, 0.0)
+    res_tpot = (0.0, 0.0, None)
     print("-----------------------------------TPOT------------------------------------")
     try:
         res_tpot = (TPOT(df, task, timelife))
@@ -31,7 +31,7 @@ def fun_tpot(df, task, timelife):
 
 
 def fun_autokeras(df, task, timelife):
-    res_autokeras = (0.0, 0.0)
+    res_autokeras = (0.0, 0.0, None)
     print("---------------------------------AUTOKERAS---------------------------------")
     try:
         res_autokeras = (autokeras(df, task, timelife))
@@ -42,7 +42,7 @@ def fun_autokeras(df, task, timelife):
     return res_autokeras
 
 def fun_h2o(df, task, timelife):
-    res_h2o = (0.0, 0.0)
+    res_h2o = (0.0, 0.0, None)
     print("------------------------------------H2O------------------------------------")
     try:
         res_h2o = (H2O(df, task, timelife))
@@ -54,7 +54,7 @@ def fun_h2o(df, task, timelife):
 
 
 def fun_autogluon(df, task, timelife):
-    res_autogluon = (0.0, 0.0)
+    res_autogluon = (0.0, 0.0, None)
     print("----------------------------------AUTOGLUON--------------------------------")
     try:
         res_autogluon = (autogluon(df, task, timelife))

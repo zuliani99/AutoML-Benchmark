@@ -26,10 +26,12 @@ def prepare_and_test(X, y, task, timelife):
 
   model = clf.export_model()
 
-  pipelines = (model.summary())      #intanto salviamo questo..
+  pipelines = (str(model.summary()))      #intanto salviamo questo..
 
   #shutil.rmtree('./structured_data_classifier/')
 
+  print('AKKKKKKKKKKKKKKKKKKKKKKK')
+  print(pipelines)
 
   y_pred = clf.predict(X_test)
 

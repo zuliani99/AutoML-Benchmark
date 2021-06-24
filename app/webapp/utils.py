@@ -14,37 +14,35 @@ def get_lisd_dir(test):
             dropdown.append({'label': l, 'value': l})
     return dropdown
 
-def get_pipelines_button(df, task):
-    #print(task)
+def get_pipelines_button(dfs, task):
     ret = []
-    for i in range(0, df.shape[0]):
-        print(str(df['dataset'][i]))
+    for index, row in dfs.iterrows():
         ret.append([dbc.Modal(
                 [
                     dbc.ModalHeader("Pipelines"),
                     dbc.ModalBody(id={
                                 'type': "body-modal-Pipelines",
-                                'index': task+'-'+str(df['dataset'][i])
+                                'index': task+'-'+str(row['dataset'])
                             }),
                     dbc.ModalFooter(
                         dbc.Button(
                             "Close", id={
                                 'type': "close-modal-Pipelines",
-                                'index': task+'-'+str(df['dataset'][i])
+                                'index': task+'-'+str(row['dataset'])
                             }, className="ml-auto", n_clicks=0
                         )
                     ),
                 ],
                 id={
                     'type': "modal-Pipelines",
-                    'index': task+'-'+str(df['dataset'][i])
+                    'index': task+'-'+str(row['dataset'])
                 },
                 size="lg",
                 is_open=False,
             ),html.Div([dbc.Button("Pipelines", id={
                 'type': "open-Pipelines",
-                'index': task+'-'+str(df['dataset'][i])
-            }, value=task+'-'+str(df['dataset'][i]), className="mr-1", n_clicks=0)])])
+                'index': task+'-'+str(row['dataset'])
+            }, value=task+'-'+str(row['dataset']), className="mr-1", n_clicks=0)])])
     return ret
 
 def retrun_graph_table(dfs, pipelines, title, task, t, opts, scores):
@@ -55,10 +53,9 @@ def retrun_graph_table(dfs, pipelines, title, task, t, opts, scores):
         return {'scatter_'+scores[0]: None, 'histo_'+scores[0]: None, 'scatter_'+scores[1]: None, 'histo_'+scores[1]: None, 'options': None}, None, dbc.Tabs( [], id="tabs-class", active_tab="", style={'hidden':'true'} )
     else:
         for df in dfs:
-            df['pipelines'] = get_pipelines_button(df, df.columns[1].split('-')[1])
+            df['pipelines'] = get_pipelines_button(df[['dataset']], df.columns[1].split('-')[1])
             table.append(dbc.Table.from_dataframe(df, striped=True, bordered=True, hover=True))
             for col in df.columns[1:-1]:
-                #print(col)
                 scatters.append(go.Scatter(x=df['dataset'], y=df[col], name=col.split('-')[0], mode='lines+markers'))
                 histos.append(go.Bar(x=df['dataset'], y=df[col], name=col.split('-')[0]))
         
@@ -87,7 +84,7 @@ def retrun_graph_table(dfs, pipelines, title, task, t, opts, scores):
         ]
 
         
-        limit = 5 if t == 'Kaggle' else 6 # 6 perchè c'è il leader per i kaggle
+        limit = 5 if t == 'OpenML' else 6 # 6 perchè c'è il leader per i kaggle
         return {
             'scatter_'+scores[0]: scatters[:limit], 'histo_'+scores[0]: histos[:limit], 'scatter_'+scores[1]: scatters[limit:], 'histo_'+scores[1]: histos[limit:], 'options': options
         }, pipelines, table
@@ -110,16 +107,14 @@ def get_store_past_bech_function(timestamp, type):
         dfs = []
         scores = [('classification','acc'), ('classification','f1_score'), ('regression','rmse'), ('regression','r2_score')]
         for score in scores:
-            print('./results/'+ type +'/'+timestamp+'/'+ score[0] +'/'+ score[1] +'.csv')
-            if os.path.exists('./results/'+ type +'/'+timestamp+'/'+ score[0] +'/'+ score[1] +'.csv'):
-                dfs.append(pd.read_csv('./results/'+ type +'/'+timestamp+'/'+ score[0] +'/'+ score[1] +'.csv'))
+            #print('./results/'+ type +'/'+timestamp+'/'+ score[0] +'/'+ score[1] +'.csv')
+            if os.path.exists('./results/'+ type +'/'+timestamp+'/'+ str(score[0]) +'/'+ str(score[1]) +'.csv'):
+                dfs.append(pd.read_csv('./results/'+ type +'/'+timestamp+'/'+ str(score[0]) +'/'+ str(score[1]) +'.csv'))
             else:
                 dfs.append(None)
-        #print(dfs)
         for t in ('classification', 'regression'):
-            dfs.append(pd.read_csv('./results/'+ type +'/'+timestamp+'/'+ t + '/pipelines.csv').to_dict())
+            dfs.append(pd.read_csv('./results/'+ type +'/'+timestamp+'/'+ t + '/pipelines.csv', sep='@').to_dict())
         dfs.append(pd.read_csv('./results/'+ type +'/'+timestamp+'/options.csv'))
-        #print(dfs[5], dfs[6])
         return get_store_and_tables(dfs, type)
     else:
         raise PreventUpdate
@@ -196,12 +191,17 @@ def render_collapse_options(choice):
 def get_body_for_modal(pipeline, df_name):
     body = []
     df = pd.DataFrame.from_dict(pipeline)
+    print('sono su get_body_for_modal')
+    print(df)
+    print('diodio')
+    print(df_name)
     col = df.columns
     index = df.index
     condition = df['dataset'] == df_name
     row = index[condition].tolist()
+    print(condition, row)
     pipeline = df.iloc[int(row[0])]
-    for i, name in enumerate(col[1:]):
+    for i, name in enumerate(col[0:]):
         body.append(html.Div([
         html.H4(name),
         html.P(pipeline[i])
@@ -213,8 +213,19 @@ def show_hide_pipelines_function(store_pipelines_class, store_pipelines_reg, n1,
         if n1 or n2:
             score = value.split('-')[0]
             df_name = value.split('-')[1]
+            print('ho splittato sta roba: ' + value)
             if score in ['acc', 'f1']:
                 return not is_open, get_body_for_modal(store_pipelines_class, df_name)
             else:
                 return not is_open, get_body_for_modal(store_pipelines_reg, df_name)
         return is_open, None
+
+
+def make_options(as_tl, h2o_tl, t_tl, ak_tl, ag_tl):
+    return {
+            'autosklearn': as_tl,
+            'h2o': h2o_tl,
+            'tpot': t_tl,
+            'autokeras': ak_tl,
+            'autogluon': ag_tl 
+        }

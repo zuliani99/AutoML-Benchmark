@@ -28,17 +28,18 @@ def prepare_and_test(train, test, task, timelife):
   pred = h2o.as_list(pred)['predict']
   target = h2o.as_list(test[y])
 
-  pipelines = (h2o.automl.get_leaderboard(aml, extra_columns = 'ALL')) # parametri da salvare
-
-  h2o.cluster().shutdown()
+  pipelines = str(h2o.automl.get_leaderboard(aml, extra_columns = 'ALL')) # parametri da salvare
+  print('H2OOOOOOOOOOOOOOOOOOOOOO')
+  print(pipelines)
+  
 
   if task == 'classification':
     if len(np.unique(target)) > 2:
       return (accuracy_score(target, pred), f1_score(target, pred, average='weighted'), pipelines)
     else:
-      return (accuracy_score(target, pred), f1_score(target, pred), pipeline)
+      return (accuracy_score(target, pred), f1_score(target, pred), pipelines)
   else:
-    return (np.sqrt(mean_squared_error(target, pred)), r2_score(target, pred), pipeline)
+    return (np.sqrt(mean_squared_error(target, pred)), r2_score(target, pred), pipelines)
 
 
 def H2O(df, task, timelife):

@@ -13,7 +13,7 @@ os.environ['KAGGLE_KEY'] = "24df22da033e9547780e278280a6ae2b" # key from the jso
 
 from webapp.frontend import sidebar, openmlbenchmark, kagglebenchmark, testbenchmark, pastresultopenml, pastresultkaggle
 from webapp.backend import render_page_content_function, start_openml_function, start_kaggle_function, start_test_function, render_tab_content_function, collapse_alogrithms_options_function
-from webapp.utils import get_store_past_bech_function, render_collapse_options, show_hide_pipelines_function
+from webapp.utils import get_store_past_bech_function, render_collapse_options, show_hide_pipelines_function, make_options
 
 def start():
     app = dash.Dash(__name__, external_stylesheets=[dbc.themes.BOOTSTRAP], suppress_callback_exceptions=True)
@@ -58,13 +58,7 @@ def start():
         [State('nmore', 'value'), State('ndf', 'value'), State("autosklearn-timelife", "value"), State("h2o-timelife", "value"), State("tpot-timelife", "value"), State("autokeras-timelife", "value"), State("autogluon-timelife", "value")]
     )
     def start_openml(n_clicks, nmore, ndf, as_tl, h2o_tl, t_tl, ak_tl, ag_tl):
-        options = {
-            'autosklearn': as_tl,
-            'h2o': h2o_tl,
-            'tpot': t_tl,
-            'autokeras': ak_tl,
-            'autogluon': ag_tl 
-        }
+        options = make_options(as_tl, h2o_tl, t_tl, ak_tl, ag_tl)
         return start_openml_function(nmore, ndf, options)
 
 
@@ -76,13 +70,7 @@ def start():
         [State('kaggledataset', 'value'), State("autosklearn-timelife", "value"), State("h2o-timelife", "value"), State("tpot-timelife", "value"), State("autokeras-timelife", "value"), State("autogluon-timelife", "value")]
     )
     def start_kaggle(n_clicks, kaggledataset, as_tl, h2o_tl, t_tl, ak_tl, ag_tl):
-        options = {
-            'autosklearn': as_tl,
-            'h2o': h2o_tl,
-            'tpot': t_tl,
-            'autokeras': ak_tl,
-            'autogluon': ag_tl 
-        }
+        options = make_options(as_tl, h2o_tl, t_tl, ak_tl, ag_tl)
         return start_kaggle_function(kaggledataset, options)
 
 
@@ -161,22 +149,25 @@ def start():
 
     @app.callback(
         [Output({"type":"modal-Pipelines", "index": MATCH}, "is_open"), Output({"type": 'body-modal-Pipelines', "index": MATCH}, 'children')],
-        [Input('store_pipelines_class_openml', 'data'), Input('store_pipelines_reg_openml', 'data'),
+        [Input({"type": "open-Pipelines", "index": MATCH}, "n_clicks"), Input({"type": "close-modal-Pipelines", "index": MATCH}, "n_clicks"), Input({"type": "open-Pipelines", "index": MATCH}, "value"), Input("url", "pathname"),
+        Input('store_pipelines_class_openml', 'data'), Input('store_pipelines_reg_openml', 'data'),
         Input('store_pipelines_class_kaggle', 'data'), Input('store_pipelines_reg_kaggle', 'data'),
         Input('store_pipelines_results_class_openml', 'data'), Input('store_pipelines_results_reg_openml', 'data'),
-        Input('store_pipelines_results_class_kaggle', 'data'), Input('store_pipelines_results_reg_kaggle', 'data'),
-        Input({"type": "open-Pipelines", "index": MATCH}, "n_clicks"), Input({"type": "close-modal-Pipelines", "index": MATCH}, "n_clicks"), Input({"type": "open-Pipelines", "index": MATCH}, "value"), Input("url", "pathname")],
+        Input('store_pipelines_results_class_kaggle', 'data'), Input('store_pipelines_results_reg_kaggle', 'data'),],
         [State({"type":"modal-Pipelines", "index": MATCH}, "is_open")]
     )
-    def show_hide_pipelines(s1, s2, s3, s4, s5, s6, s7, s8, n1, n2, value, path, is_open): 
+    def show_hide_pipelines(n1, n2, value, path, s1, s2, s3, s4, s5, s6, s7, s8, is_open): 
         stores = {
             "/openml": [s1,s2],
             "/kaggle": [s3,s4],
             '/results-openml': [s5,s6],
             '/results-kaggle': [s7,s8],
         }
-        s = stores.get(path)
-        return show_hide_pipelines_function(s[0], s[1], n1, n2, value, is_open)
+        s = stores.get(path, None)
+        if s is not None:
+            return show_hide_pipelines_function(s[0], s[1], n1, n2, value, is_open)
+        else:
+            return None, None
 
 
     app.run_server(host='0.0.0.0', port=8050, debug=True)
