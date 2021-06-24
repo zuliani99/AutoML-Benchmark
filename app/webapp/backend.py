@@ -51,7 +51,8 @@ def start_kaggle_function(kaggledataset, options):
 
 def start_test_function(dfid, algorithms, options):
         if dfid is not None and algorithms is not None:
-            res = test(dfid, algorithms, options)
+            res = test(dfid, algorithms, options) #task, s1, s2, pipelines      s1 = acc or rmse,  s2 = f1 or r2   oppure task, dataframe
+            print(res)
             if isinstance(res[1], pd.DataFrame):
                 first_score = res[1].iloc[:1]
                 second_score = res[1].iloc[1:]
@@ -85,13 +86,15 @@ def start_test_function(dfid, algorithms, options):
                 if res[0] is None:
                     return [html.P(res[1], style={'color':'red'})]
                 else:
+                    s1, s2, pipeline = res[1]
                     if(res[0] == 'classification'):
-                        text = 'Accuracy: ' + str(res[1][0]) + '     f1_score: ' + str(res[1][1])
+                        text = 'Accuracy: ' + str(s1) + '     f1_score: ' + str(s2)
                     else:
-                        text = 'RMSE: ' + str(res[1][0]) + '     r2_score: ' + str(res[1][1])
+                        text = 'RMSE: ' + str(s1) + '     r2_score: ' + str(s2)
                     return [html.Div([
                         html.P('Dataframe results ' + str(dfid) + " by using the algorithm: " + str(algorithms) + " with running time: " + str(options[algorithms]['time']) + " " + str(options[algorithms]['type'])),
                         html.P(text),
+                        html.P(pipeline)
                     ])]
         else:
             raise PreventUpdate

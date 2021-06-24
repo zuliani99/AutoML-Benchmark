@@ -33,12 +33,12 @@ def TPOT(df, task, timelife):
     pipelines = get_stat(model)
 
     if len(np.unique(y)) > 2:
-      return (accuracy_score(y_test, y_pred), f1_score(y_test, y_pred, average='weighted'), pipelines)
+      return accuracy_score(y_test, y_pred), f1_score(y_test, y_pred, average='weighted'), pipelines
     else:
-      return (accuracy_score(y_test, y_pred), f1_score(y_test, y_pred), pipelines)
+      return accuracy_score(y_test, y_pred), f1_score(y_test, y_pred), pipelines
   else:
     model =  TPOTRegressor(generations=timelife, cv=5, max_time_mins=1, random_state=1, verbosity=2, n_jobs=1)
     model.fit(X_train, y_train)
     y_pred = model.predict(X_test)
     pipelines = get_stat(model)
-    return (np.sqrt(mean_squared_error(y_test, y_pred)), r2_score(y_test, y_pred), pipelines)
+    return np.sqrt(mean_squared_error(y_test, y_pred)), r2_score(y_test, y_pred), pipelines

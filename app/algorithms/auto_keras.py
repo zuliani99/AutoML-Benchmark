@@ -26,27 +26,31 @@ def prepare_and_test(X, y, task, timelife):
 
   model = clf.export_model()
 
-  pipelines = (str(model.summary()))      #intanto salviamo questo..
+  model.summary()
 
   #shutil.rmtree('./structured_data_classifier/')
 
-  print('AKKKKKKKKKKKKKKKKKKKKKKK')
-  print(pipelines)
+  summary = []
+  model.summary(print_fn=lambda x: summary.append(x))
+  model_summary = '\n'.join(summary)
 
   y_pred = clf.predict(X_test)
 
+
   if task == 'classification':
     shutil.rmtree('./structured_data_classifier')
-    le = LabelEncoder()
+    le = LabelEncoder() # forse è meglio che tolga il tutto relativo al label encoder
     y_test = le.fit_transform(y_test)
     y_pred = le.fit_transform(y_pred)
     if len(np.unique(y)) > 2:
-      return (accuracy_score(y_test, y_pred), f1_score(y_test, y_pred, average='weighted'), pipelines)
+      print('multiclass')
+      return (accuracy_score(y_test, y_pred), f1_score(y_test, y_pred, average='weighted'), model_summary)
     else:
-      return (accuracy_score(y_test, y_pred), f1_score(y_test, y_pred), pipelines)
+      print('binary')
+      return (accuracy_score(y_test, y_pred), f1_score(y_test, y_pred), model_summary)
   else:
     shutil.rmtree('./structured_data_regressor')
-    return (np.sqrt(mean_squared_error(y_test, y_pred)), r2_score(y_test, y_pred), pipelines)
+    return (np.sqrt(mean_squared_error(y_test, y_pred)), r2_score(y_test, y_pred), model_summary)
 
 
 def autokeras(df, task, timelife):
