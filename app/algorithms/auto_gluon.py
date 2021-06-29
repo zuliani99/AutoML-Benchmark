@@ -4,11 +4,13 @@ from utils.usefull_functions import return_X_y
 from sklearn.metrics import f1_score
 import pandas as pd
 import shutil
+import copy
 
 
 def autogluon(df, task, timelife):
   pd.options.mode.chained_assignment = None
-  X, y, ntarget = return_X_y(df)
+  df_new = copy.copy(df)
+  X, y, _ = return_X_y(df_new)
 
   if isinstance(y, pd.Series):
     y = y.to_frame()

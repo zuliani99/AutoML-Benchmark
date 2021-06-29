@@ -8,6 +8,7 @@ from termcolor import colored
 def fun_autosklearn(df, task, timelife):
     res_autosklearn = (0.0, 0.0, None)
     print("--------------------------------AUTOSKLEARN--------------------------------")
+    print(df)
     try:
         res_autosklearn = (auto_sklearn(df, task, timelife))
         print(colored('Risultato memorizzato!', 'green'))
@@ -20,6 +21,7 @@ def fun_autosklearn(df, task, timelife):
 
 def fun_tpot(df, task, timelife):
     res_tpot = (0.0, 0.0, None)
+    print(df)
     print("-----------------------------------TPOT------------------------------------")
     try:
         res_tpot = (TPOT(df, task, timelife))
@@ -32,6 +34,7 @@ def fun_tpot(df, task, timelife):
 
 def fun_autokeras(df, task, timelife):
     res_autokeras = (0.0, 0.0, None)
+    print(df)
     print("---------------------------------AUTOKERAS---------------------------------")
     try:
         res_autokeras = (autokeras(df, task, timelife))

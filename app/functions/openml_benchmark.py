@@ -33,7 +33,10 @@ def openml_benchmark(df_n, morethan, options):
     for d in list_df:
         str_path = d.split('/')
         df = pd.read_csv(d)
-                
+        
+        print('DATAAAAAAAAAAAAAAAAAAAAAAAAAA FRAMEEEEEEEEEEEEEEEEEEEEEEEE')
+        print(df)
+
         print('---------------------------------Dataset: ' + d + '---------------------------------')
         res_openml.run_benchmark(df, str_path[3], str_path[4], None, options)
         print(colored('--------------------------------- Riga inserita ---------------------------------', 'green'))
