@@ -32,14 +32,12 @@ def test(id, algo, options):
             X, y = fetch_openml(data_id=id, as_frame=True, return_X_y=True, cache=True)
             if not isinstance(y, pd.DataFrame):
                 y = y.to_frame()
-            if(len(y.columns) == 1):
+            if (len(y.columns) == 1):
                 X[y.columns[0]] = y
-                df = X
             else:
                 for col in y.columns:
                     X[col] = y[col]
-                df = X
-
+            df = X
             df['n_target'] = len(y.columns)
 
             print(df.info())
@@ -47,20 +45,12 @@ def test(id, algo, options):
 
             tasks = openml.tasks.list_tasks(data_id=id, output_format="dataframe")
             ts = tasks['task_type'].unique()
-            if 'Supervised Classification' in ts or 'Supervised Regression' in ts:
-                if 'Supervised Classification' in ts:
-                    task = 'classification'
-                elif 'Supervised Regression' in ts:
-                    task = 'regression'
-
-                file_dir =  './datasets/OpenML/' + task + '/'
-                fullname = os.path.join(file_dir, str(id) + '.csv')
-                df.to_csv(fullname, index=False, header=True)
-                res = switch(algo, df, task, options)
-                print(task, res)
-                return task, res
-            else:
-                return None, None            
+            if ('Supervised Classification' not in ts and 'Supervised Regression' not in ts):
+                return None, None
+            task = 'classification' if 'Supervised Classification' in ts else 'regression'
+            file_dir =  './datasets/OpenML/' + task + '/'
+            fullname = os.path.join(file_dir, str(id) + '.csv')
+            df.to_csv(fullname, index=False, header=True)
         else:
             if os.path.exists('./datasets/OpenML/classification/' + str(id) + '.csv'):
                 task = 'classification'
@@ -68,14 +58,13 @@ def test(id, algo, options):
             else:
                 task = 'regression'
                 path = './datasets/OpenML/regression/' + str(id) + '.csv'
-            
+
             df = pd.read_csv(path)
 
             print(df.head())
-            res = switch(algo, df, task, options)
-            print(task, res)
-            # ritorno il tipo di task ed il risultato dell'algoritmo -> (acc, f1) o (rmse, r2) oppure il datafrsame con tutti i risultati di ytutti gli algoritmi
-            return task, res
+        res = switch(algo, df, task, options)
+        print(task, res)
+        return task, res
     except Exception as e:
         text = 'Impossibile scaricare il DataFrame ' + str(id) + ' causa: ' + str(e)
         print(colored(text + '\n', 'red'))

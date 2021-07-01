@@ -207,7 +207,8 @@ testbenchmark = html.Div([
         dbc.Spinner(children=[html.Div(id='res-bench-test')],size="lg", color="primary", type="border", fullscreen=True)
     ])
 
-pastresultopenml = html.Div([
+def get_pastresultopenml():
+    return html.Div([
         dbc.Select(id='pastresultopenml', options=get_lisd_dir('OpenML'),
             placeholder='Filter a BenchMark by Date',
         ),
@@ -228,7 +229,8 @@ pastresultopenml = html.Div([
     ])
 
 
-pastresultkaggle = html.Div([
+def get_pastresultkaggle():
+    return html.Div([
         dbc.Select(id='pastresultkaggle', options=get_lisd_dir('Kaggle'),
             placeholder='Filter a BenchMark by Date',
         ),

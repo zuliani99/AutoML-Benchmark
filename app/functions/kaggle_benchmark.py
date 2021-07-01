@@ -47,14 +47,7 @@ def kaggle_benchmark(list_df, options):
             test = pd.read_csv(path + '/test.csv')
 
             leaderboard = api.competition_view_leaderboard(df)
-            '''
-            ritorna la leaderboard da capire come la ritorna
-            devo inserire il migliore nella tabella risultante così posso vedere come sono andati gli altri algoritmi
-            '''
-
-            print('STO PER STAMPARE LA CLASSFICA DEL DATASET')
             leader = leaderboard['submissions'][0]
-            print(leader['teamName'], leader['score'])
 
             res_kaggle.run_benchmark((train, test), task, df, {'name': leader['teamName'], 'score': leader['score']}, options)
         else:

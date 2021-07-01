@@ -11,7 +11,7 @@ import os
 os.environ['KAGGLE_USERNAME'] = "zullle" # username from the json file
 os.environ['KAGGLE_KEY'] = "24df22da033e9547780e278280a6ae2b" # key from the json file
 
-from webapp.frontend import sidebar, openmlbenchmark, kagglebenchmark, testbenchmark, pastresultopenml, pastresultkaggle
+from webapp.frontend import sidebar, openmlbenchmark, kagglebenchmark, testbenchmark, get_pastresultopenml, get_pastresultkaggle
 from webapp.backend import render_page_content_function, start_openml_function, start_kaggle_function, start_test_function, render_tab_content_function, collapse_alogrithms_options_function
 from webapp.utils import get_store_past_bech_function, render_collapse_options, show_hide_pipelines_function, make_options
 
@@ -43,7 +43,7 @@ def start():
         content
     ])
 
-    app.validation_layout=html.Div([openmlbenchmark, kagglebenchmark, testbenchmark, pastresultopenml, pastresultkaggle])
+    app.validation_layout=html.Div([openmlbenchmark, kagglebenchmark, testbenchmark, get_pastresultopenml(), get_pastresultkaggle()])
 
 
     @app.callback(Output("page-content", "children"), [Input("url", "pathname")])
@@ -163,7 +163,7 @@ def start():
             '/results-openml': [s5,s6],
             '/results-kaggle': [s7,s8],
         }
-        s = stores.get(path, None)
+        s = stores.get(path)
         if s is not None:
             return show_hide_pipelines_function(s[0], s[1], n1, n2, value, is_open)
         else:

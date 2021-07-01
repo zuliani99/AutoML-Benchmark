@@ -32,7 +32,7 @@ def fill_and_to_category(df):
             df[col] = df[col].cat.add_categories('Unknown')
             df[col].fillna('Unknown', inplace =True)
             df[col] = df[col].cat.codes
-        if t == "integer" or t == "floating":
+        if t in ["integer", "floating"]:
             df[col] = df[col].fillna(df[col].mean())
             #scaler = MinMaxScaler()
             #scaler.fit(df[col])
@@ -57,17 +57,15 @@ def get_df_list(datalist, n_df, task):
                     if not isinstance(y, pd.DataFrame):
                         y = y.to_frame()
 
-                    if(len(y.columns) == 1):
+                    if (len(y.columns) == 1):
                         X[y.columns[0]] = y
-                        df = X
                     else:
                         for col in y.columns:
                             X[col] = y[col]
-                        df = X
-
+                    df = X
                     df['n_target'] = len(y.columns)
 
-                    
+
 
                     if n_df > 0:
                         print('------------------Dataset ID: ' + str(row) + '------------------')
@@ -83,16 +81,24 @@ def get_df_list(datalist, n_df, task):
                         list_df.append(fullname)
 
                         n_df-=1
- 
-            else:
-                if n_df > 0:
-                    print('------------------Dataset ID: ' + str(row) + '------------------')
-                    print('-------------------------Dataset già presente-------------------------\n')
-                    list_df.append(file_dir + str(row) + '.csv')
-                    n_df-=1
+
+            elif n_df > 0:
+                print('------------------Dataset ID: ' + str(row) + '------------------')
+                print('-------------------------Dataset già presente-------------------------\n')
+                list_df.append(file_dir + str(row) + '.csv')
+                n_df-=1
 
         except Exception as e:
-            print(colored('Impossibile scaricare il DataFrame ' + str(row) + ' causa: ' + str(e) + '\n', 'red'))
+            print(
+                colored(
+                    'Impossibile scaricare il DataFrame '
+                    + str(row)
+                    + ' causa: '
+                    + str(e)
+                    + '\n',
+                    'red',
+                )
+            )
 
         if n_df == 0:
             break

@@ -8,6 +8,12 @@ from sklearn.preprocessing import LabelEncoder
 from sklearn.metrics import accuracy_score, mean_squared_error, f1_score, r2_score
 import copy
 
+
+def get_summary(model):
+  summary = []
+  model.summary(print_fn=lambda x: summary.append(x))
+  return '\n'.join(summary)
+
 def prepare_and_test(train, test, task, timelife):
   x = train.columns
   y = train.columns[train.shape[1]-1]
@@ -29,18 +35,15 @@ def prepare_and_test(train, test, task, timelife):
   pred = h2o.as_list(pred)['predict']
   target = h2o.as_list(test[y])
 
-  pipelines = str(h2o.automl.get_leaderboard(aml, extra_columns = 'ALL')) # parametri da salvare
-  print('H2OOOOOOOOOOOOOOOOOOOOOO')
-  print(pipelines)
-  
+  pipelines = (h2o.as_list(h2o.automl.get_leaderboard(aml, extra_columns = 'ALL')))
 
-  if task == 'classification':
-    if len(np.unique(target)) > 2:
-      return (accuracy_score(target, pred), f1_score(target, pred, average='weighted'), pipelines)
-    else:
-      return (accuracy_score(target, pred), f1_score(target, pred), pipelines)
-  else:
+  if task != 'classification':
     return (np.sqrt(mean_squared_error(target, pred)), r2_score(target, pred), pipelines)
+
+  if len(np.unique(target)) > 2:
+    return (accuracy_score(target, pred), f1_score(target, pred, average='weighted'), pipelines)
+  else:
+    return (accuracy_score(target, pred), f1_score(target, pred), pipelines)
 
 
 def H2O(df, task, timelife):
