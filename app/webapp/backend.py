@@ -34,6 +34,7 @@ def render_page_content_function(pathname):
             ]
         )
 
+#Output('store_class_openml', 'data'), Output('store_reg_openml', 'data'), Output('store_pipelines_class_openml', 'data'), Output('store_pipelines_reg_openml', 'data'), Output('res-bench-openml-table-class', 'children'), Output('res-bench-openml-table-reg', 'children')],
 def start_openml_function(nmore, ndf, options):
         if nmore is not None and ndf is not None:
             res = openml_benchmark(ndf, nmore, options)

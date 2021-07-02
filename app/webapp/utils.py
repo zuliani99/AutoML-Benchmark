@@ -37,8 +37,9 @@ def get_pipelines_button(dfs, task):
                     'type': "modal-Pipelines",
                     'index': task + '-' + str(row['dataset']),
                 },
-                size="lg",
+                size="xl",
                 is_open=False,
+                style={"max-width": "none", "width": "90%"}
             ),html.Div(
                 [
                     dbc.Button(
@@ -112,7 +113,7 @@ def get_store_and_tables(dfs, type):
 
     return store_dict['class'], store_dict['reg'], store_pipelines['class'], store_pipelines['reg'], tables[0], tables[1]
 
-
+#Output('store_class_openml', 'data'), Output('store_reg_openml', 'data'), Output('store_pipelines_class_openml', 'data'), Output('store_pipelines_reg_openml', 'data'), Output('res-bench-openml-table-class', 'children'), Output('res-bench-openml-table-reg', 'children')],
 def get_store_past_bech_function(timestamp, type):
     if timestamp is None:
         raise PreventUpdate
@@ -199,7 +200,14 @@ def render_collapse_options(choice):
 
 
 def set_body(name, pipeline):
-    if name in ['tpot', 'dataset']:
+    if name == 'tpot':
+        ret = []
+        strings = pipeline.split('\n')
+        for string in strings:
+            ret.append(string)
+            ret.append(html.Br())
+        return html.Div(ret)
+    elif name == 'dataset':
         return html.Div(pipeline)
     else:
         return dcc.Markdown(pipeline)
@@ -216,7 +224,8 @@ def get_body_for_modal(pipeline, df_name):
     print(pipeline)
     return [html.Div([
         html.H4(name),
-        set_body(name, pipeline[i])
+        set_body(name, pipeline[i]), 
+        html.Br()
     ]) for i, name in enumerate(col[0:])]
 
 '''
@@ -246,3 +255,8 @@ def make_options(as_tl, h2o_tl, t_tl, ak_tl, ag_tl):
             'autokeras': ak_tl,
             'autogluon': ag_tl 
         }
+
+def read_markdown():
+    with open('../README.md', 'r') as file:
+        data = file.read()
+    return data

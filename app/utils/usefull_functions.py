@@ -10,37 +10,41 @@ def get_target(train, test):
 
 
 def return_X_y(df):
-    if isinstance(df, pd.DataFrame):
-        n_target = df['n_target'][0]
-        df = df.drop('n_target', axis = 1)
-
-        y = df.iloc[:, -n_target].to_frame()
-        X = df.iloc[:, :-n_target]
-        return X, y, n_target
-    else:
-        target = get_target(df[0], df[1])
-        y = df[0][target]
-        X = df[0].drop([target], axis=1)
+    if len(df) == 1:
+        return return_X_y_openML(df)
+    target = get_target(df[0], df[1])
+    y = df[0][target]
+    X = df[0].drop([target], axis=1)
     return X, y, None
 
-def fill_and_to_category(df):
-    for col in df.columns:
-        t = pd.api.types.infer_dtype(df[col])
-        if t == "string":
-            df[col] = pd.Categorical(df[col])
-            df[col] = df[col].astype('category')
-            df[col] = df[col].cat.add_categories('Unknown')
-            df[col].fillna('Unknown', inplace =True)
-            df[col] = df[col].cat.codes
-        if t in ["integer", "floating"]:
-            df[col] = df[col].fillna(df[col].mean())
-            #scaler = MinMaxScaler()
-            #scaler.fit(df[col])
-            #df[col] = scaler.transform(df[col])
-        if t == 'categorical' :
-            df[col] = df[col].cat.codes
-    print(df.info())
-    return df
+def return_X_y_openML(df):
+    new = df[0]
+    n_target = new['n_target'][0]
+    new = new.drop('n_target', axis = 1)
+
+    y = new.iloc[:, -n_target].to_frame()
+    X = new.iloc[:, :-n_target]
+    return X, y, n_target
+
+def fill_and_to_category(dfs):
+    for df in dfs:
+        for col in df.columns:
+            t = pd.api.types.infer_dtype(df[col])
+            if t == "string":
+                df[col] = pd.Categorical(df[col])
+                df[col] = df[col].astype('category')
+                df[col] = df[col].cat.add_categories('Unknown')
+                df[col].fillna('Unknown', inplace =True)
+                df[col] = df[col].cat.codes
+            if t in ["integer", "floating"]:
+                df[col] = df[col].fillna(df[col].mean())
+                #scaler = MinMaxScaler()
+                #scaler.fit(df[col])
+                #df[col] = scaler.transform(df[col])
+            if t == 'categorical' :
+                df[col] = df[col].cat.codes
+        #print(df.info())
+    return dfs
 
 
 

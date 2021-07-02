@@ -4,13 +4,21 @@ from utils.usefull_functions import return_X_y
 import pandas as pd
 import shutil
 import copy
-
+from sklearn.metrics import f1_score
+import numpy as np
 
 def get_options(task, y):
+  f1 = None
   if task == 'classification':
-    return 'multiclass' if len(y[y.columns[0]].unique()) > 2 else 'binary'
+    if len(y[y.columns[0]].unique()) > 2:
+      pt = 'multiclass'
+      f1 = lambda y_test, y_pred : f1_score(y_test, y_pred, average='weighted')
+    else:
+      pt = 'binary'
+      f1 = lambda y_test, y_pred : f1_score(y_test, y_pred, pos_label=np.unique(y)[0])
   else:
-    return 'regression'
+    pt = 'regression'
+  return pt, f1
 
 def autogluon(df, task, timelife):
   pd.options.mode.chained_assignment = None
@@ -30,12 +38,12 @@ def autogluon(df, task, timelife):
   X_train[target] = y_train
 
 
-  pt = get_options(task, y)
+  pt, f1 = get_options(task, y)
 
   predictor = TabularPredictor(label=target , problem_type=pt).fit(train_data=X_train, time_limit=timelife*60, presets=['optimize_for_deployment'])
   results = predictor.fit_summary()
   y_pred = predictor.predict(X_test)
-  pipelines = (predictor.leaderboard(df, silent=True))
+  pipelines = str((predictor.leaderboard(df, silent=True)).to_markdown())
   res = predictor.evaluate_predictions(y_true=y_test.squeeze(), y_pred=y_pred, auxiliary_metrics=True)
 
   shutil.rmtree('./AutogluonModels')
@@ -50,5 +58,5 @@ def autogluon(df, task, timelife):
     else:
       f1 = f1_score(y_test, y_pred)
     return (res['accuracy'], f1)'''
-  return (res['accuracy'], res['f1'], pipelines)
+  return (res['accuracy'],  f1(y_test, y_pred), pipelines)
 

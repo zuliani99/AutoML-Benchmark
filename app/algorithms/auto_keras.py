@@ -7,7 +7,6 @@ from sklearn.preprocessing import LabelEncoder
 import sklearn
 import shutil
 from tensorflow.keras import backend as K
-import keras_tuner as kt
 import copy
 
 
@@ -58,7 +57,7 @@ def get_summary(model):
   for layer in model.layers:
     print(layer)
     table = table.append({"Name":layer.name, "Type": layer.__class__.__name__,"Shape":layer.output_shape}, ignore_index=True)
-  return table
+  return (table.to_markdown())
 
 def get_classification(y_test, y_pred, model_summary, y):
   shutil.rmtree('./structured_data_classifier')
@@ -84,7 +83,7 @@ def get_regression(y_test, y_pred, model_summary):
 
 def prepare_and_test(X, y, task, timelife):
   X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=1)
-  print(X_train.info(), X_test.info(), y_train.info(), y_test.info())
+  
 
   if isinstance(y_train, pd.Series):
     y_train = y_train.to_frame()
@@ -92,6 +91,7 @@ def prepare_and_test(X, y, task, timelife):
   if isinstance(y_test, pd.Series):
     y_test = y_test.to_frame() 
 
+  print(X_train.info(), X_test.info(), y_train.info(), y_test.info())
   print(y)
 
   clf, custom_obj = get_automl(task)
@@ -120,14 +120,16 @@ def prepare_and_test(X, y, task, timelife):
 
 def autokeras(df, task, timelife):
   df_new = copy.copy(df)
-  #df_new = fill_and_to_category(df_new)
+  df_new = fill_and_to_category(df_new)
   pd.options.mode.chained_assignment = None
   X, y, _ = return_X_y(df_new)
   
-  if not isinstance(df_new, pd.DataFrame):
+  '''if not isinstance(df_new, pd.DataFrame):
     #X = X.apply(LabelEncoder().fit_transform)
     print('                                                                         sono quaaaaaaa') #kaggle
     X = fill_and_to_category(X)
   else:
     print('                                                                         invece quaaaaaaa') # openml test
+    '''
+    
   return (prepare_and_test(X, y, task, timelife))
