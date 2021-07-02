@@ -68,7 +68,7 @@ def get_classification(y_test, y_pred, model_summary, y):
       #return (clf.evaluate(X_test, y_test)[0], f1_score(y_test, y_pred, average='weighted'), model_summary)
     return sklearn.metrics.accuracy_score(y_test, y_pred), sklearn.metrics.f1_score(y_test, y_pred, average='weighted'), model_summary
   else:
-    print('binary')
+    print('binary', np.unique(y)[0])
       #print(clf.evaluate(X_test, y_test))
       #return (clf.evaluate(X_test, y_test)[0], f1_score(y_test, y_pred), model_summary)
     return sklearn.metrics.accuracy_score(y_test, y_pred), sklearn.metrics.f1_score(y_test, y_pred, pos_label=np.unique(y)[0]), model_summary
@@ -91,7 +91,7 @@ def prepare_and_test(X, y, task, timelife):
   if isinstance(y_test, pd.Series):
     y_test = y_test.to_frame() 
 
-  print(X_train.info(), X_test.info(), y_train.info(), y_test.info())
+  print(X_train, X_test, y_train, y_test)
   print(y)
 
   clf, custom_obj = get_automl(task)
@@ -105,10 +105,19 @@ def prepare_and_test(X, y, task, timelife):
   #print('non so cosa sto facendo ', accuracy_score(y_test, y_pred))
   #y_test = le.fit_transform(y_test).to_numpy()
   #y_pred = le.fit_transform(y_pred).to_numpy()
-  y_test = y_test.to_numpy()
+  y_test = np.array(y_test, dtype = np.int32)
+  y_pred = np.array(y_pred, dtype = np.int32)
+  '''print((y_test))
+  print((y_pred))
 
-  if(y_test[0].dtype in ['int64', 'int32', 'int16', 'int8']):
+  if(y_test[0].dtype in ['int64', 'int32', 'int16', 'int8'] and y_pred[0].dtype == 'str'):
     y_test = list(map(lambda x : [str(x[0])], y_test))
+
+  print(type(y_test))
+  print(type(y_pred))
+
+  print((y_test))
+  print((y_pred))'''
 
   #print(clf.evaluate(X_test, y_test))
 
@@ -131,5 +140,5 @@ def autokeras(df, task, timelife):
   else:
     print('                                                                         invece quaaaaaaa') # openml test
     '''
-    
+
   return (prepare_and_test(X, y, task, timelife))

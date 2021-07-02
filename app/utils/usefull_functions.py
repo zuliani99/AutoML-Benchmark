@@ -8,9 +8,14 @@ def get_target(train, test):
         if c not in test.columns:
             return c
 
+def get_list_single_df(df):
+    return [df] if isinstance(df, pd.DataFrame) else df
+
 
 def return_X_y(df):
-    if len(df) == 1:
+    #print(type(df))
+    #print(df)
+    if not isinstance(df, tuple):
         return return_X_y_openML(df)
     target = get_target(df[0], df[1])
     y = df[0][target]
@@ -27,6 +32,7 @@ def return_X_y_openML(df):
     return X, y, n_target
 
 def fill_and_to_category(dfs):
+    dfs = get_list_single_df(dfs)
     for df in dfs:
         for col in df.columns:
             t = pd.api.types.infer_dtype(df[col])

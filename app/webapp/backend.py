@@ -46,7 +46,9 @@ def start_kaggle_function(kaggledataset, options):
         if kaggledataset is None:
                 raise PreventUpdate
         res = kaggle_benchmark(kaggledataset, options)
-        return [html.P(res, style={'color':'red'})] if isinstance(res, str) else get_store_past_bech_function(res, 'Kaggle') #controllare la gestione degli errori
+        #print(res)
+        #return [html.P(res, style={'color':'red'})] if isinstance(res, str) else get_store_past_bech_function(res, 'Kaggle') #controllare la gestione degli errori
+        return get_store_past_bech_function(res, 'Kaggle')
 
 
 def start_test_function(dfid, algorithms, options):

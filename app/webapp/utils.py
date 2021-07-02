@@ -126,7 +126,10 @@ def get_store_past_bech_function(timestamp, type):
         else:
             dfs.append(None)
     for t in ('classification', 'regression'):
-        dfs.append(pd.read_csv('./results/'+ type +'/'+timestamp+'/'+ t + '/pipelines.csv', sep='@').to_dict())
+        if os.path.exists('./results/'+ type +'/'+timestamp+'/'+ t + '/pipelines.csv'):
+            dfs.append(pd.read_csv('./results/'+ type +'/'+timestamp+'/'+ t + '/pipelines.csv', sep='@').to_dict())
+        else:
+            dfs.append(None)
     dfs.append(pd.read_csv('./results/'+ type +'/'+timestamp+'/options.csv'))
     return get_store_and_tables(dfs, type)
 

@@ -61,7 +61,7 @@ def test(id, algo, options):
             df = pd.read_csv(path)
 
             print(df.head())
-        res = switch(algo, (df), task, options)
+        res = switch(algo, df, task, options)
         print(task, res)
         return task, res
     except Exception as e:
