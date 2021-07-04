@@ -57,11 +57,14 @@ def get_pipelines_button(dfs, task):
         ]
         for index, row in dfs.iterrows()
     ]
+    
 
 def retrun_graph_table(dfs, pipelines, title, task, t, opts, scores):
     table = [html.H3(title)]
     if (dfs[0] is None or dfs[1] is None):
-        return {'scatter_'+scores[0]: None, 'histo_'+scores[0]: None, 'scatter_'+scores[1]: None, 'histo_'+scores[1]: None, 'options': None}, None, dbc.Tabs( [], id="tabs-class", active_tab="", style={'hidden':'true'} )
+        return {'scatter_'+scores[0]: None, 'histo_'+scores[0]: None, 'scatter_'+scores[1]: None, 'histo_'+scores[1]: None, 'options': None}, None, dbc.Tabs( 
+                [], id="tabs-class" if task == "class" else "tabs-reg", active_tab="", style={'hidden':'true'} 
+            )
     scatters = []
     histos = []
     for df in dfs:
@@ -70,7 +73,6 @@ def retrun_graph_table(dfs, pipelines, title, task, t, opts, scores):
         for col in df.columns[1:-1]:
             scatters.append(go.Scatter(x=df['dataset'], y=df[col], name=col.split('-')[0], mode='lines+markers'))
             histos.append(go.Bar(x=df['dataset'], y=df[col], name=col.split('-')[0]))
-
 
     table.append(
         dbc.Tabs(
@@ -95,7 +97,6 @@ def retrun_graph_table(dfs, pipelines, title, task, t, opts, scores):
         ])
     ]
 
-
     limit = 5 if t == 'OpenML' else 6 # 6 perchè c'è il leader per i kaggle
     return {
         'scatter_'+scores[0]: scatters[:limit], 'histo_'+scores[0]: histos[:limit], 'scatter_'+scores[1]: scatters[limit:], 'histo_'+scores[1]: histos[limit:], 'options': options
@@ -113,6 +114,7 @@ def get_store_and_tables(dfs, type):
 
     return store_dict['class'], store_dict['reg'], store_pipelines['class'], store_pipelines['reg'], tables[0], tables[1]
 
+
 #Output('store_class_openml', 'data'), Output('store_reg_openml', 'data'), Output('store_pipelines_class_openml', 'data'), Output('store_pipelines_reg_openml', 'data'), Output('res-bench-openml-table-class', 'children'), Output('res-bench-openml-table-reg', 'children')],
 def get_store_past_bech_function(timestamp, type):
     if timestamp is None:
@@ -120,7 +122,6 @@ def get_store_past_bech_function(timestamp, type):
     dfs = []
     scores = [('classification','acc'), ('classification','f1_score'), ('regression','rmse'), ('regression','r2_score')]
     for score in scores:
-        #print('./results/'+ type +'/'+timestamp+'/'+ score[0] +'/'+ score[1] +'.csv')
         if os.path.exists('./results/'+ type +'/'+timestamp+'/'+ str(score[0]) +'/'+ str(score[1]) +'.csv'):
             dfs.append(pd.read_csv('./results/'+ type +'/'+timestamp+'/'+ str(score[0]) +'/'+ str(score[1]) +'.csv'))
         else:
@@ -159,7 +160,6 @@ def render_tab_content(active_tab, data, type): #pathname
             return [
                 data['options']
             ]
-
     return "No tab selected"
 
 
@@ -217,32 +217,23 @@ def set_body(name, pipeline):
 
 def get_body_for_modal(pipeline, df_name):
     df = pd.DataFrame.from_dict(pipeline)
-    print(df)
     col = df.columns
     index = df.index
     condition = df['dataset'] == df_name
     row = index[condition].tolist()
-    print(condition, row)
     pipeline = df.iloc[int(row[0])]
-    print(pipeline)
     return [html.Div([
         html.H4(name),
         set_body(name, pipeline[i]), 
         html.Br()
     ]) for i, name in enumerate(col[0:])]
 
-'''
-[html.Div([
-        html.H4(name),
-        set_body(name, pipeline)
-    ]) for i, name in enumerate(col[0:])]'''
 
 
 def show_hide_pipelines_function(store_pipelines_class, store_pipelines_reg, n1, n2, value, is_open):
         if n1 or n2:
             score = value.split('-')[0]
             df_name = value.split('-')[1]
-            print('ho splittato sta roba: ' + value)
             if score in ['acc', 'f1']:
                 return not is_open, get_body_for_modal(store_pipelines_class, df_name)
             else:

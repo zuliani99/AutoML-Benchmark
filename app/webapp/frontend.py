@@ -46,7 +46,6 @@ openmlbenchmark = html.Div([
                     dbc.Card([
                         dbc.CardBody([
                             html.H4("OpenMl BenchMark", className="card-title"),
-                            #html.P("This is some card text", className="card-text"),
                             dbc.FormGroup([
                                 dbc.Label("Number of dataframe to test", width=5),
                                 dbc.Col([
@@ -92,7 +91,6 @@ kagglebenchmark = html.Div([
                 dbc.Card([
                     dbc.CardBody([
                         html.H4("Kaggle BenchMark", className="card-title"),
-                        #html.P("This is some card text", className="card-text"),
                         dbc.FormGroup([
                             dbc.Label("Number of dataframe to test", width=5),
                             dbc.Col(
@@ -163,7 +161,6 @@ testbenchmark = html.Div([
                             ),
                         ],row=True),
                         dbc.Button("Start BenchMark", id='submit-test', color="primary", className="mr-1"),
-                        #html.Div(id='collapse-test')
                         create_collapse('AutoSklearn', 'Minutes', 1, False), create_collapse('H2O', 'Minutes', 1, True), create_collapse('TPOT', 'Generations', 5, True), create_collapse('AutoKeras', 'Epochs', 10, True), create_collapse('AutoGluon', 'Minutes', 1, True),
                     ])
                 ], style={"width": "auto"},
@@ -178,16 +175,11 @@ def get_pastresultopenml():
             placeholder='Filter a BenchMark by Date',
         ),
         html.Hr(),
-        
-        #dbc.Spinner(children=[
         html.Div(id='result-past-bench-openml-table-class'),
-        #],size="lg", color="primary", type="border", fullscreen=False),
         dbc.Spinner(children=[
             html.Div(id='result-past-bench-openml-graph-class'),
         ],size="lg", color="primary", type="border", fullscreen=False),
-        #dbc.Spinner(children=[
         html.Div(id='result-past-bench-openml-table-reg'),
-        #],size="lg", color="primary", type="border", fullscreen=False),
         dbc.Spinner(children=[
             html.Div(id='result-past-bench-openml-graph-reg'),
         ],size="lg", color="primary", type="border", fullscreen=False),
@@ -200,16 +192,11 @@ def get_pastresultkaggle():
             placeholder='Filter a BenchMark by Date',
         ),
         html.Hr(),
-
-        dbc.Spinner(children=[
-            html.Div(id='result-past-bench-kaggle-table-class'),
-        ],size="lg", color="primary", type="border", fullscreen=False),
+        html.Div(id='result-past-bench-kaggle-table-class'),
         dbc.Spinner(children=[
             html.Div(id='result-past-bench-kaggle-graph-class'),
         ],size="lg", color="primary", type="border", fullscreen=False),
-        dbc.Spinner(children=[
         html.Div(id='result-past-bench-kaggle-table-reg'),
-        ],size="lg", color="primary", type="border", fullscreen=False),
         dbc.Spinner(children=[
             html.Div(id='result-past-bench-kaggle-graph-reg'),
         ],size="lg", color="primary", type="border", fullscreen=False),
