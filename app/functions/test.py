@@ -65,6 +65,6 @@ def test(id, algo, options):
         print(task, res)
         return task, res
     except Exception as e:
-        text = 'Impossibile scaricare il DataFrame ' + str(id) + ' causa: ' + str(e)
+        text = "An error occured during the benchmak of the dataset: " + str(id) + ' reason: ' + str(e)
         print(colored(text + '\n', 'red'))
         return None, text

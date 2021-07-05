@@ -36,5 +36,5 @@ There are five types of operations:
 ### Actions available 
 In all operation these action are available:
 * Analize the results of _Calssification Tasks_ and _Regression Tasks_ by a **Table** visualization, **Bar Charts** visualization and **Scatter Plot** visualization
-* See the **lifetime** of all algorithms
+* See the **Lifetime** of all algorithms
 * Inspect the **Pipeline** of al algorithms

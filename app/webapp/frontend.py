@@ -99,7 +99,9 @@ kagglebenchmark = html.Div([
                                     options=[
                                         {'label': 'Titanic', 'value': 'titanic'},
                                         {'label': 'CommonLit Readability Prize', 'value': 'contradictory-my-dear-watson'},
-                                        {'label': "What's Cooking?", 'value': 'whats-cooking'},
+                                        {'label': "Forest Cover Type Prediction", 'value': 'forest-cover-type-prediction'},
+                                        {'label': "Ghouls Goblins and Ghosts Boo", 'value': 'ghouls-goblins-and-ghosts-boo'},
+                                        {'label': "Sentiment Analysis on Movie Reviews", 'value': 'sentiment-analysis-on-movie-reviews'},
                                         
                                         {'label': 'Mercedes Greener Manufactoring', 'value': 'mercedes-benz-greener-manufacturing'},
                                         {'label': 'Restaurant Revenue Prediction', 'value': 'restaurant-revenue-prediction'},

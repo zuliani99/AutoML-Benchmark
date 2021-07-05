@@ -40,7 +40,7 @@ def autogluon(df, task, timelife):
 
   pt, f1 = get_options(task, y)
 
-  predictor = TabularPredictor(label=target , problem_type=pt).fit(train_data=X_train, time_limit=timelife*60, presets='best_quality')
+  predictor = TabularPredictor(label=target , problem_type=pt).fit(train_data=X_train, time_limit=timelife*60, presets=['optimize_for_deployment', 'best_quality'])
   results = predictor.fit_summary()
   y_pred = predictor.predict(X_test)
   #if isinstance(y_pred, pd.Series): y_pred = y_pred.to_frame()
@@ -54,5 +54,6 @@ def autogluon(df, task, timelife):
 
   if task != 'classification':
     return (res['root_mean_squared_error'], res['r2'], pipelines)
-  return (res['accuracy'],  f1(y_test, y_pred), pipelines)
+  try: return (res['accuracy'],  res['f1'], pipelines)
+  except: return (res['accuracy'],  f1(y_test, y_pred), pipelines)
 

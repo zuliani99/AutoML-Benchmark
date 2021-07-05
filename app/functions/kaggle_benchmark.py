@@ -7,7 +7,9 @@ import os
 datasets = {
     'titanic': {'task': 'classification', 'measure': 'acc'},
     'contradictory-my-dear-watson': {'task': 'classification', 'measure': 'acc'},
-    'whats-cooking': {'task': 'classification', 'measure': 'acc'},
+    'forest-cover-type-prediction': {'task': 'classification', 'measure': 'acc'},
+    'ghouls-goblins-and-ghosts-boo': {'task': 'classification', 'measure': 'acc'},
+    'sentiment-analysis-on-movie-reviews': {'task': 'classification', 'measure': 'acc'},
 
     'commonlitreadabilityprize': {'task': 'regression', 'measure': 'rmse'},
     'mercedes-benz-greener-manufacturing': {'task': 'regression', 'measure': 'r2'},
@@ -41,10 +43,10 @@ def kaggle_benchmark(list_df, options):
                     zf = ZipFile(path + '/' + file)
                     zf.extractall(path) 
                     os.remove(path  + '/' + file)
-                print(file, splitted)
-                if(splitted[1] == 'json'):
-                    temp = pd.read_json(path + '/' + file.split('.zip')[0])
-                    temp.to_csv(path + '/' + splitted[0] + '.csv', index = False)
+                #print(file, splitted)
+                #if(splitted[1] == 'json'):
+                #    temp = pd.read_json(path + '/' + file.split('.zip')[0])
+                #    temp.to_csv(path + '/' + splitted[0] + '.csv', index = False)
             zf.close()
 
             train = pd.read_csv(path + '/train.csv')
