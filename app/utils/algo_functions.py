@@ -4,6 +4,7 @@ from algorithms.h2o import H2O
 from algorithms.auto_keras import autokeras
 from algorithms.auto_gluon import autogluon
 from termcolor import colored
+import h2o
 
 def fun_autosklearn(df, task, timelife):
     res_autosklearn = (0.0, 0.0, None)
@@ -49,6 +50,7 @@ def fun_h2o(df, task, timelife):
     print("------------------------------------H2O------------------------------------")
     try:
         res_h2o = (H2O(df, task, timelife))
+        h2o.cluster().shutdown()
         print(colored('Risultato memorizzato!', 'green'))
     except Exception as e:
         print(colored('Qualcosa è andato storto :(     -> ' + str(e), 'red'))

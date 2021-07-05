@@ -12,6 +12,7 @@ def make_classification(X_train, X_test, y_train, y_test, timelife, y):
   automl = autosklearn.classification.AutoSklearnClassifier(
           time_left_for_this_task=timelife*60,  #secondi
           per_run_time_limit=30,
+          memory_limit=8192,
           n_jobs=-1
     )
   automl.fit(X_train, y_train)
@@ -27,6 +28,7 @@ def make_regression(X_train, X_test, y_train, y_test, timelife):
   automl = autosklearn.regression.AutoSklearnRegressor(
           time_left_for_this_task=timelife*60, #secondi
           per_run_time_limit=30,
+          memory_limit=8192,
           n_jobs=-1
     )
   automl.fit(X_train, y_train)

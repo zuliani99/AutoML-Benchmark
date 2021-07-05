@@ -92,15 +92,18 @@ kagglebenchmark = html.Div([
                     dbc.CardBody([
                         html.H4("Kaggle BenchMark", className="card-title"),
                         dbc.FormGroup([
-                            dbc.Label("Number of dataframe to test", width=5),
+                            dbc.Label("Competition's Dataframe to test", width=5),
                             dbc.Col(
                                 dcc.Dropdown(
                                     id='kaggledataset',
                                     options=[
                                         {'label': 'Titanic', 'value': 'titanic'},
-                                        {'label': 'Tabular Playground', 'value': 'tabular-playground-series-mar-2021'},
+                                        {'label': 'CommonLit Readability Prize', 'value': 'contradictory-my-dear-watson'},
+                                        {'label': "What's Cooking?", 'value': 'whats-cooking'},
+                                        
                                         {'label': 'Mercedes Greener Manufactoring', 'value': 'mercedes-benz-greener-manufacturing'},
-                                        {'label': 'Restaurant Revenue Prediction', 'value': 'restaurant-revenue-prediction'}
+                                        {'label': 'Restaurant Revenue Prediction', 'value': 'restaurant-revenue-prediction'},
+                                        {'label': 'CommonLit Readability Prize', 'value': 'commonlitreadabilityprize'},
                                     ],
                                     placeholder="Select a Dataframe",
                                     value=None,

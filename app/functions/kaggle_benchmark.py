@@ -4,24 +4,24 @@ from zipfile import ZipFile
 from utils.result_class import Result
 import os
 
-datasets = [
-    ('titanic', 'classification'),
-    ('tabular-playground-series-mar-2021', 'classification'),
-    ('mercedes-benz-greener-manufacturing', 'regression'),
-    ('restaurant-revenue-prediction', 'regression')
-]
+datasets = {
+    'titanic': {'task': 'classification', 'measure': 'acc'},
+    'contradictory-my-dear-watson': {'task': 'classification', 'measure': 'acc'},
+    'whats-cooking': {'task': 'classification', 'measure': 'acc'},
+
+    'commonlitreadabilityprize': {'task': 'regression', 'measure': 'rmse'},
+    'mercedes-benz-greener-manufacturing': {'task': 'regression', 'measure': 'r2'},
+    'restaurant-revenue-prediction': {'task': 'regression', 'measure': 'rmse'},
+}
 
 def kaggle_benchmark(list_df, options):
     api = KaggleApi()
     api.authenticate()
 
     res_kaggle = Result('Kaggle')
-    if not isinstance(list_df, list):
-        list_df = [list_df]
+    if not isinstance(list_df, list): list_df = [list_df]
     for df in list_df:
-        if (df, 'classification') in datasets or (df, 'regression') in datasets:
-            task = 'classification' if (df, 'classification') in datasets else 'regression'
-            print('------------------Dataset name: ' + df + ' - Task: ' + task + '------------------')
+            print('------------------Dataset name: ' + df + ' - Task: ' + datasets[df]['task'] + '------------------')
             path = './datasets/Kaggle/' + df
 
             api.competition_download_files(df, path=path)
@@ -35,22 +35,28 @@ def kaggle_benchmark(list_df, options):
 
             file_extracted = (os.listdir(path))
 
-            for file in file_extracted:
+            for i, file in enumerate(file_extracted):
                 splitted = file.split('.')
                 if(splitted[len(splitted)-1] == 'zip'):
                     zf = ZipFile(path + '/' + file)
                     zf.extractall(path) 
                     os.remove(path  + '/' + file)
+                print(file, splitted)
+                if(splitted[1] == 'json'):
+                    temp = pd.read_json(path + '/' + file.split('.zip')[0])
+                    temp.to_csv(path + '/' + splitted[0] + '.csv', index = False)
             zf.close()
 
             train = pd.read_csv(path + '/train.csv')
             test = pd.read_csv(path + '/test.csv')
 
             leaderboard = api.competition_view_leaderboard(df)
-            leader = leaderboard['submissions'][0]
+            print('STAMPOOOO LA LEADERBOARD: ', leaderboard)
+            i = 0
+            leader = leaderboard['submissions'][i]
+            while float(leaderboard['submissions'][i]['score']) <= 0.0:
+                i+=1
+                leader = leaderboard['submissions'][i]
 
-            res_kaggle.run_benchmark((train, test), task, df, {'name': leader['teamName'], 'score': leader['score']}, options)
-        else:
-            print('\nDataset kaggle "'+ df +'" inesistente. Se esistente accertarsi di aver accettato le condizioni della competizione.\n')
-            return 'Dataset kaggle "'+ df +'" inesistente. Se esistente accertarsi di aver accettato le condizioni della competizione.'
+            res_kaggle.run_benchmark((train, test), datasets[df]['task'], df, {'measure': datasets[df]['measure'], 'score': leader['score']}, options)
     return res_kaggle.print_res()

@@ -36,12 +36,12 @@ def autogluon(df, task, timelife):
   if isinstance(y_test, pd.Series): y_test = y_test.to_frame()
   X_train[target] = y_train
 
-  print(type(X_train), type(X_test), type(y_train), type(y_test))
+  #print(type(X_train), type(X_test), type(y_train), type(y_test))
 
   pt, f1 = get_options(task, y)
 
-  predictor = TabularPredictor(label=target , problem_type=pt).fit(train_data=X_train, time_limit=timelife*60, presets=['optimize_for_deployment'])
-  #results = predictor.fit_summary()
+  predictor = TabularPredictor(label=target , problem_type=pt).fit(train_data=X_train, time_limit=timelife*60, presets='best_quality')
+  results = predictor.fit_summary()
   y_pred = predictor.predict(X_test)
   #if isinstance(y_pred, pd.Series): y_pred = y_pred.to_frame()
   #print(type(y_pred))

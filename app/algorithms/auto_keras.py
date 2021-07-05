@@ -10,8 +10,6 @@ from tensorflow.keras import backend as K
 import copy
 
 
-
-
 def recall_m(y_true, y_pred):
     true_positives = K.sum(K.round(K.clip(y_true * y_pred, 0, 1)))
     possible_positives = K.sum(K.round(K.clip(y_true, 0, 1)))
@@ -31,6 +29,8 @@ def r2_score(y_true, y_pred):
     SS_res =  K.sum(K.square( y_true-y_pred ))
     SS_tot = K.sum(K.square( y_true - K.mean(y_true) ) )
     return ( 1 - SS_res/(SS_tot + K.epsilon()) )
+
+
 
 def get_automl(task):
   if(task == 'classification'):
@@ -95,7 +95,7 @@ def prepare_and_test(X, y, task, timelife):
   print(y)
 
   clf, custom_obj = get_automl(task)
-  clf.fit(X_train, y_train, validation_split=0.15, epochs=timelife)
+  clf.fit(x=X_train, y=y_train, validation_split=0.15, epochs=timelife)
   model = clf.export_model(custom_objects=custom_obj)
   model.summary()
   model_summary = get_summary(model)
@@ -129,6 +129,7 @@ def prepare_and_test(X, y, task, timelife):
 
 def autokeras(df, task, timelife):
   df_new = copy.copy(df)
+  #df_new = fill_and_to_category(df_new)
   df_new = fill_and_to_category(df_new)
   pd.options.mode.chained_assignment = None
   X, y, _ = return_X_y(df_new)

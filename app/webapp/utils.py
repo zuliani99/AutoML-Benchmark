@@ -9,6 +9,7 @@ import pandas as pd
 def get_lisd_dir(test):
     lis = (os.listdir('./results/'+test))
     lis.sort()
+    #print(lis)
     return [{'label': l, 'value': l} for l in lis if l != '.gitignore']
 
 def get_pipelines_button(dfs, task):
@@ -98,13 +99,19 @@ def retrun_graph_table(dfs, pipelines, title, task, t, opts, scores):
     ]
 
     limit = 5 if t == 'OpenML' else 6 # 6 perchè c'è il leader per i kaggle
+    # se è kaggle con misura acc o rmse devo farlo partire da 0 fino a limit altrimenti lo devo far partire da limit-1 questo per ogni dataframe però
+
+
+    # DEVO MODIFICARE QUI
+
+
     return {
         'scatter_'+scores[0]: scatters[:limit], 'histo_'+scores[0]: histos[:limit], 'scatter_'+scores[1]: scatters[limit:], 'histo_'+scores[1]: histos[limit:], 'options': options
     }, pipelines, table
 
 
 def get_store_and_tables(dfs, type):
-    res_class_acc, res_class_f1, res_reg_rmse, res_reg_r2, pipelines_class, pipelines_reg, options = dfs # scomposizione
+    res_class_acc, res_class_f1, res_reg_rmse, res_reg_r2, pipelines_class, pipelines_reg, options = dfs # scomposizione dei dataframe
     store_dict= { 'class': {}, 'reg': {} }
     store_pipelines = { 'class': {}, 'reg': {} }
     tables = [[None], [None]]
@@ -217,10 +224,12 @@ def set_body(name, pipeline):
 
 def get_body_for_modal(pipeline, df_name):
     df = pd.DataFrame.from_dict(pipeline)
+    print(df, df_name)
     col = df.columns
     index = df.index
     condition = df['dataset'] == df_name
     row = index[condition].tolist()
+    print(row)
     pipeline = df.iloc[int(row[0])]
     return [html.Div([
         html.H4(name),
@@ -232,8 +241,9 @@ def get_body_for_modal(pipeline, df_name):
 
 def show_hide_pipelines_function(store_pipelines_class, store_pipelines_reg, n1, n2, value, is_open):
         if n1 or n2:
+            print(value)
             score = value.split('-')[0]
-            df_name = value.split('-')[1]
+            df_name = value.split(score+'-')[1]
             if score in ['acc', 'f1']:
                 return not is_open, get_body_for_modal(store_pipelines_class, df_name)
             else:
