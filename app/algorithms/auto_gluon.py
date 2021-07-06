@@ -1,4 +1,4 @@
-from autogluon.tabular import TabularDataset, TabularPredictor
+from autogluon.tabular import TabularPredictor
 from sklearn.model_selection import train_test_split
 from utils.usefull_functions import return_X_y, get_list_single_df
 import pandas as pd
@@ -36,18 +36,13 @@ def autogluon(df, task, timelife):
   if isinstance(y_test, pd.Series): y_test = y_test.to_frame()
   X_train[target] = y_train
 
-  #print(type(X_train), type(X_test), type(y_train), type(y_test))
 
   pt, f1 = get_options(task, y)
 
   predictor = TabularPredictor(label=target , problem_type=pt).fit(train_data=X_train, time_limit=timelife*60, presets=['optimize_for_deployment', 'best_quality'])
   results = predictor.fit_summary()
   y_pred = predictor.predict(X_test)
-  #if isinstance(y_pred, pd.Series): y_pred = y_pred.to_frame()
-  #print(type(y_pred))
   pipelines = (predictor.leaderboard(X_train, silent=True)).to_markdown()
-  #y_test = y_test.squeeze()
-  #if isinstance(y_test, pd.Series): y_test = y_test.to_frame()
   res = predictor.evaluate_predictions(y_true=y_test.squeeze(), y_pred=y_pred, auxiliary_metrics=True)
 
   shutil.rmtree('./AutogluonModels')

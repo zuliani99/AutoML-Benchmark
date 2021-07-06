@@ -42,7 +42,6 @@ def prepare_and_test(train, test, task, timelife):
 
   if len(np.unique(target)) > 2:
     return (accuracy_score(target, pred), f1_score(target, pred, average='weighted'), pipelines)
-  print('binary', target)
   return (accuracy_score(target, pred), f1_score(target, pred, pos_label=np.unique(target)[0]), pipelines)
 
 

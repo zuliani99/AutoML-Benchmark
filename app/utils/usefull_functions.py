@@ -13,8 +13,6 @@ def get_list_single_df(df):
 
 
 def return_X_y(df):
-    #print(type(df))
-    #print(df)
     if not isinstance(df, tuple):
         return return_X_y_openML(df)
     target = get_target(df[0], df[1])
@@ -44,12 +42,8 @@ def fill_and_to_category(dfs):
                 df[col] = df[col].cat.codes
             if t in ["integer", "floating"]:
                 df[col] = df[col].fillna(df[col].mean())
-                #scaler = MinMaxScaler()
-                #scaler.fit(df[col])
-                #df[col] = scaler.transform(df[col])
             if t == 'categorical' :
                 df[col] = df[col].cat.codes
-        #print(df.info())
     return dfs
 
 
@@ -99,16 +93,7 @@ def get_df_list(datalist, n_df, task):
                 n_df-=1
 
         except Exception as e:
-            print(
-                colored(
-                    'Impossibile scaricare il DataFrame '
-                    + str(row)
-                    + ' causa: '
-                    + str(e)
-                    + '\n',
-                    'red',
-                )
-            )
+            print(colored('Impossibile scaricare il DataFrame '+ str(row)+ ' causa: '+ str(e)+ '\n','red'))
 
         if n_df == 0:
             break

@@ -18,7 +18,6 @@ def make_classification(X_train, X_test, y_train, y_test, timelife, y):
   y_pred = le.fit_transform(model.predict(X_test))
 
   pipelines = model.export() #get_stat(model)
-  print(pipelines)
 
   if len(np.unique(y)) > 2:
     return accuracy_score(y_test, y_pred), f1_score(y_test, y_pred, average='weighted'), pipelines

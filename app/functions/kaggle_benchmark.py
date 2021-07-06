@@ -14,7 +14,26 @@ datasets = {
     'commonlitreadabilityprize': {'task': 'regression', 'measure': 'rmse'},
     'mercedes-benz-greener-manufacturing': {'task': 'regression', 'measure': 'r2'},
     'restaurant-revenue-prediction': {'task': 'regression', 'measure': 'rmse'},
+    'tabular-playground-series-feb-2021': {'task': 'regression', 'measure': 'rmse'},
+    'predict-citations-for-us-patents': {'task': 'regression', 'measure': 'r2'},
 }
+
+def unzip_more(file_extracted, path):
+    for i, file in enumerate(file_extracted):
+        splitted = file.split('.')
+        if(splitted[len(splitted)-1] == 'zip'):
+            zf = ZipFile(path + '/' + file)
+            zf.extractall(path) 
+            os.remove(path  + '/' + file)
+            zf.close()
+
+def get_leader(leaderboard):
+    i = 0
+    leader = leaderboard['submissions'][i]
+    while float(leaderboard['submissions'][i]['score']) <= 0.0:
+        i+=1
+        leader = leaderboard['submissions'][i]
+    return leader
 
 def kaggle_benchmark(list_df, options):
     api = KaggleApi()
@@ -36,29 +55,13 @@ def kaggle_benchmark(list_df, options):
             os.remove(path + '/' + df + '.zip')
 
             file_extracted = (os.listdir(path))
-
-            for i, file in enumerate(file_extracted):
-                splitted = file.split('.')
-                if(splitted[len(splitted)-1] == 'zip'):
-                    zf = ZipFile(path + '/' + file)
-                    zf.extractall(path) 
-                    os.remove(path  + '/' + file)
-                #print(file, splitted)
-                #if(splitted[1] == 'json'):
-                #    temp = pd.read_json(path + '/' + file.split('.zip')[0])
-                #    temp.to_csv(path + '/' + splitted[0] + '.csv', index = False)
-            zf.close()
+            unzip_more(file_extracted, path)
 
             train = pd.read_csv(path + '/train.csv')
             test = pd.read_csv(path + '/test.csv')
 
             leaderboard = api.competition_view_leaderboard(df)
-            print('STAMPOOOO LA LEADERBOARD: ', leaderboard)
-            i = 0
-            leader = leaderboard['submissions'][i]
-            while float(leaderboard['submissions'][i]['score']) <= 0.0:
-                i+=1
-                leader = leaderboard['submissions'][i]
-
+            leader = get_leader(leaderboard)
+            
             res_kaggle.run_benchmark((train, test), datasets[df]['task'], df, {'measure': datasets[df]['measure'], 'score': leader['score']}, options)
     return res_kaggle.print_res()

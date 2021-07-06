@@ -97,15 +97,18 @@ kagglebenchmark = html.Div([
                                 dcc.Dropdown(
                                     id='kaggledataset',
                                     options=[
-                                        {'label': 'Titanic', 'value': 'titanic'},
-                                        {'label': 'CommonLit Readability Prize', 'value': 'contradictory-my-dear-watson'},
-                                        {'label': "Forest Cover Type Prediction", 'value': 'forest-cover-type-prediction'},
-                                        {'label': "Ghouls Goblins and Ghosts Boo", 'value': 'ghouls-goblins-and-ghosts-boo'},
-                                        {'label': "Sentiment Analysis on Movie Reviews", 'value': 'sentiment-analysis-on-movie-reviews'},
+                                        {'label': 'Titanic - Classification', 'value': 'titanic'},
+                                        {'label': 'CommonLit Readability Prize - Classification', 'value': 'contradictory-my-dear-watson'},
+                                        {'label': "Forest Cover Type Prediction - Classification", 'value': 'forest-cover-type-prediction'},
+                                        {'label': "Ghouls Goblins and Ghosts Boo - Classification", 'value': 'ghouls-goblins-and-ghosts-boo'},
+                                        {'label': "Sentiment Analysis on Movie Reviews - Classification", 'value': 'sentiment-analysis-on-movie-reviews'},
                                         
-                                        {'label': 'Mercedes Greener Manufactoring', 'value': 'mercedes-benz-greener-manufacturing'},
-                                        {'label': 'Restaurant Revenue Prediction', 'value': 'restaurant-revenue-prediction'},
-                                        {'label': 'CommonLit Readability Prize', 'value': 'commonlitreadabilityprize'},
+                                        {'label': 'Mercedes Greener Manufactoring - Regression', 'value': 'mercedes-benz-greener-manufacturing'},
+                                        {'label': 'Restaurant Revenue Prediction - Regression', 'value': 'restaurant-revenue-prediction'},
+                                        {'label': 'CommonLit Readability Prize - Regression', 'value': 'commonlitreadabilityprize'},
+                                        {'label': 'Tabular Playground Series - Feb 2021 - Regression', 'value': 'tabular-playground-series-feb-2021'},
+                                        {'label': 'Predict Citations for US Patents - Regression', 'value': 'predict-citations-for-us-patents'},
+
                                     ],
                                     placeholder="Select a Dataframe",
                                     value=None,
