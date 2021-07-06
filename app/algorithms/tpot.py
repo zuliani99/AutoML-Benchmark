@@ -11,7 +11,7 @@ import dash_html_components as html
 le = LabelEncoder()
 
 def make_classification(X_train, X_test, y_train, y_test, timelife, y):
-  model =  TPOTClassifier(generations=timelife, cv=5, max_time_mins=1, random_state=1, verbosity=2, n_jobs=1)
+  model =  TPOTClassifier(generations=timelife, cv=5, max_time_mins=5, random_state=1, verbosity=2, n_jobs=1, max_eval_time_mins=0.05) #, subsample=0.5
   model.fit(X_train, y_train)
 
   y_test = le.fit_transform(y_test)
@@ -25,7 +25,7 @@ def make_classification(X_train, X_test, y_train, y_test, timelife, y):
     return accuracy_score(y_test, y_pred), f1_score(y_test, y_pred, pos_label=np.unique(y)[0]), pipelines
 
 def make_regression(X_train, X_test, y_train, y_test, timelife):
-  model =  TPOTRegressor(generations=timelife, cv=5, max_time_mins=1, random_state=1, verbosity=2, n_jobs=1)
+  model =  TPOTRegressor(generations=timelife, cv=5, max_time_mins=5, random_state=1, verbosity=2, n_jobs=1, max_eval_time_mins=0.05) #, subsample=0.5
   model.fit(X_train, y_train)
   y_pred = model.predict(X_test)
   pipelines = model.export() #get_stat(model)

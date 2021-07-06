@@ -7,6 +7,8 @@ import dash_html_components as html
 from dash.dependencies import Input, Output, State, ALL, MATCH
 import dash_bootstrap_components as dbc
 
+
+
 import os
 os.environ['KAGGLE_USERNAME'] = "zullle" # username from the json file
 os.environ['KAGGLE_KEY'] = "24df22da033e9547780e278280a6ae2b" # key from the json file
@@ -176,5 +178,4 @@ def start():
 
 if __name__ == '__main__':
     start()
-    
     

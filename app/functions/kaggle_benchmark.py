@@ -12,7 +12,7 @@ datasets = {
     'sentiment-analysis-on-movie-reviews': {'task': 'classification', 'measure': 'acc'},
 
     'commonlitreadabilityprize': {'task': 'regression', 'measure': 'rmse'},
-    'mercedes-benz-greener-manufacturing': {'task': 'regression', 'measure': 'r2'},
+    'bigquery-geotab-intersection-congestion': {'task': 'regression', 'measure': 'rmse'},
     'restaurant-revenue-prediction': {'task': 'regression', 'measure': 'rmse'},
     'tabular-playground-series-feb-2021': {'task': 'regression', 'measure': 'rmse'},
     'predict-citations-for-us-patents': {'task': 'regression', 'measure': 'r2'},
