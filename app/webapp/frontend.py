@@ -68,7 +68,7 @@ openmlbenchmark = html.Div([
                                     ])
                                 ],width=5),
                             ],row=True),
-                            create_collapse('AutoSklearn', 'Minutes', 1, False), create_collapse('H2O', 'Minutes', 1, False), create_collapse('TPOT', 'Generations', 5, False), create_collapse('AutoKeras', 'Epochs', 10, False), create_collapse('AutoGluon', 'Minutes', 1, False),
+                            create_collapse('AutoSklearn', 'Minutes', 2, False), create_collapse('H2O', 'Minutes', 2, False), create_collapse('TPOT', 'Minutes', 5, False), create_collapse('AutoKeras', 'Epochs', 10, False), create_collapse('AutoGluon', 'Minutes', 2, False),
 
                             dbc.Button("Start BenchMark", id='submit-openml', color="primary", className="mr-1")
                         ])
@@ -101,13 +101,12 @@ kagglebenchmark = html.Div([
                                         {'label': 'CommonLit Readability Prize - Classification', 'value': 'contradictory-my-dear-watson'},
                                         {'label': "Forest Cover Type Prediction - Classification", 'value': 'forest-cover-type-prediction'},
                                         {'label': "Ghouls Goblins and Ghosts Boo - Classification", 'value': 'ghouls-goblins-and-ghosts-boo'},
-                                        {'label': "Sentiment Analysis on Movie Reviews - Classification", 'value': 'sentiment-analysis-on-movie-reviews'},
                                         
                                         {'label': 'BigQuery-Geotab Intersection Congestion - Regression', 'value': 'bigquery-geotab-intersection-congestion'},
                                         {'label': 'Restaurant Revenue Prediction - Regression', 'value': 'restaurant-revenue-prediction'},
                                         {'label': 'CommonLit Readability Prize - Regression', 'value': 'commonlitreadabilityprize'},
                                         {'label': 'Tabular Playground Series - Feb 2021 - Regression', 'value': 'tabular-playground-series-feb-2021'},
-                                        {'label': 'Predict Citations for US Patents - Regression', 'value': 'predict-citations-for-us-patents'},
+                                        {'label': 'Global Energy Forecasting Competition 2012 - Regression', 'value': 'cGEF2012-wind-forecasting'},
 
                                     ],
                                     placeholder="Select a Dataframe",
@@ -117,7 +116,7 @@ kagglebenchmark = html.Div([
                                 width=5,
                             )
                         ],row=True),
-                        create_collapse('AutoSklearn', 'Minutes', 1, False), create_collapse('H2O', 'Minutes', 1, False), create_collapse('TPOT', 'Generations', 5, False), create_collapse('AutoKeras', 'Epochs', 10, False), create_collapse('AutoGluon', 'Minutes', 1, False),
+                        create_collapse('AutoSklearn', 'Minutes', 2, False), create_collapse('H2O', 'Minutes', 2, False), create_collapse('TPOT', 'Minutes', 5, False), create_collapse('AutoKeras', 'Epochs', 10, False), create_collapse('AutoGluon', 'Minutes', 2, False),
 
                         dbc.Button("Start BenchMark", id='submit-kaggle', color="primary", className="mr-1")
                     ])
@@ -169,7 +168,7 @@ testbenchmark = html.Div([
                             ),
                         ],row=True),
                         dbc.Button("Start BenchMark", id='submit-test', color="primary", className="mr-1"),
-                        create_collapse('AutoSklearn', 'Minutes', 1, False), create_collapse('H2O', 'Minutes', 1, True), create_collapse('TPOT', 'Generations', 5, True), create_collapse('AutoKeras', 'Epochs', 10, True), create_collapse('AutoGluon', 'Minutes', 1, True),
+                        create_collapse('AutoSklearn', 'Minutes', 2, False), create_collapse('H2O', 'Minutes', 2, False), create_collapse('TPOT', 'Minutes', 5, False), create_collapse('AutoKeras', 'Epochs', 10, False), create_collapse('AutoGluon', 'Minutes', 2, False),
                     ])
                 ], style={"width": "auto"},
             ),

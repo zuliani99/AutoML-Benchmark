@@ -46,7 +46,7 @@ def start_kaggle_function(kaggledataset, options):
         if kaggledataset is None:
                 raise PreventUpdate
         res = kaggle_benchmark(kaggledataset, options)
-        print('dataaaaaaa: ', res)
+        #print('dataaaaaaa: ', res)
         return get_store_past_bech_function(res, 'Kaggle')
 
 

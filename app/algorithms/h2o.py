@@ -4,7 +4,6 @@ import numpy as np
 import pandas as pd
 from sklearn.model_selection import train_test_split
 from utils.usefull_functions import return_X_y, fill_and_to_category
-from sklearn.preprocessing import LabelEncoder 
 from sklearn.metrics import accuracy_score, mean_squared_error, f1_score, r2_score
 import copy
 
@@ -15,6 +14,8 @@ def get_summary(model):
   return '\n'.join(summary)
 
 def prepare_and_test(train, test, task, timelife):
+  print(type(train), type(test))
+
   x = train.columns
   y = train.columns[train.shape[1]-1]
   x.remove(y)
@@ -38,14 +39,23 @@ def prepare_and_test(train, test, task, timelife):
   pipelines = str((h2o.as_list(h2o.automl.get_leaderboard(aml, extra_columns = 'ALL'))).to_markdown())
 
   if task != 'classification':
-    return (np.sqrt(mean_squared_error(target, pred)), r2_score(target, pred), pipelines)
+    return (np.sqrt(mean_squared_error(target, pred)), r2_score(target, pred), pipelines, timelife)
 
   if len(np.unique(target)) > 2:
-    return (accuracy_score(target, pred), f1_score(target, pred, average='weighted'), pipelines)
-  return (accuracy_score(target, pred), f1_score(target, pred, pos_label=np.unique(target)[0]), pipelines)
+    return (accuracy_score(target, pred), f1_score(target, pred, average='weighted'), pipelines, timelife)
+  return (accuracy_score(target, pred), f1_score(target, pred, pos_label=np.unique(target)[0]), pipelines, timelife)
 
 
 def H2O(df, task, timelife):
+  try:
+    return do_h20(df, task, timelife)
+  except Exception as e:
+    if(str(e) == 'Argument `data` should be an H2OFrame, got NoneType None'):
+      return H2O(df, task, timelife+1)
+    else:
+      raise(e)
+
+def do_h20(df, task, timelife):
   pd.options.mode.chained_assignment = None
   h2o.init()
   df_new = copy.copy(df)
@@ -53,9 +63,6 @@ def H2O(df, task, timelife):
   #if isinstance(df_new, pd.DataFrame):
   df_new = fill_and_to_category(df_new)
   X, y, _ = return_X_y(df_new)
-  #if not isinstance(df_new, pd.DataFrame):
-    #X = X.apply(LabelEncoder().fit_transform)
-
   X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=1)
 
   if isinstance(y_test, pd.Series):
@@ -72,3 +79,4 @@ def H2O(df, task, timelife):
   test = h2o.H2OFrame(test)
 
   return(prepare_and_test(train, test, task, timelife))
+    

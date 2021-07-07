@@ -89,12 +89,13 @@ def retrun_graph_table(dfs, pipelines, title, task, t, opts, scores):
 
     opts = opts.to_dict()
     options = [
+        #TABELLA???
         html.Div([
-            html.P(["Running time for Autosklearn: " + str(opts['autosklearn'][0]) + " minute/s"]),
-            html.P(["Running time for TPOT: " + str(opts['tpot'][0]) + " generation/s"]),
-            html.P(["Running time for H2O: " + str(opts['h2o'][0]) + " minute/s"]),
-            html.P(["Running time for AutoKeras: " + str(opts['autokeras'][0]) + " epoch/s"]),
-            html.P(["Running time for AutoGluon: " + str(opts['autogluon'][0]) + " minute/s"]),
+            html.P(["Autosklearn -> Starting running time: " + str(opts['autosklearn'][0][0]) + " minute/s, Final running time: " + str(opts['autosklearn'][0][1]) + " minute/s"]),
+            html.P(["TPOT -> starting running time " + str(opts['tpot'][0][0]) + " minutes/s, Final running time: " + str(opts['tpot'][0][1]) + " minutes/s"]),
+            html.P(["H2O -> starting running time " + str(opts['h2o'][0][0]) + " minute/s, Final running time: " + str(opts['h2o'][0][1]) + " minute/s"]),
+            html.P(["AutoKeras -> starting running time  " + str(opts['autokeras'][0][0]) + " epoch/s, Final running time: " + str(opts['autokeras'][0][1]) + " epoch/s"]),
+            html.P(["AutoGluon -> starting running time  " + str(opts['autogluon'][0][0]) + " minute/s, Final running time: " + str(opts['autogluon'][0][1]) + " minute/s"]),
         ])
     ]
 
@@ -186,7 +187,7 @@ def create_collapse(algo, measure, min, disabled):
                                     dbc.Collapse(
                                         dbc.CardBody([
                                             dbc.FormGroup([
-                                                dbc.Label("Runnung time in "+measure,  width=5),
+                                                dbc.Label("Running time in "+measure,  width=5),
                                                 dbc.Col([
                                                     dbc.InputGroup([
                                                         dbc.Input( id=algo.lower()+"-timelife", type="number", value=min, placeholder=measure, min=min, max=100000),

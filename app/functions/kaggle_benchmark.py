@@ -5,17 +5,15 @@ from utils.result_class import Result
 import os
 
 datasets = {
-    'titanic': {'task': 'classification', 'measure': 'acc'},
-    'contradictory-my-dear-watson': {'task': 'classification', 'measure': 'acc'},
-    'forest-cover-type-prediction': {'task': 'classification', 'measure': 'acc'},
-    'ghouls-goblins-and-ghosts-boo': {'task': 'classification', 'measure': 'acc'},
-    'sentiment-analysis-on-movie-reviews': {'task': 'classification', 'measure': 'acc'},
+    'titanic': {'task': 'classification', 'measure': 'acc'},    #OK
+    'contradictory-my-dear-watson': {'task': 'classification', 'measure': 'acc'},   #OK
+    'forest-cover-type-prediction': {'task': 'classification', 'measure': 'acc'},   #OK
+    'ghouls-goblins-and-ghosts-boo': {'task': 'classification', 'measure': 'acc'},  #OK
 
-    'commonlitreadabilityprize': {'task': 'regression', 'measure': 'rmse'},
-    'bigquery-geotab-intersection-congestion': {'task': 'regression', 'measure': 'rmse'},
-    'restaurant-revenue-prediction': {'task': 'regression', 'measure': 'rmse'},
-    'tabular-playground-series-feb-2021': {'task': 'regression', 'measure': 'rmse'},
-    'predict-citations-for-us-patents': {'task': 'regression', 'measure': 'r2'},
+    'commonlitreadabilityprize': {'task': 'regression', 'measure': 'rmse'}, # OK
+    'bigquery-geotab-intersection-congestion': {'task': 'regression', 'measure': 'rmse'}, # OK -> riverifica
+    'tabular-playground-series-feb-2021': {'task': 'regression', 'measure': 'rmse'}, # DA RIVERIFICARE
+    'GEF2012-wind-forecasting': {'task': 'regression', 'measure': 'rmse'}, #
 }
 
 def unzip_more(file_extracted, path):

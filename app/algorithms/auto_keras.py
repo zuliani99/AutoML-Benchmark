@@ -91,14 +91,22 @@ def prepare_and_test(X, y, task, timelife):
   y_pred = np.array(y_pred, dtype = np.int32)
 
   if task == 'classification':
-    return get_classification(y_test, y_pred, model_summary, y)
+    return get_classification(y_test, y_pred, model_summary, y), timelife
   else:
-    return get_regression(y_test, y_pred, model_summary)
+    return get_regression(y_test, y_pred, model_summary), timelife
 
 
 def autokeras(df, task, timelife):
+  #try:
   df_new = copy.copy(df)
   df_new = fill_and_to_category(df_new)
   pd.options.mode.chained_assignment = None
   X, y, _ = return_X_y(df_new)
   return (prepare_and_test(X, y, task, timelife))
+'''except RuntimeError as re:
+    print(re)
+    raise(re)
+  except Exception as e:
+    print("QUESTA E' UN ECCEZIONE GENGERALE ", e)
+    raise(e)'''
+    
