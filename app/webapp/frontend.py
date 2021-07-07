@@ -68,7 +68,7 @@ openmlbenchmark = html.Div([
                                     ])
                                 ],width=5),
                             ],row=True),
-                            create_collapse('AutoSklearn', 'Minutes', 2, False), create_collapse('H2O', 'Minutes', 2, False), create_collapse('TPOT', 'Minutes', 5, False), create_collapse('AutoKeras', 'Epochs', 10, False), create_collapse('AutoGluon', 'Minutes', 2, False),
+                            create_collapse('AutoSklearn', 'Minutes', 1, False), create_collapse('H2O', 'Minutes', 1, False), create_collapse('TPOT', 'Minutes', 1, False), create_collapse('AutoKeras', 'Epochs', 10, False), create_collapse('AutoGluon', 'Minutes', 1, False),
 
                             dbc.Button("Start BenchMark", id='submit-openml', color="primary", className="mr-1")
                         ])
@@ -116,7 +116,7 @@ kagglebenchmark = html.Div([
                                 width=5,
                             )
                         ],row=True),
-                        create_collapse('AutoSklearn', 'Minutes', 2, False), create_collapse('H2O', 'Minutes', 2, False), create_collapse('TPOT', 'Minutes', 5, False), create_collapse('AutoKeras', 'Epochs', 10, False), create_collapse('AutoGluon', 'Minutes', 2, False),
+                        create_collapse('AutoSklearn', 'Minutes', 1, False), create_collapse('H2O', 'Minutes', 1, False), create_collapse('TPOT', 'Minutes', 1, False), create_collapse('AutoKeras', 'Epochs', 10, False), create_collapse('AutoGluon', 'Minutes', 1, False),
 
                         dbc.Button("Start BenchMark", id='submit-kaggle', color="primary", className="mr-1")
                     ])
@@ -168,7 +168,7 @@ testbenchmark = html.Div([
                             ),
                         ],row=True),
                         dbc.Button("Start BenchMark", id='submit-test', color="primary", className="mr-1"),
-                        create_collapse('AutoSklearn', 'Minutes', 2, False), create_collapse('H2O', 'Minutes', 2, False), create_collapse('TPOT', 'Minutes', 5, False), create_collapse('AutoKeras', 'Epochs', 10, False), create_collapse('AutoGluon', 'Minutes', 2, False),
+                        create_collapse('AutoSklearn', 'Minutes', 1, False), create_collapse('H2O', 'Minutes', 1, False), create_collapse('TPOT', 'Minutes', 1, False), create_collapse('AutoKeras', 'Epochs', 10, False), create_collapse('AutoGluon', 'Minutes', 1, False),
                     ])
                 ], style={"width": "auto"},
             ),

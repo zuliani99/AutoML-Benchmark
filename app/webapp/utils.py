@@ -88,14 +88,15 @@ def retrun_graph_table(dfs, pipelines, title, task, t, opts, scores):
     )
 
     opts = opts.to_dict()
+    print(opts)
     options = [
         #TABELLA???
         html.Div([
-            html.P(["Autosklearn -> Starting running time: " + str(opts['autosklearn'][0][0]) + " minute/s, Final running time: " + str(opts['autosklearn'][0][1]) + " minute/s"]),
-            html.P(["TPOT -> starting running time " + str(opts['tpot'][0][0]) + " minutes/s, Final running time: " + str(opts['tpot'][0][1]) + " minutes/s"]),
-            html.P(["H2O -> starting running time " + str(opts['h2o'][0][0]) + " minute/s, Final running time: " + str(opts['h2o'][0][1]) + " minute/s"]),
-            html.P(["AutoKeras -> starting running time  " + str(opts['autokeras'][0][0]) + " epoch/s, Final running time: " + str(opts['autokeras'][0][1]) + " epoch/s"]),
-            html.P(["AutoGluon -> starting running time  " + str(opts['autogluon'][0][0]) + " minute/s, Final running time: " + str(opts['autogluon'][0][1]) + " minute/s"]),
+            html.P(["Autosklearn -> Starting running time: " + str(opts['autosklearn'][0]) + " minute/s, Final running time: " + str(opts['autosklearn'][1]) + " minute/s"]),
+            html.P(["TPOT -> starting running time " + str(opts['tpot'][0]) + " minutes/s, Final running time: " + str(opts['tpot'][1]) + " minutes/s"]),
+            html.P(["H2O -> starting running time " + str(opts['h2o'][0]) + " minute/s, Final running time: " + str(opts['h2o'][1]) + " minute/s"]),
+            html.P(["AutoKeras -> starting running time  " + str(opts['autokeras'][0]) + " epoch/s, Final running time: " + str(opts['autokeras'][1]) + " epoch/s"]),
+            html.P(["AutoGluon -> starting running time  " + str(opts['autogluon'][0]) + " minute/s, Final running time: " + str(opts['autogluon'][1]) + " minute/s"]),
         ])
     ]
 

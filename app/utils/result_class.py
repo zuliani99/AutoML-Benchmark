@@ -25,9 +25,14 @@ class Result:
         res_h = fun_h2o(df, task, options['h2o'])
         res_ag = fun_autogluon(df, task, options['autogluon'])
 
-        self.options = pd.DataFrame({'autosklearn': [options['autosklearn'], res_as[3]], 'h2o': [options['h2o'], res_h[3]], 'tpot': [options['tpot'], res_t[3]], 'autokeras': [options['autokeras'], res_ak[3]], 'autogluon': [options['autogluon'], res_ag[3]]})
+        self.options = pd.DataFrame({
+            'autosklearn': [options['autosklearn'], res_as[3]],
+            'h2o': [options['h2o'], res_h[3]],
+            'tpot': [options['tpot'], res_t[3]],
+            'autokeras': [options['autokeras'], res_ak[3]],
+            'autogluon': [options['autogluon'], res_ag[3]]
+        })
 
-        #print('LEADERRRRR: ', leader)
 
         if (task == 'classification'):
             if leader is None:

@@ -14,8 +14,6 @@ def get_summary(model):
   return '\n'.join(summary)
 
 def prepare_and_test(train, test, task, timelife):
-  print(type(train), type(test))
-
   x = train.columns
   y = train.columns[train.shape[1]-1]
   x.remove(y)

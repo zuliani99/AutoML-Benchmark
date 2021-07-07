@@ -57,17 +57,17 @@ def get_summary(model):
   return (table.to_markdown())
 
 
-def get_classification(y_test, y_pred, model_summary, y):
+def get_classification(y_test, y_pred, model_summary, y, timelife):
   shutil.rmtree('./structured_data_classifier')
   if len(np.unique(y)) > 2:
-    return sklearn.metrics.accuracy_score(y_test, y_pred), sklearn.metrics.f1_score(y_test, y_pred, average='weighted'), model_summary
+    return sklearn.metrics.accuracy_score(y_test, y_pred), sklearn.metrics.f1_score(y_test, y_pred, average='weighted'), model_summary, timelife
   else:
-    return sklearn.metrics.accuracy_score(y_test, y_pred), sklearn.metrics.f1_score(y_test, y_pred, pos_label=np.unique(y)[0]), model_summary
+    return sklearn.metrics.accuracy_score(y_test, y_pred), sklearn.metrics.f1_score(y_test, y_pred, pos_label=np.unique(y)[0]), model_summary, timelife
 
 
-def get_regression(y_test, y_pred, model_summary):
+def get_regression(y_test, y_pred, model_summary, timelife):
   shutil.rmtree('./structured_data_regressor')
-  return np.sqrt(sklearn.metrics.mean_squared_error(y_test, y_pred)), sklearn.metrics.r2_score(y_test, y_pred), model_summary
+  return np.sqrt(sklearn.metrics.mean_squared_error(y_test, y_pred)), sklearn.metrics.r2_score(y_test, y_pred), model_summary, timelife
 
 
 def prepare_and_test(X, y, task, timelife):
@@ -91,9 +91,9 @@ def prepare_and_test(X, y, task, timelife):
   y_pred = np.array(y_pred, dtype = np.int32)
 
   if task == 'classification':
-    return get_classification(y_test, y_pred, model_summary, y), timelife
+    return get_classification(y_test, y_pred, model_summary, y, timelife)
   else:
-    return get_regression(y_test, y_pred, model_summary), timelife
+    return get_regression(y_test, y_pred, model_summary, timelife)
 
 
 def autokeras(df, task, timelife):
@@ -103,10 +103,3 @@ def autokeras(df, task, timelife):
   pd.options.mode.chained_assignment = None
   X, y, _ = return_X_y(df_new)
   return (prepare_and_test(X, y, task, timelife))
-'''except RuntimeError as re:
-    print(re)
-    raise(re)
-  except Exception as e:
-    print("QUESTA E' UN ECCEZIONE GENGERALE ", e)
-    raise(e)'''
-    
