@@ -37,11 +37,11 @@ def prepare_and_test(train, test, task, timelife):
   pipelines = str((h2o.as_list(h2o.automl.get_leaderboard(aml, extra_columns = 'ALL'))).to_markdown())
 
   if task != 'classification':
-    return (np.sqrt(mean_squared_error(target, pred)), r2_score(target, pred), pipelines, timelife)
+    return (round(np.sqrt(mean_squared_error(target, pred)), 3), round(r2_score(target, pred), 3), pipelines, timelife)
 
   if len(np.unique(target)) > 2:
-    return (accuracy_score(target, pred), f1_score(target, pred, average='weighted'), pipelines, timelife)
-  return (accuracy_score(target, pred), f1_score(target, pred, pos_label=np.unique(target)[0]), pipelines, timelife)
+    return (round(accuracy_score(target, pred), 3), round(f1_score(target, pred, average='weighted'), 3), pipelines, timelife)
+  return (round(accuracy_score(target, pred), 3), round(f1_score(target, pred, pos_label=np.unique(target)[0]), 3), pipelines, timelife)
 
 
 def H2O(df, task, timelife):

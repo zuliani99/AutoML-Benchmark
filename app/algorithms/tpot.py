@@ -20,16 +20,16 @@ def make_classification(X_train, X_test, y_train, y_test, timelife, y):
   pipelines = model.export() #get_stat(model)
 
   if len(np.unique(y)) > 2:
-    return accuracy_score(y_test, y_pred), f1_score(y_test, y_pred, average='weighted'), pipelines, timelife
+    return round(accuracy_score(y_test, y_pred), 3), round(f1_score(y_test, y_pred, average='weighted'), 3), pipelines, timelife
   else:
-    return accuracy_score(y_test, y_pred), f1_score(y_test, y_pred, pos_label=np.unique(y)[0]), pipelines, timelife
+    return round(accuracy_score(y_test, y_pred), 3), round(f1_score(y_test, y_pred, pos_label=np.unique(y)[0]), 3), pipelines, timelife
 
 def make_regression(X_train, X_test, y_train, y_test, timelife):
   model =  TPOTRegressor(generations=3, cv=5, max_time_mins=timelife, random_state=1, verbosity=2, n_jobs=1, max_eval_time_mins=0.05) #, subsample=0.5
   model.fit(np.array(X_train), np.array(y_train).ravel())
   y_pred = model.predict(X_test)
   pipelines = model.export() #get_stat(model)
-  return np.sqrt(mean_squared_error(y_test, y_pred)), r2_score(y_test, y_pred), pipelines, timelife
+  return round(np.sqrt(mean_squared_error(y_test, y_pred)), 3), round(r2_score(y_test, y_pred), 3), pipelines, timelife
 
 #devo fare datacleaning: pulizia nel senso nan -> fill_nan
 def TPOT(df, task, timelife):

@@ -51,6 +51,7 @@ def fill_and_to_category(dfs):
 def get_df_list(datalist, n_df, task):
     list_df = []
     for row in datalist:
+        print('rigaaaaaaaa ', row)
         try:
 
             file_dir = './datasets/OpenML/'+ task +'/'

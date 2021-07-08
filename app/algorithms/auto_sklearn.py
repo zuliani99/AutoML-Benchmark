@@ -19,9 +19,9 @@ def make_classification(X_train, X_test, y_train, y_test, timelife, y):
   y_pred = automl.predict(X_test)
   pipelines = ((pd.DataFrame(pd.Series(automl.show_models()))).to_markdown())
   if len(np.unique(y)) > 2:
-    return (accuracy_score(y_test, y_pred), f1_score(y_test, y_pred, average='weighted'), pipelines, timelife)
+    return (round(accuracy_score(y_test, y_pred), 3), round(f1_score(y_test, y_pred, average='weighted'), 3), pipelines, timelife)
   else:
-    return (accuracy_score(y_test, y_pred), f1_score(y_test, y_pred, pos_label=np.unique(y)[0]), pipelines, timelife)
+    return (round(accuracy_score(y_test, y_pred), 3), round(f1_score(y_test, y_pred, pos_label=np.unique(y)[0]), 3), pipelines, timelife)
 
 
 def make_regression(X_train, X_test, y_train, y_test, timelife):
@@ -34,7 +34,7 @@ def make_regression(X_train, X_test, y_train, y_test, timelife):
   automl.fit(X_train, y_train)
   y_pred = automl.predict(X_test)
   pipelines = ((pd.DataFrame(pd.Series(automl.show_models()))).to_markdown())
-  return (np.sqrt(mean_squared_error(y_test, y_pred)), r2_score(y_test, y_pred), pipelines, timelife)
+  return (round(np.sqrt(mean_squared_error(y_test, y_pred)), 3), round(r2_score(y_test, y_pred), 3), pipelines, timelife)
 
 
 def auto_sklearn(df, task, timelife):

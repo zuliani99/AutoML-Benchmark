@@ -63,9 +63,9 @@ def autogluon(df, task, timelife):
     shutil.rmtree('./AutogluonModels')
 
     if task != 'classification':
-      return (res['root_mean_squared_error'], res['r2'], pipelines, timelife)
-    try: return (res['accuracy'],  res['f1'], pipelines, timelife)
-    except: return (res['accuracy'],  f1(y_test, y_pred), pipelines, timelife)
+      return (round(res['root_mean_squared_error'], 3), round(res['r2'], 3), pipelines, timelife)
+    try: return (round(res['accuracy'], 3),  round(res['f1'], 3), pipelines, timelife)
+    except: return (round(res['accuracy'], 3),  sound(f1(y_test, y_pred), 3), pipelines, timelife)
 
   except Exception as e:
     if str(e) == 'AutoGluon did not successfully train any models':
