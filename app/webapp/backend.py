@@ -59,13 +59,16 @@ def start_test_function(dfid, algorithms, options):
             return return_all_algorithms(res, dfid)
         if res[0] is None:
             return [html.P(res[1], style={'color':'red'})]
-        s1, s2, pipeline = res[1]
+        s1, s2, pipeline, timelife = res[1]
         if(res[0] == 'classification'):
             text = 'Accuracy: ' + str(s1) + '     f1_score: ' + str(s2)
         else:
             text = 'RMSE: ' + str(s1) + '     r2_score: ' + str(s2)
         return [html.Div([
-            html.P('Dataframe results ' + str(dfid) + " by using the algorithm: " + str(algorithms) + " with running time: " + str(options[algorithms]['time']) + " " + str(options[algorithms]['type'])),
+            html.P(
+                'Dataframe results ' + str(dfid) + ' by using the algorithm: ' + str(algorithms) + ' with starting running time: ' + str(options[algorithms]['time']) + ' ' + str(options[algorithms]['type'])
+                + ' and with final running time: ' + str(timelife) + ' ' + str(options[algorithms]['type'])
+            ),
             html.P(text),
             set_body(str(algorithms), pipeline)
         ])]
