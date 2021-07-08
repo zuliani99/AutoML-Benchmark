@@ -9,7 +9,6 @@ import pandas as pd
 def get_lisd_dir(test):
     lis = (os.listdir('./results/'+test))
     lis.sort()
-    #print(lis)
     return [{'label': l, 'value': l} for l in lis if l != '.gitignore']
 
 def get_pipelines_button(dfs, task):
@@ -101,11 +100,6 @@ def retrun_graph_table(dfs, pipelines, title, task, t, opts, scores):
     ]
 
     limit = 5 if t == 'OpenML' else 6 # 6 perchè c'è il leader per i kaggle
-    # se è kaggle con misura acc o rmse devo farlo partire da 0 fino a limit altrimenti lo devo far partire da limit-1 questo per ogni dataframe però
-
-
-    # DEVO MODIFICARE QUI
-
 
     return {
         'scatter_'+scores[0]: scatters[:limit], 'histo_'+scores[0]: histos[:limit], 'scatter_'+scores[1]: scatters[limit:], 'histo_'+scores[1]: histos[limit:], 'options': options
