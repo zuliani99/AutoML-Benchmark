@@ -60,7 +60,7 @@ def do_h20(df, task, timelife):
 
   #if isinstance(df_new, pd.DataFrame):
   df_new = fill_and_to_category(df_new)
-  X, y, _ = return_X_y(df_new)
+  X, y = return_X_y(df_new)
   X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=1)
 
   if isinstance(y_test, pd.Series):

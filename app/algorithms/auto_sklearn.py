@@ -44,7 +44,7 @@ def auto_sklearn(df, task, timelife):
     #categorical, binary, nuymerical features
     #if isinstance(df_new, pd.DataFrame):
     df_new = fill_and_to_category(df_new)
-    X, y, _ = return_X_y(df_new)
+    X, y = return_X_y(df_new)
     #if not isinstance(df_new, pd.DataFrame):
       #X = fill_and_to_category(X)
 

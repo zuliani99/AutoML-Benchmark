@@ -12,10 +12,14 @@ le = LabelEncoder()
 
 def make_classification(X_train, X_test, y_train, y_test, timelife, y):
   model =  TPOTClassifier(generations=3, cv=5, max_time_mins=timelife, random_state=1, verbosity=2, n_jobs=1, max_eval_time_mins=0.05) #, subsample=0.5
-  model.fit(np.array(X_train), np.array(y_train).ravel())
+  #print(type(X_train), type(y_train))
+  #model.fit(np.array(X_train), np.array(y_train).ravel())
+  model.fit(X_train, y_train)
 
-  y_test = le.fit_transform(y_test)
-  y_pred = le.fit_transform(model.predict(X_test))
+  #y_test = le.fit_transform(y_test)
+  #y_pred = le.fit_transform(model.predict(X_test))
+
+  y_pred = model.predict(X_test)
 
   pipelines = model.export() #get_stat(model)
 
@@ -26,7 +30,9 @@ def make_classification(X_train, X_test, y_train, y_test, timelife, y):
 
 def make_regression(X_train, X_test, y_train, y_test, timelife):
   model =  TPOTRegressor(generations=3, cv=5, max_time_mins=timelife, random_state=1, verbosity=2, n_jobs=1, max_eval_time_mins=0.05) #, subsample=0.5
-  model.fit(np.array(X_train), np.array(y_train).ravel())
+  print(type(X_train), type(y_train))
+  #model.fit(np.array(X_train), np.array(y_train).ravel())
+  model.fit(X_train, y_train)
   y_pred = model.predict(X_test)
   pipelines = model.export() #get_stat(model)
   return round(np.sqrt(mean_squared_error(y_test, y_pred)), 3), round(r2_score(y_test, y_pred), 3), pipelines, timelife
@@ -38,7 +44,7 @@ def TPOT(df, task, timelife):
     pd.options.mode.chained_assignment = None
     #if isinstance(df_new, pd.DataFrame):
     df_new = fill_and_to_category(df_new)
-    X, y, _ = return_X_y(df_new)
+    X, y = return_X_y(df_new)
     #if not isinstance(df_new, pd.DataFrame):
       #X = fill_and_to_category(X)
 

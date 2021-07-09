@@ -35,7 +35,7 @@ def autogluon(df, task, timelife):
     df_new = copy.copy(df)
     df_new = get_list_single_df(df_new)
 
-    X, y, _ = return_X_y(df_new)
+    X, y = return_X_y(df_new)
     
     if isinstance(y, pd.Series): y = y.to_frame()
 
@@ -65,7 +65,7 @@ def autogluon(df, task, timelife):
     if task != 'classification':
       return (round(res['root_mean_squared_error'], 3), round(res['r2'], 3), pipelines, timelife)
     try: return (round(res['accuracy'], 3),  round(res['f1'], 3), pipelines, timelife)
-    except: return (round(res['accuracy'], 3),  sound(f1(y_test, y_pred), 3), pipelines, timelife)
+    except: return (round(res['accuracy'], 3),  round(f1(y_test, y_pred), 3), pipelines, timelife)
 
   except Exception as e:
     if str(e) == 'AutoGluon did not successfully train any models':

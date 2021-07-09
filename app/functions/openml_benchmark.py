@@ -17,13 +17,14 @@ def openml_benchmark(df_n, morethan, options):
     filtered_tasks_class = tasks_class.query("NumberOfInstances > " + str(morethan) + " and NumberOfInstances < " + str(2*morethan))
     filtered_tasks_reg = tasks_reg.query("NumberOfInstances > " + str(morethan) + " and NumberOfInstances < " + str(2*morethan))
     
-    datalist_class = filtered_tasks_class[["did"]]
-    datalist_reg = filtered_tasks_reg[["did"]]
+    datalist_class = filtered_tasks_class[["did", "name"]].drop_duplicates(subset=['did' and 'name'], inplace=False)
+    datalist_reg = filtered_tasks_reg[["did", "name"]].drop_duplicates(subset=['did' and 'name'], inplace=False)
 
     print(colored('--------------------------------Inizio Download Dataset --------------------------------', 'yellow'))
 
-    list_df = get_df_list(datalist_class['did'].unique(), df_n, 'classification')
-    list_df.extend(get_df_list(datalist_reg['did'].unique(), df_n, 'regression'))
+
+    list_df = get_df_list(datalist_class, df_n, 'classification')
+    list_df.extend(get_df_list(datalist_reg, df_n, 'regression'))
 
     print(list_df)
 
@@ -33,7 +34,6 @@ def openml_benchmark(df_n, morethan, options):
     for d in list_df:
         str_path = d.split('/')
         df = pd.read_csv(d)
-        
 
         print('---------------------------------Dataset: ' + d + '---------------------------------')
         res_openml.run_benchmark(df, str_path[3], str_path[4], None, options)

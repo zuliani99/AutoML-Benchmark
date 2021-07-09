@@ -95,7 +95,7 @@ kagglebenchmark = html.Div([
                             dbc.Label("Competition's Dataframe to test", width=5),
                             dbc.Col(
                                 dcc.Dropdown(
-                                    id='kaggledataset',
+                                    id='kaggledataframe',
                                     options=[
                                         {'label': 'Titanic - Classification', 'value': 'titanic'},
                                         {'label': 'CommonLit Readability Prize - Classification', 'value': 'contradictory-my-dear-watson'},

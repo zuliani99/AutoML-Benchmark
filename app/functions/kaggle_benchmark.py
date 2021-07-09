@@ -4,7 +4,7 @@ from zipfile import ZipFile
 from utils.result_class import Result
 import os
 
-datasets = {
+dataframes = {
     'titanic': {'task': 'classification', 'measure': 'acc'},    #OK
     'contradictory-my-dear-watson': {'task': 'classification', 'measure': 'acc'},   #OK
     'forest-cover-type-prediction': {'task': 'classification', 'measure': 'acc'},   #OK
@@ -40,8 +40,8 @@ def kaggle_benchmark(list_df, options):
     res_kaggle = Result('Kaggle')
     if not isinstance(list_df, list): list_df = [list_df]
     for df in list_df:
-            print('------------------Dataset name: ' + df + ' - Task: ' + datasets[df]['task'] + '------------------')
-            path = './datasets/Kaggle/' + df
+            print('------------------Dataset name: ' + df + ' - Task: ' + dataframes[df]['task'] + '------------------')
+            path = './dataframes/Kaggle/' + df
 
             api.competition_download_files(df, path=path)
 
@@ -61,5 +61,5 @@ def kaggle_benchmark(list_df, options):
             leaderboard = api.competition_view_leaderboard(df)
             leader = get_leader(leaderboard)
             
-            res_kaggle.run_benchmark((train, test), datasets[df]['task'], df, {'measure': datasets[df]['measure'], 'score': leader['score']}, options)
+            res_kaggle.run_benchmark((train, test), dataframes[df]['task'], df, {'measure': dataframes[df]['measure'], 'score': leader['score']}, options)
     return res_kaggle.print_res()

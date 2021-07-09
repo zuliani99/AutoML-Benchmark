@@ -101,5 +101,5 @@ def autokeras(df, task, timelife):
   df_new = copy.copy(df)
   df_new = fill_and_to_category(df_new)
   pd.options.mode.chained_assignment = None
-  X, y, _ = return_X_y(df_new)
+  X, y = return_X_y(df_new)
   return (prepare_and_test(X, y, task, timelife))

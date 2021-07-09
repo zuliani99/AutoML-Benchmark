@@ -27,17 +27,17 @@ def switch(algo, df, task, options):
 def test(id, algo, options):
     print('----------------'+str(id)+'-----------'+str(algo)+'-------------')
     try:
-        if not os.path.exists('./datasets/OpenML/classification/' + str(id) + '.csv') and not os.path.exists('./datasets/OpenML/regression/' + str(id) + '.csv'):
+        if not os.path.exists('./dataframes/OpenML/classification/' + str(id) + '.csv') and not os.path.exists('./dataframes/OpenML/regression/' + str(id) + '.csv'):
             X, y = fetch_openml(data_id=id, as_frame=True, return_X_y=True, cache=True)
             if not isinstance(y, pd.DataFrame):
                 y = y.to_frame()
-            if (len(y.columns) == 1):
-                X[y.columns[0]] = y
-            else:
-                for col in y.columns:
-                    X[col] = y[col]
+            #if (len(y.columns) == 1):
+            X[y.columns[0]] = y
+            #else:
+                #for col in y.columns:
+                    #X[col] = y[col]
             df = X
-            df['n_target'] = len(y.columns)
+            #df['n_target'] = len(y.columns)
 
             print(df.info())
             print(df.head())
@@ -47,16 +47,16 @@ def test(id, algo, options):
             if ('Supervised Classification' not in ts and 'Supervised Regression' not in ts):
                 return None, None
             task = 'classification' if 'Supervised Classification' in ts else 'regression'
-            file_dir =  './datasets/OpenML/' + task + '/'
+            file_dir =  './dataframes/OpenML/' + task + '/'
             fullname = os.path.join(file_dir, str(id) + '.csv')
             df.to_csv(fullname, index=False, header=True)
         else:
-            if os.path.exists('./datasets/OpenML/classification/' + str(id) + '.csv'):
+            if os.path.exists('./dataframes/OpenML/classification/' + str(id) + '.csv'):
                 task = 'classification'
-                path = './datasets/OpenML/classification/' + str(id) + '.csv'
+                path = './dataframes/OpenML/classification/' + str(id) + '.csv'
             else:
                 task = 'regression'
-                path = './datasets/OpenML/regression/' + str(id) + '.csv'
+                path = './dataframes/OpenML/regression/' + str(id) + '.csv'
 
             df = pd.read_csv(path)
 
@@ -65,6 +65,6 @@ def test(id, algo, options):
         print(task, res)
         return task, res
     except Exception as e:
-        text = "An error occured during the benchmak of the dataset: " + str(id) + ' reason: ' + str(e)
+        text = "An error occured during the benchmak of the dataframe: " + str(id) + ' reason: ' + str(e)
         print(colored(text + '\n', 'red'))
         return None, text

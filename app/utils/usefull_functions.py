@@ -22,12 +22,12 @@ def return_X_y(df):
 
 def return_X_y_openML(df):
     new = df[0]
-    n_target = new['n_target'][0]
-    new = new.drop('n_target', axis = 1)
+    #n_target = new['n_target'][0]
+    #new = new.drop('n_target', axis = 1)
 
-    y = new.iloc[:, -n_target].to_frame()
-    X = new.iloc[:, :-n_target]
-    return X, y, n_target
+    y = new.iloc[:, -1].to_frame()
+    X = new.iloc[:, :-1]
+    return X, y
 
 def fill_and_to_category(dfs):
     dfs = get_list_single_df(dfs)
@@ -50,33 +50,32 @@ def fill_and_to_category(dfs):
 
 def get_df_list(datalist, n_df, task):
     list_df = []
-    for row in datalist:
-        print('rigaaaaaaaa ', row)
+    for index, row in datalist.iterrows():
+        print('rigaaaaaaaa ', row['did'], row['name'])
+        file_dir = './dataframes/OpenML/'+ task +'/'
+        name = str(row['did']) + '_' + str(row['name']) + '.csv'
         try:
-
-            file_dir = './datasets/OpenML/'+ task +'/'
-
-            if not os.path.exists('./datasets/OpenML/'+ task +'/' + str(row) + '.csv'):
-                X, y = fetch_openml(data_id=row, as_frame=True, return_X_y=True, cache=True)
+            if not os.path.exists('./dataframes/OpenML/'+ task +'/' + name):
+                X, y = fetch_openml(data_id=row['did'], as_frame=True, return_X_y=True, cache=True)
                 if y is not None:
                     if not isinstance(y, pd.DataFrame):
                         y = y.to_frame()
 
-                    if (len(y.columns) == 1):
-                        X[y.columns[0]] = y
-                    else:
-                        for col in y.columns:
-                            X[col] = y[col]
+                    #if (len(y.columns) == 1):
+                    X[y.columns[0]] = y
+                    #else:
+                        #for col in y.columns:
+                            #X[col] = y[col]
                     df = X
-                    df['n_target'] = len(y.columns)
+                    #df['n_target'] = len(y.columns)
 
 
 
                     if n_df > 0:
-                        print('------------------Dataset ID: ' + str(row) + '------------------')
+                        print('------------------Dataset : ' + name + '------------------')
 
                         print(y.info())
-                        fullname = os.path.join(file_dir, str(row) + '.csv')
+                        fullname = os.path.join(file_dir, name)
 
                         print("good df " + fullname + '\n')
 
@@ -88,13 +87,13 @@ def get_df_list(datalist, n_df, task):
                         n_df-=1
 
             elif n_df > 0:
-                print('------------------Dataset ID: ' + str(row) + '------------------')
+                print('------------------Dataset: ' + name + '------------------')
                 print('-------------------------Dataset già presente-------------------------\n')
-                list_df.append(file_dir + str(row) + '.csv')
+                list_df.append(file_dir + name)
                 n_df-=1
 
         except Exception as e:
-            print(colored('Impossibile scaricare il DataFrame '+ str(row)+ ' causa: '+ str(e)+ '\n','red'))
+            print(colored("Can't download the DataFrame " + name + ' reason: '+ str(e)+ '\n','red'))
 
         if n_df == 0:
             break

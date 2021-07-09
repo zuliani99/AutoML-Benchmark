@@ -42,10 +42,10 @@ def start_openml_function(nmore, ndf, options):
         else:
             raise PreventUpdate
 
-def start_kaggle_function(kaggledataset, options):
-        if kaggledataset is None:
+def start_kaggle_function(kaggledataframe, options):
+        if kaggledataframe is None:
                 raise PreventUpdate
-        res = kaggle_benchmark(kaggledataset, options)
+        res = kaggle_benchmark(kaggledataframe, options)
         #print('dataaaaaaa: ', res)
         return get_store_past_bech_function(res, 'Kaggle')
 

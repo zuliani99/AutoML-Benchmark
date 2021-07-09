@@ -19,7 +19,7 @@ def get_pipelines_button(dfs, task):
                     dbc.ModalBody(
                         id={
                             'type': "body-modal-Pipelines",
-                            'index': task + '-' + str(row['dataset']),
+                            'index': task + '-' + str(row['dataframe']),
                         }
                     ),
                     dbc.ModalFooter(
@@ -27,7 +27,7 @@ def get_pipelines_button(dfs, task):
                             "Close",
                             id={
                                 'type': "close-modal-Pipelines",
-                                'index': task + '-' + str(row['dataset']),
+                                'index': task + '-' + str(row['dataframe']),
                             },
                             className="ml-auto",
                             n_clicks=0,
@@ -35,7 +35,7 @@ def get_pipelines_button(dfs, task):
                     ),
                 ],id={
                     'type': "modal-Pipelines",
-                    'index': task + '-' + str(row['dataset']),
+                    'index': task + '-' + str(row['dataframe']),
                 },
                 size="xl",
                 is_open=False,
@@ -46,9 +46,9 @@ def get_pipelines_button(dfs, task):
                         "Pipelines",
                         id={
                             'type': "open-Pipelines",
-                            'index': task + '-' + str(row['dataset']),
+                            'index': task + '-' + str(row['dataframe']),
                         },
-                        value=task + '-' + str(row['dataset']),
+                        value=task + '-' + str(row['dataframe']),
                         className="mr-1",
                         n_clicks=0,
                     )
@@ -68,11 +68,11 @@ def retrun_graph_table(dfs, pipelines, title, task, t, opts, scores):
     scatters = []
     histos = []
     for df in dfs:
-        df['pipelines'] = get_pipelines_button(df[['dataset']], df.columns[1].split('-')[1])
+        df['pipelines'] = get_pipelines_button(df[['dataframe']], df.columns[1].split('-')[1])
         table.append(dbc.Table.from_dataframe(df, striped=True, bordered=True, hover=True))
         for col in df.columns[1:-1]:
-            scatters.append(go.Scatter(x=df['dataset'], y=df[col], name=col.split('-')[0], mode='lines+markers'))
-            histos.append(go.Bar(x=df['dataset'], y=df[col], name=col.split('-')[0]))
+            scatters.append(go.Scatter(x=df['dataframe'], y=df[col], name=col.split('-')[0], mode='lines+markers'))
+            histos.append(go.Bar(x=df['dataframe'], y=df[col], name=col.split('-')[0]))
 
     table.append(
         dbc.Tabs(
@@ -145,8 +145,8 @@ def render_tab_content(active_tab, data, type): #pathname
             return [html.Div(
                             dbc.Row(
                                 [
-                                    dbc.Col(dcc.Graph(figure=go.Figure(data=data['scatter_'+type[0]], layout=go.Layout(xaxis = dict(title = 'Datasets'), yaxis = dict(title = type[0]))))),
-                                    dbc.Col(dcc.Graph(figure=go.Figure(data=data['scatter_'+type[1]], layout=go.Layout(xaxis = dict(title = 'Datasets'), yaxis = dict(title = type[1]))))),
+                                    dbc.Col(dcc.Graph(figure=go.Figure(data=data['scatter_'+type[0]], layout=go.Layout(xaxis = dict(title = 'dataframes'), yaxis = dict(title = type[0]))))),
+                                    dbc.Col(dcc.Graph(figure=go.Figure(data=data['scatter_'+type[1]], layout=go.Layout(xaxis = dict(title = 'dataframes'), yaxis = dict(title = type[1]))))),
                                 ], align="center"
                             )
                         )]
@@ -154,8 +154,8 @@ def render_tab_content(active_tab, data, type): #pathname
             return [html.Div(
                             dbc.Row(
                                 [
-                                    dbc.Col(dcc.Graph(figure=go.Figure(data=data['histo_'+type[0]], layout=go.Layout(xaxis = dict(title = 'Datasets'), yaxis = dict(title = type[0]))))),
-                                    dbc.Col(dcc.Graph(figure=go.Figure(data=data['histo_'+type[1]], layout=go.Layout(xaxis = dict(title = 'Datasets'), yaxis = dict(title = type[1]))))),
+                                    dbc.Col(dcc.Graph(figure=go.Figure(data=data['histo_'+type[0]], layout=go.Layout(xaxis = dict(title = 'dataframes'), yaxis = dict(title = type[0]))))),
+                                    dbc.Col(dcc.Graph(figure=go.Figure(data=data['histo_'+type[1]], layout=go.Layout(xaxis = dict(title = 'dataframes'), yaxis = dict(title = type[1]))))),
                                 ], align="center"
                             )
                         )]
@@ -213,7 +213,7 @@ def set_body(name, pipeline):
             ret.append(string)
             ret.append(html.Br())
         return html.Div(ret)
-    elif name == 'dataset':
+    elif name == 'dataframe':
         return html.Div(pipeline)
     else:
         return dcc.Markdown(pipeline)
@@ -223,7 +223,7 @@ def get_body_for_modal(pipeline, df_name):
     print(df, df_name)
     col = df.columns
     index = df.index
-    condition = df['dataset'] == df_name
+    condition = df['dataframe'] == df_name
     row = index[condition].tolist()
     print(row)
     pipeline = df.iloc[int(row[0])]
