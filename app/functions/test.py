@@ -1,3 +1,4 @@
+from typing import List
 from sklearn.datasets import fetch_openml
 import pandas as pd
 import os
@@ -8,6 +9,14 @@ from algorithms.tpot import TPOT
 from algorithms.h2o import H2O
 from termcolor import colored
 import openml
+
+def serch_df(df_id):
+    for task in ['classification', 'regression']:
+        lis = os.listdir('./dataframes/OpenML/'+ task +'/')
+        for d in lis:
+            if d.split('_')[0] == df_id:
+                return d
+    return None
 
 def switch(algo, df, task, options):
     return {
@@ -26,8 +35,11 @@ def switch(algo, df, task, options):
 def test(id, algo, options):
     print('----------------'+str(id)+'-----------'+str(algo)+'-------------')
     try:
-        if not os.path.exists('./dataframes/OpenML/classification/' + str(id) + '.csv') and not os.path.exists('./dataframes/OpenML/regression/' + str(id) + '.csv'):
+        search = serch_df(id)
+        if search is None:
             X, y = fetch_openml(data_id=id, as_frame=True, return_X_y=True, cache=True)
+            name = str(id)+ '_' +openml.datasets.get_dataset(id).name + '.csv'
+
             if not isinstance(y, pd.DataFrame):
                 y = y.to_frame()
             X[y.columns[0]] = y
@@ -43,19 +55,14 @@ def test(id, algo, options):
                 return None, None
             task = 'classification' if 'Supervised Classification' in ts else 'regression'
             file_dir =  './dataframes/OpenML/' + task + '/'
-            fullname = os.path.join(file_dir, str(id) + '.csv')
+            fullname = os.path.join(file_dir, name)
             df.to_csv(fullname, index=False, header=True)
+            
         else:
-            if os.path.exists('./dataframes/OpenML/classification/' + str(id) + '.csv'):
-                task = 'classification'
-                path = './dataframes/OpenML/classification/' + str(id) + '.csv'
-            else:
-                task = 'regression'
-                path = './dataframes/OpenML/regression/' + str(id) + '.csv'
-
-            df = pd.read_csv(path)
-
+            df = pd.read_csv(search)
+            task = search.split('/')[3]
             print(df.head())
+
         res = switch(algo, df, task, options)
         print(task, res)
         return task, res
