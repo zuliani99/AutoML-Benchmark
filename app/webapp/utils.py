@@ -258,12 +258,13 @@ def show_hide_pipelines_function(store_pipelines_class, store_pipelines_reg, n1,
 
 def make_options(as_tl, h2o_tl, t_tl, ak_tl, ag_tl, as_f, h2o_f, t_f, ak_f, ag_f):
     return {
-            'autosklearn': {'time': as_tl, 'rerun': as_f},
-            'h2o': {'time': h2o_tl, 'rerun': h2o_f},
-            'tpot': {'time': t_tl, 'rerun': t_f},
-            'autokeras': {'time': ak_tl, 'rerun': ak_f},
-            'autogluon': {'time': ag_tl, 'rerun': ag_f},
+            'autosklearn': {'time': as_tl, 'rerun': as_f, 'type': 'minute/s'},
+            'h2o': {'time': h2o_tl, 'rerun': h2o_f, 'type': 'minute/s'},
+            'tpot': {'time': t_tl, 'rerun': t_f, 'type': 'minute/s'},
+            'autokeras': {'time': ak_tl, 'rerun': ak_f, 'type': 'epoch/s'},
+            'autogluon': {'time': ag_tl, 'rerun': ag_f, 'type': 'minute/s'},
         }
+
 
 def read_markdown():
     with open('../README.md', 'r') as file:

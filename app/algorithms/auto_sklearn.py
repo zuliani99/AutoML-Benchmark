@@ -62,6 +62,6 @@ def auto_sklearn(df, task, options):
         ) and options['rerun'] == True:
       return auto_sklearn(df, task, {'time': options['time']+1, 'rerun': options['rerun']})
     print("--------------------------------AUTOSKLEARN--------------------------------\n\n")
-    return (None, None, colored(str(e), 'red'), None)
+    return (None, None, str(e), None)
     
     

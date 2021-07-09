@@ -20,16 +20,16 @@ def serch_df(df_id):
 
 def switch(algo, df, task, options):
     return {
-        'autosklearn': lambda df, task: auto_sklearn(df, task, int(options['autosklearn']['time'])),
-        'tpot': lambda df, task: TPOT(df, task, int(options['tpot']['time'])),
-        'h2o': lambda df, task: H2O(df, task, int(options['h2o']['time'])),
-        'autokeras': lambda df, task: autokeras(df, task, int(options['autokeras']['time'])),
-        'autogluon': lambda df, task: autogluon(df, task, int(options['autogluon']['time'])),
-        'all': lambda df, task: pd.DataFrame.from_dict({'autosklearn': auto_sklearn(df, task, int(options['autosklearn']['time'])),
-                                                        'tpot': TPOT(df, task, int(options['tpot']['time'])),
-                                                        'autokeras': autokeras(df, task, int(options['h2o']['time'])),
-                                                        'h2o': H2O(df, task, int(options['autokeras']['time'])),
-                                                        'autogluon': autogluon(df, task, int(options['autogluon']['time']))})
+        'autosklearn': lambda df, task: auto_sklearn(df, task, options['autosklearn']),
+        'tpot': lambda df, task: TPOT(df, task, options['tpot']),
+        'h2o': lambda df, task: H2O(df, task, options['h2o']),
+        'autokeras': lambda df, task: autokeras(df, task, options['autokeras']),
+        'autogluon': lambda df, task: autogluon(df, task, options['autogluon']),
+        'all': lambda df, task: pd.DataFrame.from_dict({'autosklearn': auto_sklearn(df, task, options['autosklearn']),
+                                                        'tpot': TPOT(df, task, options['tpot']),
+                                                        'autokeras': autokeras(df, task, options['h2o']),
+                                                        'h2o': H2O(df, task, options['autokeras']),
+                                                        'autogluon': autogluon(df, task, options['autogluon'])})
     }.get(algo)(df, task)
 
 def test(id, algo, options):
