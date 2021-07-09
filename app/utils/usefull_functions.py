@@ -16,9 +16,10 @@ def return_X_y(df):
     if not isinstance(df, tuple):
         return return_X_y_openML(df)
     target = get_target(df[0], df[1])
+    # ATTENZIONE USO SOLO IL TRAIN
     y = df[0][target]
     X = df[0].drop([target], axis=1)
-    return X, y, None
+    return X, y
 
 def return_X_y_openML(df):
     new = df[0]

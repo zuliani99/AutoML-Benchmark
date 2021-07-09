@@ -59,6 +59,7 @@ def get_summary(model):
 
 def get_classification(y_test, y_pred, model_summary, y, timelife):
   shutil.rmtree('./structured_data_classifier')
+  print("---------------------------------AUTOKERAS---------------------------------\n\n")
   if len(np.unique(y)) > 2:
     return round(sklearn.metrics.accuracy_score(y_test, y_pred), 3), round(sklearn.metrics.f1_score(y_test, y_pred, average='weighted'), 3), model_summary, timelife
   else:
@@ -67,6 +68,7 @@ def get_classification(y_test, y_pred, model_summary, y, timelife):
 
 def get_regression(y_test, y_pred, model_summary, timelife):
   shutil.rmtree('./structured_data_regressor')
+  print("---------------------------------AUTOKERAS---------------------------------\n\n")
   return round(np.sqrt(sklearn.metrics.mean_squared_error(y_test, y_pred)), 3), round(sklearn.metrics.r2_score(y_test, y_pred), 3), model_summary, timelife
 
 
@@ -96,10 +98,14 @@ def prepare_and_test(X, y, task, timelife):
     return get_regression(y_test, y_pred, model_summary, timelife)
 
 
-def autokeras(df, task, timelife):
-  #try:
-  df_new = copy.copy(df)
-  df_new = fill_and_to_category(df_new)
-  pd.options.mode.chained_assignment = None
-  X, y = return_X_y(df_new)
-  return (prepare_and_test(X, y, task, timelife))
+def autokeras(df, task, options):
+  print("---------------------------------AUTOKERAS---------------------------------")
+  try:
+    df_new = copy.copy(df)
+    df_new = fill_and_to_category(df_new)
+    pd.options.mode.chained_assignment = None
+    X, y = return_X_y(df_new)
+    return (prepare_and_test(X, y, task, options['time']))
+  except Exception as e:
+    print("---------------------------------AUTOKERAS---------------------------------\n\n")
+    return (None, None, str(e), None)

@@ -1,5 +1,4 @@
 from sklearn.datasets import fetch_openml
-from utils.algo_functions import fun_autosklearn, fun_tpot, fun_h2o, fun_autokeras, fun_autogluon
 import pandas as pd
 import os
 from algorithms.auto_keras import autokeras
@@ -31,13 +30,9 @@ def test(id, algo, options):
             X, y = fetch_openml(data_id=id, as_frame=True, return_X_y=True, cache=True)
             if not isinstance(y, pd.DataFrame):
                 y = y.to_frame()
-            #if (len(y.columns) == 1):
             X[y.columns[0]] = y
-            #else:
-                #for col in y.columns:
-                    #X[col] = y[col]
+
             df = X
-            #df['n_target'] = len(y.columns)
 
             print(df.info())
             print(df.head())

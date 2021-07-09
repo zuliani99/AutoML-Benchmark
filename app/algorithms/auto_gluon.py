@@ -1,4 +1,3 @@
-from os import terminal_size
 from autogluon.tabular import TabularPredictor
 from sklearn.model_selection import train_test_split
 from utils.usefull_functions import return_X_y, get_list_single_df
@@ -29,7 +28,8 @@ def get_options(task, y):
     pt = 'regression'
   return pt, f1
 
-def autogluon(df, task, timelife):
+def autogluon(df, task, options):
+  print("----------------------------------AUTOGLUON--------------------------------")
   try:
     pd.options.mode.chained_assignment = None
     df_new = copy.copy(df)
@@ -51,7 +51,7 @@ def autogluon(df, task, timelife):
 
     predictor = TabularPredictor(label=target , problem_type=pt).fit(
       train_data=X_train,
-      time_limit=timelife*60,
+      time_limit=options['time']*60,
       presets=['optimize_for_deployment', 'best_quality'],
       hyperparameters=hyperparameters
     )
@@ -62,14 +62,15 @@ def autogluon(df, task, timelife):
 
     shutil.rmtree('./AutogluonModels')
 
+    print("----------------------------------AUTOGLUON--------------------------------\n\n")
     if task != 'classification':
-      return (round(res['root_mean_squared_error'], 3), round(res['r2'], 3), pipelines, timelife)
-    try: return (round(res['accuracy'], 3),  round(res['f1'], 3), pipelines, timelife)
-    except: return (round(res['accuracy'], 3),  round(f1(y_test, y_pred), 3), pipelines, timelife)
+      return (abs(round(res['root_mean_squared_error'], 3)), round(res['r2'], 3), pipelines, options['time'])
+    try: return (round(res['accuracy'], 3),  round(res['f1'], 3), pipelines, options['time'])
+    except: return (round(res['accuracy'], 3),  round(f1(y_test, y_pred), 3), pipelines, options['time'])
 
   except Exception as e:
-    if str(e) == 'AutoGluon did not successfully train any models':
-      return autogluon(df, task, timelife+1)
-    else:
-      raise(e)
+    if str(e) == 'AutoGluon did not successfully train any models' and options['rerun'] == True:
+      return autogluon(df, task, {'time': options['time']+1, 'rerun': options['rerun']})
+    print("----------------------------------AUTOGLUON--------------------------------\n\n")
+    return (None, None, str(e), None)
 

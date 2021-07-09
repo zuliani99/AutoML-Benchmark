@@ -1,3 +1,4 @@
+from pandas._config.config import options
 import h2o
 from h2o.automl import H2OAutoML
 import numpy as np
@@ -36,6 +37,7 @@ def prepare_and_test(train, test, task, timelife):
 
   pipelines = str((h2o.as_list(h2o.automl.get_leaderboard(aml, extra_columns = 'ALL'))).to_markdown())
 
+  print("------------------------------------H2O------------------------------------\n\n")
   if task != 'classification':
     return (round(np.sqrt(mean_squared_error(target, pred)), 3), round(r2_score(target, pred), 3), pipelines, timelife)
 
@@ -44,14 +46,16 @@ def prepare_and_test(train, test, task, timelife):
   return (round(accuracy_score(target, pred), 3), round(f1_score(target, pred, pos_label=np.unique(target)[0]), 3), pipelines, timelife)
 
 
-def H2O(df, task, timelife):
+def H2O(df, task, options):
+  print("------------------------------------H2O------------------------------------")
   try:
-    return do_h20(df, task, timelife)
+    return do_h20(df, task, options['time'])
   except Exception as e:
-    if(str(e) == 'Argument `data` should be an H2OFrame, got NoneType None'):
-      return H2O(df, task, timelife+1)
-    else:
-      raise(e)
+    if (str(e) == 'Argument `data` should be an H2OFrame, got NoneType None'
+        and options['rerun'] == True):
+      return H2O(df, task, {'time': options['time'] + 1, 'rerun': options['rerun']})
+    print('------------------------------------H2O------------------------------------\n\n')
+    return None, None, str(e), None
 
 def do_h20(df, task, timelife):
   pd.options.mode.chained_assignment = None

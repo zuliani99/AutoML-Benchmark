@@ -186,9 +186,17 @@ def create_collapse(algo, measure, min, disabled):
                                                 dbc.Col([
                                                     dbc.InputGroup([
                                                         dbc.Input( id=algo.lower()+"-timelife", type="number", value=min, placeholder=measure, min=min, max=100000),
-                                                        dbc.InputGroupAddon("at least " + str(min), addon_type="prepend")]
+                                                        dbc.InputGroupAddon("at least " + str(min), addon_type="prepend"),
+                                                        ]
                                                     ),
                                                 ], width=5),
+                                                dcc.Checklist(
+                                                                options=[
+                                                                    {'label': 'Allow the algorithm to re-run with a bigger timelife?', 'value': algo.lower()+'-flag-rerun'},
+                                                                ],
+                                                                id=algo.lower()+'-flag-rerun',
+                                                                labelStyle={'display': 'inline-block'}
+                                                        )
                                             ],row=True),
                                         ]), id="collapse-"+algo.lower()
                                     ),
@@ -224,6 +232,7 @@ def get_body_for_modal(pipeline, df_name):
     col = df.columns
     index = df.index
     condition = df['dataframe'] == df_name
+    print(condition)
     row = index[condition].tolist()
     print(row)
     pipeline = df.iloc[int(row[0])]
@@ -247,13 +256,13 @@ def show_hide_pipelines_function(store_pipelines_class, store_pipelines_reg, n1,
         return is_open, None
 
 
-def make_options(as_tl, h2o_tl, t_tl, ak_tl, ag_tl):
+def make_options(as_tl, h2o_tl, t_tl, ak_tl, ag_tl, as_f, h2o_f, t_f, ak_f, ag_f):
     return {
-            'autosklearn': as_tl,
-            'h2o': h2o_tl,
-            'tpot': t_tl,
-            'autokeras': ak_tl,
-            'autogluon': ag_tl 
+            'autosklearn': {'time': as_tl, 'rerun': as_f},
+            'h2o': {'time': h2o_tl, 'rerun': h2o_f},
+            'tpot': {'time': t_tl, 'rerun': t_f},
+            'autokeras': {'time': ak_tl, 'rerun': ak_f},
+            'autogluon': {'time': ag_tl, 'rerun': ag_f},
         }
 
 def read_markdown():
