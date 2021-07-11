@@ -108,4 +108,4 @@ def autokeras(df, task, options):
     return (prepare_and_test(X, y, task, options['time']))
   except Exception as e:
     print("---------------------------------AUTOKERAS---------------------------------\n\n")
-    return (None, None, str(e), None)
+    return (None, None, 'Error: ' + str(e), None)

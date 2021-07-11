@@ -55,7 +55,7 @@ def H2O(df, task, options):
         and options['rerun'] == True):
       return H2O(df, task, {'time': options['time'] + 1, 'rerun': options['rerun']})
     print('------------------------------------H2O------------------------------------\n\n')
-    return None, None, str(e), None
+    return None, None, 'Error: ' + str(e), None
 
 def do_h20(df, task, timelife):
   pd.options.mode.chained_assignment = None

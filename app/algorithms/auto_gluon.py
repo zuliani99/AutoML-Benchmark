@@ -72,5 +72,5 @@ def autogluon(df, task, options):
     if str(e) == 'AutoGluon did not successfully train any models' and options['rerun'] == True:
       return autogluon(df, task, {'time': options['time']+1, 'rerun': options['rerun']})
     print("----------------------------------AUTOGLUON--------------------------------\n\n")
-    return (None, None, str(e), None)
+    return (None, None, 'Error: ' + str(e), None)
 

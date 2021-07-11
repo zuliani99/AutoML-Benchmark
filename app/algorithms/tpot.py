@@ -54,5 +54,5 @@ def TPOT(df, task, options):
       and options['rerun'] == True):
       return TPOT(df, task, {'time': options['time']+5, 'rerun': options['rerun']})
     print("-----------------------------------TPOT------------------------------------\n\n")
-    return (None, None, str(e), None)
+    return (None, None, 'Error: ' + str(e), None)
 

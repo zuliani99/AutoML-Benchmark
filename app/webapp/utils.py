@@ -3,6 +3,7 @@ import dash_core_components as dcc
 import dash_html_components as html
 import dash_bootstrap_components as dbc
 import plotly.graph_objects as go
+import math
 from dash.exceptions import PreventUpdate
 import pandas as pd
 
@@ -58,6 +59,13 @@ def get_pipelines_button(dfs, task):
         for index, row in dfs.iterrows()
     ]
     
+def print_err_table(cell):
+    #print(cell, type(cell), isinstance(cell, float) and math.isnan(cell))
+    if isinstance(cell, float) and math.isnan(cell):
+        return "Error", {"border": "1px solid black", 'color': 'red'}
+    return cell, {"border": "1px solid black"}
+    
+
 
 def retrun_graph_table(dfs, pipelines, title, task, t, opts, scores):
     table = [html.H3(title)]
@@ -69,7 +77,29 @@ def retrun_graph_table(dfs, pipelines, title, task, t, opts, scores):
     histos = []
     for df in dfs:
         df['pipelines'] = get_pipelines_button(df[['dataframe']], df.columns[1].split('-')[1])
-        table.append(dbc.Table.from_dataframe(df, striped=True, bordered=True, hover=True))
+        #table.append(dbc.Table.from_dataframe(df, striped=True, bordered=True, hover=True))
+        table.append(
+            html.Div([
+                html.Table(
+                            [html.Tr([html.Th(col) for col in df.columns], style={"border": "1px solid black"})]
+                            + [
+                                html.Tr(
+                                    [   
+                                        #html.Td(df.iloc[i][col], style={"border": "1px solid black"})
+                                        html.Td(print_err_table(df.iloc[i][col])[0], style = print_err_table(df.iloc[i][col])[1])
+                                        for col in df.columns
+                                    ], style={"border": "1px solid black"}
+                                )
+                                for i in range(len(df))
+                            ]
+                        
+                    ,
+                    style={'text-align':'center', 'width': '100%', "border-collapse": "collapse", "border": "1px solid black"},
+                ),
+                html.Br()
+            ])
+        )
+
         for col in df.columns[1:-1]:
             scatters.append(go.Scatter(x=df['dataframe'], y=df[col], name=col.split('-')[0], mode='lines+markers'))
             histos.append(go.Bar(x=df['dataframe'], y=df[col], name=col.split('-')[0]))
@@ -145,8 +175,8 @@ def render_tab_content(active_tab, data, type): #pathname
             return [html.Div(
                             dbc.Row(
                                 [
-                                    dbc.Col(dcc.Graph(figure=go.Figure(data=data['scatter_'+type[0]], layout=go.Layout(xaxis = dict(title = 'dataframes'), yaxis = dict(title = type[0]))))),
-                                    dbc.Col(dcc.Graph(figure=go.Figure(data=data['scatter_'+type[1]], layout=go.Layout(xaxis = dict(title = 'dataframes'), yaxis = dict(title = type[1]))))),
+                                    dbc.Col(dcc.Graph(figure=go.Figure(data=data['scatter_'+type[0]], layout=go.Layout(xaxis = dict(title = 'dataframes'), yaxis = dict(title = type[0]), title=dict(text = type[0].upper() + ' Score'))))),
+                                    dbc.Col(dcc.Graph(figure=go.Figure(data=data['scatter_'+type[1]], layout=go.Layout(xaxis = dict(title = 'dataframes'), yaxis = dict(title = type[1]), title=dict(text = type[1].upper() + ' Score'))))),
                                 ], align="center"
                             )
                         )]
@@ -154,8 +184,8 @@ def render_tab_content(active_tab, data, type): #pathname
             return [html.Div(
                             dbc.Row(
                                 [
-                                    dbc.Col(dcc.Graph(figure=go.Figure(data=data['histo_'+type[0]], layout=go.Layout(xaxis = dict(title = 'dataframes'), yaxis = dict(title = type[0]))))),
-                                    dbc.Col(dcc.Graph(figure=go.Figure(data=data['histo_'+type[1]], layout=go.Layout(xaxis = dict(title = 'dataframes'), yaxis = dict(title = type[1]))))),
+                                    dbc.Col(dcc.Graph(figure=go.Figure(data=data['histo_'+type[0]], layout=go.Layout(xaxis = dict(title = 'dataframes'), yaxis = dict(title = type[0]), title=dict(text = type[0].upper() + ' Score'))))),
+                                    dbc.Col(dcc.Graph(figure=go.Figure(data=data['histo_'+type[1]], layout=go.Layout(xaxis = dict(title = 'dataframes'), yaxis = dict(title = type[1]), title=dict(text = type[1].upper() + ' Score'))))),
                                 ], align="center"
                             )
                         )]
@@ -214,17 +244,26 @@ def render_collapse_options(choice):
 
 
 def set_body(name, pipeline):
-    if name == 'tpot':
+    if (
+        name == 'tpot'
+        and (pipeline[0:5] == 'Error')
+        or name != 'tpot'
+        and name != 'dataframe'
+        and (pipeline[0:5] == 'Error')
+    ):
+        return html.Div(pipeline, style={'color':'red'})
+    elif name == 'tpot':
         ret = []
         strings = pipeline.split('\n')
         for string in strings:
             ret.append(string)
             ret.append(html.Br())
         return html.Div(ret)
-    elif name == 'dataframe':
-        return html.Div(pipeline)
-    else:
+    elif name != 'dataframe':
         return dcc.Markdown(pipeline)
+
+    else:
+        return html.Div(pipeline)
 
 def get_body_for_modal(pipeline, df_name):
     df = pd.DataFrame.from_dict(pipeline)

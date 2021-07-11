@@ -60,6 +60,12 @@ def start_test_function(dfid, algorithms, options):
         if res[0] is None:
             return [html.P(res[1], style={'color':'red'})]
         s1, s2, pipeline, timelife = res[1]
+        if pipeline[0:5] == 'Error':
+            return html.Div([
+                        html.P('The execution of the benchmark for the dataframe: ' + dfid + ' whit the algorithm: ' + algorithms + ' for ' + options['time'] + ' ' + options['type'] + ' throw an exception.'),
+                        html.P(pipeline)
+                    ], style={'color':'red'}
+                )
         if(res[0] == 'classification'):
             text = 'Accuracy: ' + str(s1) + '     f1_score: ' + str(s2)
         else:
