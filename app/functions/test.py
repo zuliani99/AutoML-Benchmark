@@ -29,8 +29,8 @@ def switch(algo, df, name, task, options):
                                                         'dataframe': name,
                                                         'autosklearn': auto_sklearn(df, task, options['autosklearn']),
                                                         'tpot': TPOT(df, task, options['tpot']),
-                                                        'autokeras': autokeras(df, task, options['h2o']),
                                                         'h2o': H2O(df, task, options['autokeras']),
+                                                        'autokeras': autokeras(df, task, options['h2o']),
                                                         'autogluon': autogluon(df, task, options['autogluon'])})
     }.get(algo)(df, task)
 

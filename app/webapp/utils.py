@@ -100,14 +100,12 @@ def retrun_graph_table(dfs, pipelines, title, task, t, opts, scores):
     histos = []
     for df in dfs:
         df['pipelines'] = get_pipelines_button(df[['dataframe']], df.columns[1].split('-')[1])
-        #table.append(dbc.Table.from_dataframe(df, striped=True, bordered=True, hover=True))
-        table.append(create_table(df))
 
         for col in df.columns[1:-1]:
             scatters.append(go.Scatter(x=df['dataframe'], y=df[col], name=col.split('-')[0], mode='lines+markers'))
             histos.append(go.Bar(x=df['dataframe'], y=df[col], name=col.split('-')[0]))
 
-    table.append(
+    table.extend(create_table(df), (
         dbc.Tabs(
             [
                 dbc.Tab(label="Histograms", tab_id="histogram"),
@@ -116,8 +114,8 @@ def retrun_graph_table(dfs, pipelines, title, task, t, opts, scores):
             ],
             id="tabs-"+task,
             active_tab="histogram",
-        )
-    )
+        ) 
+    ))
 
     opts = opts.to_dict()
     print(opts)
@@ -247,9 +245,6 @@ def render_collapse_options(choice):
 
 
 def set_body(name, pipeline):
-    print(type(name), name)
-    print(type(pipeline), pipeline)
-    #if(isinstance(pipeline, pd.Series)): pipeline = pipeline.to_string()
     if (
         name == 'tpot'
         and (pipeline[0:5] == 'Error')
@@ -262,8 +257,7 @@ def set_body(name, pipeline):
         ret = []
         strings = pipeline.split('\n')
         for string in strings:
-            ret.append(string)
-            ret.append(html.Br())
+            ret.extend((string, html.Br()))
         return html.Div(ret)
     elif name != 'dataframe':
         return dcc.Markdown(pipeline)
@@ -273,16 +267,11 @@ def set_body(name, pipeline):
 def get_body_from_pipelines(pipeline, df_name):
     df = pd.DataFrame.from_dict(pipeline) if not isinstance(pipeline, pd.DataFrame) else pipeline
     df.reset_index(drop=True, inplace=True)
-    print(df)
-    print(df_name)
     col = df.columns
     index = df.index
     condition = df['dataframe'] == df_name
-    print(condition)
     row = index[condition].tolist()
-    print(row)
     pipeline = df.iloc[int(row[0])]
-    print(pipeline)
     return [html.Div([
         html.H4(name),
         set_body(name, pipeline[i]), 
