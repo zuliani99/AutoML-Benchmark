@@ -6,7 +6,7 @@ from sklearn.preprocessing import LabelEncoder
 from sklearn.metrics import accuracy_score, mean_squared_error, f1_score, r2_score
 from utils.usefull_functions import return_X_y, fill_and_to_category
 import copy
-import dash_html_components as html
+from termcolor import colored
 
 le = LabelEncoder()
 
@@ -50,6 +50,7 @@ def TPOT(df, task, options):
     else:
       return make_regression(X_train, X_test, y_train, y_test, options['time'])
   except Exception as e:
+    print(colored('Error: ' + str(e), 'red'))
     if (str(e) == 'There was an error in the TPOT optimization process. This could be because the data was not formatted properly, or because data for a regression problem was provided to the TPOTClassifier object. Please make sure you passed the data to TPOT correctly. If you enabled PyTorch estimators, please check the data requirements in the online documentation: https://epistasislab.github.io/tpot/using/' 
       and options['rerun'] == True):
       return TPOT(df, task, {'time': options['time']+5, 'rerun': options['rerun']})

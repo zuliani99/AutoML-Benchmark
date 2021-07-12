@@ -1,4 +1,3 @@
-from pandas._config.config import options
 import h2o
 from h2o.automl import H2OAutoML
 import numpy as np
@@ -7,6 +6,7 @@ from sklearn.model_selection import train_test_split
 from utils.usefull_functions import return_X_y, fill_and_to_category
 from sklearn.metrics import accuracy_score, mean_squared_error, f1_score, r2_score
 import copy
+from termcolor import colored
 
 
 def get_summary(model):
@@ -36,8 +36,10 @@ def prepare_and_test(train, test, task, timelife):
   target = h2o.as_list(test[y])
 
   pipelines = str((h2o.as_list(h2o.automl.get_leaderboard(aml, extra_columns = 'ALL'))).to_markdown())
-
+  h2o.shutdown()
+  
   print("------------------------------------H2O------------------------------------\n\n")
+  
   if task != 'classification':
     return (round(np.sqrt(mean_squared_error(target, pred)), 3), round(r2_score(target, pred), 3), pipelines, timelife)
 
@@ -51,6 +53,7 @@ def H2O(df, task, options):
   try:
     return do_h20(df, task, options['time'])
   except Exception as e:
+    print(colored('Error: ' + str(e), 'red'))
     if (str(e) == 'Argument `data` should be an H2OFrame, got NoneType None'
         and options['rerun'] == True):
       return H2O(df, task, {'time': options['time'] + 1, 'rerun': options['rerun']})

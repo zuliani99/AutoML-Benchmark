@@ -4,7 +4,7 @@ import dash_html_components as html
 import dash_bootstrap_components as dbc
 from dash.exceptions import PreventUpdate
 from .frontend import openmlbenchmark, kagglebenchmark, testbenchmark, get_pastresultopenml, get_pastresultkaggle, home
-from .utils import render_tab_content, get_store_past_bech_function, set_body
+from .utils import render_tab_content, get_store_past_bech_function, set_body, create_table, get_body_from_pipelines
 from functions.openml_benchmark import openml_benchmark
 from functions.kaggle_benchmark import kaggle_benchmark
 from functions.test import test
@@ -53,20 +53,20 @@ def start_kaggle_function(kaggledataframe, options):
 def start_test_function(dfid, algorithms, options):
         if dfid is None or algorithms is None:
                 raise PreventUpdate
-        res = test(dfid, algorithms, options) #task, s1, s2, pipelines      s1 = acc or rmse,  s2 = f1 or r2   oppure task, dataframe
-        print(res)
-        if isinstance(res[1], pd.DataFrame):
-            return return_all_algorithms(res, dfid)
-        if res[0] is None:
-            return [html.P(res[1], style={'color':'red'})]
-        s1, s2, pipeline, timelife = res[1]
+        task, res = test(dfid, algorithms, options) #task, s1, s2, pipelines, timelife      s1 = acc or rmse,  s2 = f1 or r2   oppure task, dataframe
+        #print(res)
+        if isinstance(res, pd.DataFrame):
+            return return_all_algorithms(task, res, res['dataframe'][0])
+        if task is None:
+            return [html.P(res, style={'color':'red'})]
+        s1, s2, pipeline, timelife = res
         if pipeline[0:5] == 'Error':
             return html.Div([
                         html.P('The execution of the benchmark for the dataframe: ' + dfid + ' whit the algorithm: ' + algorithms + ' for ' + options['time'] + ' ' + options['type'] + ' throw an exception.'),
                         html.P(pipeline)
                     ], style={'color':'red'}
                 )
-        if(res[0] == 'classification'):
+        if(task == 'classification'):
             text = 'Accuracy: ' + str(s1) + '     f1_score: ' + str(s2)
         else:
             text = 'RMSE: ' + str(s1) + '     r2_score: ' + str(s2)
@@ -79,33 +79,49 @@ def start_test_function(dfid, algorithms, options):
             set_body(str(algorithms), pipeline)
         ])]
 
-def return_all_algorithms(res, dfid):
-        first_score = res[1].iloc[:1]
-        second_score = res[1].iloc[1:]
+
+#REFACTORING TEST BENCHMARK
+def return_all_algorithms(task, res, name):
+        #res.to_csv('vediamo.csv', index=False)
+
+        first_scores = res.iloc[[0]]
+        second_scores = res.iloc[[1]]
+        pipelines = res.iloc[[2]]
+        timelifes = res.iloc[[3]]
+
+        #print(pipelines)
+
         bars = {'first': [], 'second': []}
         titles = []
-        if(res[0] == 'classification'):
-            titles = ['Accuracy Score:', 'F1 Score:']
+        if(task == 'classification'):
+            titles = ['Accuracy Score', 'F1 Score']
         else:
-            titles = ['RMSE Score:', 'R2 Score:']
-        for col in first_score:
-            bars['first'].append(go.Bar(y=first_score[col], name=col.split('-')[0])) #attenzione alla x, ora l'ho rimossa
-            bars['second'].append(go.Bar(y=second_score[col], name=col.split('-')[0]))
+            titles = ['RMSE Score', 'R2 Score']
+        for col in first_scores.iloc[:, 1:]:
+            bars['first'].append(go.Bar(y=first_scores[col], name=col))
+            bars['second'].append(go.Bar(y=second_scores[col], name=col))
+
         return [
             html.Div([
-                html.H2('Test Results form DataFrame ' + str(dfid)),
+                html.H2('Test Results form DataFrame ' + name),
                 html.H4(titles[0]),
-                dbc.Table.from_dataframe(first_score, striped=True, bordered=True, hover=True),
+                create_table(first_scores.iloc[:, 1:]),
                 html.H4(titles[1]),
-                dbc.Table.from_dataframe(second_score, striped=True, bordered=True, hover=True),
+                create_table(second_scores.iloc[:, 1:]),
+                html.H4("Final Timelifes Algorithms"),
+                create_table(timelifes.iloc[:, 1:]),
                 html.Div(
                     dbc.Row(
                         [
-                            dbc.Col(dcc.Graph(figure=go.Figure(data=bars['first'], layout=go.Layout(xaxis = dict(title = 'Datasets'), yaxis = dict(title = titles[0]))))),
-                            dbc.Col(dcc.Graph(figure=go.Figure(data=bars['second'], layout=go.Layout(xaxis = dict(title = 'Datasets'), yaxis = dict(title = titles[1]))))),
+                            dbc.Col(dcc.Graph(figure=go.Figure(data=bars['first'], layout=go.Layout(xaxis = dict(title = 'Datasets'), yaxis = dict(title = titles[0]), title=dict(text = titles[0]))))),
+                            dbc.Col(dcc.Graph(figure=go.Figure(data=bars['second'], layout=go.Layout(xaxis = dict(title = 'Datasets'), yaxis = dict(title = titles[1]), title=dict(text = titles[1]))))),
                         ], align="center"
                     )
-                )
+                ),
+                html.H4("Pipelines"),
+                #create_table(pipelines)
+                #create_div_pipelines(pipelines)
+                html.Div(get_body_from_pipelines(pipelines, name))
             ])
         ]
 

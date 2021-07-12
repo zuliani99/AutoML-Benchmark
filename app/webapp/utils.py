@@ -1,4 +1,6 @@
 import os
+
+from pandas.core.frame import DataFrame
 import dash_core_components as dcc
 import dash_html_components as html
 import dash_bootstrap_components as dbc
@@ -58,6 +60,27 @@ def get_pipelines_button(dfs, task):
         ]
         for index, row in dfs.iterrows()
     ]
+
+def create_table(df):
+    return html.Div([
+                html.Table(
+                            [html.Tr([html.Th(col) for col in df.columns], style={"border": "1px solid black"})]
+                            + [
+                                html.Tr(
+                                    [   
+                                        #html.Td(df.iloc[i][col], style={"border": "1px solid black"})
+                                        html.Td(print_err_table(df.iloc[i][col])[0], style = print_err_table(df.iloc[i][col])[1])
+                                        for col in df.columns
+                                    ], style={"border": "1px solid black"}
+                                )
+                                for i in range(len(df))
+                            ]
+                        
+                    ,
+                    style={'text-align':'center', 'width': '100%', "border-collapse": "collapse", "border": "1px solid black"},
+                ),
+                html.Br()
+            ])
     
 def print_err_table(cell):
     #print(cell, type(cell), isinstance(cell, float) and math.isnan(cell))
@@ -78,27 +101,7 @@ def retrun_graph_table(dfs, pipelines, title, task, t, opts, scores):
     for df in dfs:
         df['pipelines'] = get_pipelines_button(df[['dataframe']], df.columns[1].split('-')[1])
         #table.append(dbc.Table.from_dataframe(df, striped=True, bordered=True, hover=True))
-        table.append(
-            html.Div([
-                html.Table(
-                            [html.Tr([html.Th(col) for col in df.columns], style={"border": "1px solid black"})]
-                            + [
-                                html.Tr(
-                                    [   
-                                        #html.Td(df.iloc[i][col], style={"border": "1px solid black"})
-                                        html.Td(print_err_table(df.iloc[i][col])[0], style = print_err_table(df.iloc[i][col])[1])
-                                        for col in df.columns
-                                    ], style={"border": "1px solid black"}
-                                )
-                                for i in range(len(df))
-                            ]
-                        
-                    ,
-                    style={'text-align':'center', 'width': '100%', "border-collapse": "collapse", "border": "1px solid black"},
-                ),
-                html.Br()
-            ])
-        )
+        table.append(create_table(df))
 
         for col in df.columns[1:-1]:
             scatters.append(go.Scatter(x=df['dataframe'], y=df[col], name=col.split('-')[0], mode='lines+markers'))
@@ -244,6 +247,9 @@ def render_collapse_options(choice):
 
 
 def set_body(name, pipeline):
+    print(type(name), name)
+    print(type(pipeline), pipeline)
+    #if(isinstance(pipeline, pd.Series)): pipeline = pipeline.to_string()
     if (
         name == 'tpot'
         and (pipeline[0:5] == 'Error')
@@ -261,13 +267,14 @@ def set_body(name, pipeline):
         return html.Div(ret)
     elif name != 'dataframe':
         return dcc.Markdown(pipeline)
-
     else:
         return html.Div(pipeline)
 
-def get_body_for_modal(pipeline, df_name):
-    df = pd.DataFrame.from_dict(pipeline)
-    print(df, df_name)
+def get_body_from_pipelines(pipeline, df_name):
+    df = pd.DataFrame.from_dict(pipeline) if not isinstance(pipeline, pd.DataFrame) else pipeline
+    df.reset_index(drop=True, inplace=True)
+    print(df)
+    print(df_name)
     col = df.columns
     index = df.index
     condition = df['dataframe'] == df_name
@@ -275,11 +282,12 @@ def get_body_for_modal(pipeline, df_name):
     row = index[condition].tolist()
     print(row)
     pipeline = df.iloc[int(row[0])]
+    print(pipeline)
     return [html.Div([
         html.H4(name),
         set_body(name, pipeline[i]), 
         html.Br()
-    ]) for i, name in enumerate(col[0:])]
+    ]) for i, name in enumerate(col)]
 
 
 
@@ -289,9 +297,9 @@ def show_hide_pipelines_function(store_pipelines_class, store_pipelines_reg, n1,
             score = value.split('-')[0]
             df_name = value.split(score+'-')[1]
             if score in ['acc', 'f1']:
-                return not is_open, get_body_for_modal(store_pipelines_class, df_name)
+                return not is_open, get_body_from_pipelines(store_pipelines_class, df_name)
             else:
-                return not is_open, get_body_for_modal(store_pipelines_reg, df_name)
+                return not is_open, get_body_from_pipelines(store_pipelines_reg, df_name)
         return is_open, None
 
 
@@ -309,3 +317,4 @@ def read_markdown():
     with open('../README.md', 'r') as file:
         data = file.read()
     return data
+    

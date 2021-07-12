@@ -57,6 +57,7 @@ def auto_sklearn(df, task, options):
     else:
       return make_regression(X_train, X_test, y_train, y_test, options['time'])
   except Exception as e:
+    print(colored('Error: ' + str(e), 'red'))
     if (str(e) ==
         'No valid model found in run history. This means smac was not able to fit a valid model. Please check the log file for errors.'
         ) and options['rerun'] == True:

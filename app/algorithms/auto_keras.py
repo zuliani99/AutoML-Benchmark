@@ -8,6 +8,7 @@ import sklearn
 import shutil
 from tensorflow.keras import backend as K
 import copy
+from termcolor import colored
 
 
 def recall_m(y_true, y_pred):
@@ -107,5 +108,6 @@ def autokeras(df, task, options):
     X, y = return_X_y(df_new)
     return (prepare_and_test(X, y, task, options['time']))
   except Exception as e:
+    print(colored('Error: ' + str(e), 'red'))
     print("---------------------------------AUTOKERAS---------------------------------\n\n")
     return (None, None, 'Error: ' + str(e), None)

@@ -6,6 +6,7 @@ import shutil
 import copy
 from sklearn.metrics import f1_score
 import numpy as np
+from termcolor import colored
 
 hyperparameters = {
   'GBM': {'num_boost_round': 10000},
@@ -69,6 +70,7 @@ def autogluon(df, task, options):
     except: return (round(res['accuracy'], 3),  round(f1(y_test, y_pred), 3), pipelines, options['time'])
 
   except Exception as e:
+    print(colored('Error: ' + str(e), 'red'))
     if str(e) == 'AutoGluon did not successfully train any models' and options['rerun'] == True:
       return autogluon(df, task, {'time': options['time']+1, 'rerun': options['rerun']})
     print("----------------------------------AUTOGLUON--------------------------------\n\n")
