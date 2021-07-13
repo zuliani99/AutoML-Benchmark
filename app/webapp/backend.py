@@ -46,15 +46,13 @@ def start_kaggle_function(kaggledataframe, options):
         if kaggledataframe is None:
                 raise PreventUpdate
         res = kaggle_benchmark(kaggledataframe, options)
-        #print('dataaaaaaa: ', res)
         return get_store_past_bech_function(res, 'Kaggle')
 
 
 def start_test_function(dfid, algorithms, options):
         if dfid is None or algorithms is None:
-                raise PreventUpdate
+            raise PreventUpdate
         task, res = test(dfid, algorithms, options) #task, s1, s2, pipelines, timelife      s1 = acc or rmse,  s2 = f1 or r2   oppure task, dataframe
-        #print(res)
         if isinstance(res, pd.DataFrame):
             return return_all_algorithms(task, res, res['dataframe'][0])
         if task is None:
@@ -80,16 +78,11 @@ def start_test_function(dfid, algorithms, options):
         ])]
 
 
-#REFACTORING TEST BENCHMARK
 def return_all_algorithms(task, res, name):
-        #res.to_csv('vediamo.csv', index=False)
-
         first_scores = res.iloc[[0]]
         second_scores = res.iloc[[1]]
         pipelines = res.iloc[[2]]
         timelifes = res.iloc[[3]]
-
-        #print(pipelines)
 
         bars = {'first': [], 'second': []}
         titles = []
@@ -119,8 +112,6 @@ def return_all_algorithms(task, res, name):
                     )
                 ),
                 html.H4("Pipelines"),
-                #create_table(pipelines)
-                #create_div_pipelines(pipelines)
                 html.Div(get_body_from_pipelines(pipelines, name))
             ])
         ]

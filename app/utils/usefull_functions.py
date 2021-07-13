@@ -21,11 +21,9 @@ def return_X_y(df):
     X = df[0].drop([target], axis=1)
     return X, y
 
+
 def return_X_y_openML(df):
     new = df[0]
-    #n_target = new['n_target'][0]
-    #new = new.drop('n_target', axis = 1)
-
     y = new.iloc[:, -1].to_frame()
     X = new.iloc[:, :-1]
     return X, y
@@ -62,15 +60,7 @@ def get_df_list(datalist, n_df, task):
                     if not isinstance(y, pd.DataFrame):
                         y = y.to_frame()
 
-                    #if (len(y.columns) == 1):
                     X[y.columns[0]] = y
-                    #else:
-                        #for col in y.columns:
-                            #X[col] = y[col]
-                    df = X
-                    #df['n_target'] = len(y.columns)
-
-
 
                     if n_df > 0:
                         print('------------------Dataset : ' + name + '------------------')

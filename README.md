@@ -13,6 +13,64 @@ To install all dependencies run
 make install
 ```
 
+#### Changes that have to be made to run AutoKeras:
+* Search the file **auto_model.py** and modify these functions:
+```python
+def predict(self, x, batch_size=32, verbose=1, custom_objects={}, **kwargs):
+    if isinstance(x, tf.data.Dataset) and self._has_y(x):
+        x = x.map(lambda x, y: x)
+    self._check_data_format((x, None), predict=True)
+    dataset = self._adapt(x, self.inputs, batch_size)
+    pipeline = self.tuner.get_best_pipeline()
+    if custom_objects:
+        model = self.tuner.get_best_model(custom_objects=custom_objects)
+    else:
+        model = self.tuner.get_best_model()
+    dataset = pipeline.transform_x(dataset)
+    dataset = tf.data.Dataset.zip((dataset, dataset))
+    y = model.predict(dataset, **kwargs)
+    y = utils.predict_with_adaptive_batch_size(
+        model=model, batch_size=batch_size, x=dataset, verbose=verbose, **kwargs
+    )
+    return pipeline.postprocess(y)
+        
+def evaluate(self, x, y=None, batch_size=32, verbose=1, custom_objects={},**kwargs):
+    self._check_data_format((x, y))
+    if isinstance(x, tf.data.Dataset):
+        dataset = x
+        x = dataset.map(lambda x, y: x)
+        y = dataset.map(lambda x, y: y)
+    x = self._adapt(x, self.inputs, batch_size)
+    y = self._adapt(y, self._heads, batch_size)
+    dataset = tf.data.Dataset.zip((x, y))
+    pipeline = self.tuner.get_best_pipeline()
+    dataset = pipeline.transform(dataset)
+    if custom_objects:
+        model = self.tuner.get_best_model(custom_objects=custom_objects)
+    else:
+        model = self.tuner.get_best_model()
+    return utils.evaluate_with_adaptive_batch_size(
+        model=model, batch_size=batch_size, x=dataset, verbose=verbose, **kwargs
+    )
+        
+ def export_model(self, custom_objects={}):
+    if custom_objects:
+        return self.tuner.get_best_model(custom_objects=custom_objects)
+    else:
+        return self.tuner.get_best_model()
+```
+
+* Search the file **tuner.py** and modify the function:
+```python
+def get_best_model(self, custom_objects={}):
+    with hm_module.maybe_distribute(self.distribution_strategy):
+        if custom_objects:
+            model = tf.keras.models.load_model(self.best_model_path, custom_objects=custom_objects)
+        else:
+            model = tf.keras.models.load_model(self.best_model_path)
+    return model
+```
+
 ## Usage
 To run the app execute the following line of code:
 ```bash

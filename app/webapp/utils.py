@@ -1,6 +1,4 @@
 import os
-
-from pandas.core.frame import DataFrame
 import dash_core_components as dcc
 import dash_html_components as html
 import dash_bootstrap_components as dbc
@@ -68,7 +66,6 @@ def create_table(df):
                             + [
                                 html.Tr(
                                     [   
-                                        #html.Td(df.iloc[i][col], style={"border": "1px solid black"})
                                         html.Td(print_err_table(df.iloc[i][col])[0], style = print_err_table(df.iloc[i][col])[1])
                                         for col in df.columns
                                     ], style={"border": "1px solid black"}
@@ -83,7 +80,6 @@ def create_table(df):
             ])
     
 def print_err_table(cell):
-    #print(cell, type(cell), isinstance(cell, float) and math.isnan(cell))
     if isinstance(cell, float) and math.isnan(cell):
         return "Error", {"border": "1px solid black", 'color': 'red'}
     return cell, {"border": "1px solid black"}

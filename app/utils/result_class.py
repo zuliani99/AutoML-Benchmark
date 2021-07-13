@@ -21,7 +21,7 @@ class Result:
 
         self.options = None
 
-
+    
     def run_benchmark(self, df, task, df_name, leader, options):
         res_as = auto_sklearn(df, task, options['autosklearn'])
         res_t = TPOT(df, task, options['tpot'])
@@ -38,41 +38,20 @@ class Result:
         })
 
         if (task == 'classification'):
-            if leader is None:
-                new_row_acc = {'dataframe': df_name, 'autosklearn-acc': res_as[0], 'tpot-acc': res_t[0], 'h2o-acc': res_h[0], 'autokeras-acc': res_ak[0], 'autogluon-acc': res_ag[0]}
-                new_row_f1 = {'dataframe': df_name, 'autosklearn-f1': res_as[1], 'tpot-f1': res_t[1], 'h2o-f1': res_h[1], 'autokeras-f1': res_ak[1], 'autogluon-f1': res_ag[1]}
-
-            elif (leader['measure'] == 'acc'):
-                new_row_acc = {'dataframe': df_name, 'autosklearn-acc': res_as[0], 'tpot-acc': res_t[0], 'h2o-acc': res_h[0], 'autokeras-acc': res_ak[0], 'autogluon-acc': res_ag[0], 'leader': leader['score']}
-                new_row_f1 = {'dataframe': df_name, 'autosklearn-f1': res_as[1], 'tpot-f1': res_t[1], 'h2o-f1': res_h[1], 'autokeras-f1': res_ak[1], 'autogluon-f1': res_ag[1], 'leader': None}
-                print(new_row_acc)
-            else:
-                new_row_acc = {'dataframe': df_name, 'autosklearn-acc': res_as[0], 'tpot-acc': res_t[0], 'h2o-acc': res_h[0], 'autokeras-acc': res_ak[0], 'autogluon-acc': res_ag[0], 'leader': None}
-                new_row_f1 = {'dataframe': df_name, 'autosklearn-f1': res_as[1], 'tpot-f1': res_t[1], 'h2o-f1': res_h[1], 'autokeras-f1': res_ak[1], 'autogluon-f1': res_ag[1], 'leader': leader['score']}
-                print(new_row_f1)
-            new_row_pipelines_class = {'dataframe': df_name, 'autosklearn': res_as[2], 'tpot': res_t[2], 'h2o': res_h[2], 'autokeras': res_ak[2], 'autogluon': res_ag[2]} # le pipeline sono già componenti html o dcc
+            new_row_acc, new_row_f1, new_row_pipelines_class = populate_row(df_name, leader, res_as, res_t, res_h, res_ak, res_ag, ('acc', 'f1'))
 
             self.res_class_acc = self.res_class_acc.append(new_row_acc, ignore_index=True)
             self.res_class_f1 = self.res_class_f1.append(new_row_f1, ignore_index=True)
             self.pipelines_class = self.pipelines_class.append(new_row_pipelines_class, ignore_index=True)
-        else:
-            if leader is None:
-                new_row_rmse = {'dataframe': df_name, 'autosklearn-rmse': res_as[0], 'tpot-rmse': res_t[0], 'h2o-rmse': res_h[0], 'autokeras-rmse': res_ak[0], 'autogluon-rmse': res_ag[0]}
-                new_row_r2 = {'dataframe': df_name, 'autosklearn-r2': res_as[1], 'tpot-r2': res_t[1], 'h2o-r2': res_h[1], 'autokeras-r2': res_ak[1], 'autogluon-r2': res_ag[1]}
 
-            elif (leader['measure'] == 'rmse'):
-                new_row_rmse = {'dataframe': df_name, 'autosklearn-rmse': res_as[0], 'tpot-rmse': res_t[0], 'h2o-rmse': res_h[0], 'autokeras-rmse': res_ak[0], 'autogluon-rmse': res_ag[0], 'leader': leader['score']}
-                new_row_r2 = {'dataframe': df_name, 'autosklearn-r2': res_as[1], 'tpot-r2': res_t[1], 'h2o-r2': res_h[1], 'autokeras-r2': res_ak[1], 'autogluon-r2': res_ag[1], 'leader': None}
-                print(new_row_rmse)
-            else:
-                new_row_rmse = {'dataframe': df_name, 'autosklearn-rmse': res_as[0], 'tpot-rmse': res_t[0], 'h2o-rmse': res_h[0], 'autokeras-rmse': res_ak[0], 'autogluon-rmse': res_ag[0], 'leader': None}
-                new_row_r2 = {'dataframe': df_name, 'autosklearn-r2': res_as[1], 'tpot-r2': res_t[1], 'h2o-r2': res_h[1], 'autokeras-r2': res_ak[1], 'autogluon-r2': res_ag[1], 'leader': leader['score']}
-                print(new_row_r2)
-            new_row_pipelines_reg = {'dataframe': df_name, 'autosklearn': res_as[2], 'tpot': res_t[2], 'h2o': res_h[2], 'autokeras': res_ak[2], 'autogluon': res_ag[2]} # sono componenti html o dcc
+        else:
+            new_row_rmse, new_row_r2, new_row_pipelines_reg = populate_row(df_name, leader, res_as, res_t, res_h, res_ak, res_ag, ('rmse', 'r2'))
 
             self.res_reg_rmse = self.res_reg_rmse.append(new_row_rmse, ignore_index=True)
             self.res_reg_r2 = self.res_reg_r2.append(new_row_r2, ignore_index=True)
             self.pipelines_reg = self.pipelines_reg.append(new_row_pipelines_reg, ignore_index=True)
+
+
 
 
     def print_res(self):
@@ -106,3 +85,24 @@ class Result:
 
         # Ritorno i dataframe oppure None se sono vuoti, ritorna una una lista di 4 dataframe
         return (str(date).replace(' ', '-'))
+
+
+
+def populate_row(df_name, leader, res_as, res_t, res_h, res_ak, res_ag, s):
+    if leader is None:
+        new_row_acc = {'dataframe': df_name, 'autosklearn-'+s[0]: res_as[0], 'tpot-'+s[0]: res_t[0], 'h2o-'+s[0]: res_h[0], 'autokeras-'+s[0]: res_ak[0], 'autogluon-'+s[0]: res_ag[0]}
+        new_row_f1 = {'dataframe': df_name, 'autosklearn-'+s[1]: res_as[1], 'tpot-'+s[1]: res_t[1], 'h2o-'+s[1]: res_h[1], 'autokeras-'+s[1]: res_ak[1], 'autogluon-'+s[1]: res_ag[1]}
+
+    elif (leader['measure'] == 'acc'):
+        new_row_acc = {'dataframe': df_name, 'autosklearn-'+s[0]: res_as[0], 'tpot-'+s[0]: res_t[0], 'h2o-'+s[0]: res_h[0], 'autokeras-'+s[0]: res_ak[0], 'autogluon-'+s[0]: res_ag[0], 'leader': leader['score']}
+        new_row_f1 = {'dataframe': df_name, 'autosklearn-'+s[1]: res_as[1], 'tpot-'+s[1]: res_t[1], 'h2o-'+s[1]: res_h[1], 'autokeras-'+s[1]: res_ak[1], 'autogluon-'+s[1]: res_ag[1], 'leader': None}
+        print(new_row_acc)
+
+    else:
+        new_row_acc = {'dataframe': df_name, 'autosklearn-'+s[0]: res_as[0], 'tpot-'+s[0]: res_t[0], 'h2o-'+s[0]: res_h[0], 'autokeras-'+s[0]: res_ak[0], 'autogluon-'+s[0]: res_ag[0], 'leader': None}
+        new_row_f1 = {'dataframe': df_name, 'autosklearn-'+s[1]: res_as[1], 'tpot-'+s[1]: res_t[1], 'h2o-'+s[1]: res_h[1], 'autokeras-'+s[1]: res_ak[1], 'autogluon-'+s[1]: res_ag[1], 'leader': leader['score']}
+        print(new_row_f1)
+
+    new_row_pipelines_class = {'dataframe': df_name, 'autosklearn': res_as[2], 'tpot': res_t[2], 'h2o': res_h[2], 'autokeras': res_ak[2], 'autogluon': res_ag[2]} # le pipeline sono già componenti html o dcc
+
+    return new_row_acc, new_row_f1, new_row_pipelines_class
