@@ -92,22 +92,23 @@ def retrun_graph_table(dfs, pipelines, title, task, t, opts, scores):
     for df in dfs:
         df['pipelines'] = get_pipelines_button(df[['dataframe']], df.columns[1].split('-')[1])
 
-        # Populamento degli array con i relativi grafici
+        # Populamento degli array con i relativi grafici e tabelle
         for col in df.columns[1:-1]:
             scatters.append(go.Scatter(x=df['dataframe'], y=df[col], name=col.split('-')[0], mode='lines+markers'))
             histos.append(go.Bar(x=df['dataframe'], y=df[col], name=col.split('-')[0]))
         table.append(create_table(df))
+
     table.append(
-            dbc.Tabs(
-                [
-                    dbc.Tab(label="Histograms", tab_id="histogram"),
-                    dbc.Tab(label="Scatter", tab_id="scatter"),
-                    dbc.Tab(label="Algorithm Options", tab_id="algo-options"),
-                ],
-                id="tabs-"+task,
-                active_tab="histogram",
-            ) 
-        )
+        dbc.Tabs(
+            [
+                dbc.Tab(label="Histograms", tab_id="histogram"),
+                dbc.Tab(label="Scatter", tab_id="scatter"),
+                dbc.Tab(label="Algorithm Options", tab_id="algo-options"),
+            ],
+            id="tabs-"+task,
+            active_tab="histogram",
+        ) 
+    )
 
     # Creazione della sezione rivolta alla visualizzazione delle opzioni degli algoritmi inserite dall'utente
     opts = opts.to_dict()
@@ -131,6 +132,7 @@ def retrun_graph_table(dfs, pipelines, title, task, t, opts, scores):
 
 # Funzione per la visualizzazione di un messaggio di errore se presente
 def print_err_table(cell):
+    print(cell, type(cell))
     if isinstance(cell, float) and math.isnan(cell):
         return "Error", {"border": "1px solid black", 'color': 'red'}
     return cell, {"border": "1px solid black"}

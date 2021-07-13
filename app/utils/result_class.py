@@ -92,19 +92,19 @@ class Result:
 # Funnzione d'appoggio per il salvataggio la creazione delle nuove righe da inserire nei rispettivi DataFrame
 def populate_row(df_name, leader, res_as, res_t, res_h, res_ak, res_ag, s):
     if leader is None:
-        new_row_acc = {'dataframe': df_name, 'autosklearn-'+s[0]: res_as[0], 'tpot-'+s[0]: res_t[0], 'h2o-'+s[0]: res_h[0], 'autokeras-'+s[0]: res_ak[0], 'autogluon-'+s[0]: res_ag[0]}
-        new_row_f1 = {'dataframe': df_name, 'autosklearn-'+s[1]: res_as[1], 'tpot-'+s[1]: res_t[1], 'h2o-'+s[1]: res_h[1], 'autokeras-'+s[1]: res_ak[1], 'autogluon-'+s[1]: res_ag[1]}
+        new_row_1 = {'dataframe': df_name, 'autosklearn-'+s[0]: res_as[0], 'tpot-'+s[0]: res_t[0], 'h2o-'+s[0]: res_h[0], 'autokeras-'+s[0]: res_ak[0], 'autogluon-'+s[0]: res_ag[0]}
+        new_row_2 = {'dataframe': df_name, 'autosklearn-'+s[1]: res_as[1], 'tpot-'+s[1]: res_t[1], 'h2o-'+s[1]: res_h[1], 'autokeras-'+s[1]: res_ak[1], 'autogluon-'+s[1]: res_ag[1]}
 
-    elif (leader['measure'] == 'acc'):
-        new_row_acc = {'dataframe': df_name, 'autosklearn-'+s[0]: res_as[0], 'tpot-'+s[0]: res_t[0], 'h2o-'+s[0]: res_h[0], 'autokeras-'+s[0]: res_ak[0], 'autogluon-'+s[0]: res_ag[0], 'leader': leader['score']}
-        new_row_f1 = {'dataframe': df_name, 'autosklearn-'+s[1]: res_as[1], 'tpot-'+s[1]: res_t[1], 'h2o-'+s[1]: res_h[1], 'autokeras-'+s[1]: res_ak[1], 'autogluon-'+s[1]: res_ag[1], 'leader': None}
-        print(new_row_acc)
+    elif (leader['measure'] == s[0]):
+        new_row_1 = {'dataframe': df_name, 'autosklearn-'+s[0]: res_as[0], 'tpot-'+s[0]: res_t[0], 'h2o-'+s[0]: res_h[0], 'autokeras-'+s[0]: res_ak[0], 'autogluon-'+s[0]: res_ag[0], 'leader': leader['score']}
+        new_row_2 = {'dataframe': df_name, 'autosklearn-'+s[1]: res_as[1], 'tpot-'+s[1]: res_t[1], 'h2o-'+s[1]: res_h[1], 'autokeras-'+s[1]: res_ak[1], 'autogluon-'+s[1]: res_ag[1], 'leader': 'No value'}
+        #print(new_row_1)
 
     else:
-        new_row_acc = {'dataframe': df_name, 'autosklearn-'+s[0]: res_as[0], 'tpot-'+s[0]: res_t[0], 'h2o-'+s[0]: res_h[0], 'autokeras-'+s[0]: res_ak[0], 'autogluon-'+s[0]: res_ag[0], 'leader': None}
-        new_row_f1 = {'dataframe': df_name, 'autosklearn-'+s[1]: res_as[1], 'tpot-'+s[1]: res_t[1], 'h2o-'+s[1]: res_h[1], 'autokeras-'+s[1]: res_ak[1], 'autogluon-'+s[1]: res_ag[1], 'leader': leader['score']}
-        print(new_row_f1)
+        new_row_1 = {'dataframe': df_name, 'autosklearn-'+s[0]: res_as[0], 'tpot-'+s[0]: res_t[0], 'h2o-'+s[0]: res_h[0], 'autokeras-'+s[0]: res_ak[0], 'autogluon-'+s[0]: res_ag[0], 'leader': 'No value'}
+        new_row_2 = {'dataframe': df_name, 'autosklearn-'+s[1]: res_as[1], 'tpot-'+s[1]: res_t[1], 'h2o-'+s[1]: res_h[1], 'autokeras-'+s[1]: res_ak[1], 'autogluon-'+s[1]: res_ag[1], 'leader': leader['score']}
+        #print(new_row_2)
 
-    new_row_pipelines_class = {'dataframe': df_name, 'autosklearn': res_as[2], 'tpot': res_t[2], 'h2o': res_h[2], 'autokeras': res_ak[2], 'autogluon': res_ag[2]} # le pipeline sono già componenti html o dcc
+    new_row_pipelines = {'dataframe': df_name, 'autosklearn': res_as[2], 'tpot': res_t[2], 'h2o': res_h[2], 'autokeras': res_ak[2], 'autogluon': res_ag[2]} # le pipeline sono già componenti html o dcc
 
-    return new_row_acc, new_row_f1, new_row_pipelines_class
+    return new_row_1, new_row_2, new_row_pipelines
