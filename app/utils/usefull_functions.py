@@ -1,8 +1,10 @@
+# Import necessari
 import os
 import pandas as pd
 from termcolor import colored
 from sklearn.datasets import fetch_openml
 
+# Funzione per ottenere la colonna target
 def get_target(train, test):
     for c in train.columns:
         if c not in test.columns:
@@ -12,8 +14,10 @@ def get_list_single_df(df):
     return [df] if isinstance(df, pd.DataFrame) else df
 
 
+# Funzione per la separazione della colonna target fal resto del DataFrame
 def return_X_y(df):
     if not isinstance(df, tuple):
+        # Caso OpenML
         return return_X_y_openML(df)
     target = get_target(df[0], df[1])
     # ATTENZIONE USO SOLO IL TRAIN
@@ -21,13 +25,14 @@ def return_X_y(df):
     X = df[0].drop([target], axis=1)
     return X, y
 
-
+# Caso Kaggle
 def return_X_y_openML(df):
     new = df[0]
     y = new.iloc[:, -1].to_frame()
     X = new.iloc[:, :-1]
     return X, y
 
+# Funzione di pulizia iniziale del DataFrame 
 def fill_and_to_category(dfs):
     dfs = get_list_single_df(dfs)
     for df in dfs:
@@ -46,11 +51,10 @@ def fill_and_to_category(dfs):
     return dfs
 
 
-
+# Funzione addetta al Download dei DataFrame nel caso di un OpenML Benchmark
 def get_df_list(datalist, n_df, task):
     list_df = []
     for index, row in datalist.iterrows():
-        print('rigaaaaaaaa ', row['did'], row['name'])
         file_dir = './dataframes/OpenML/'+ task +'/'
         name = str(row['did']) + '_' + str(row['name']) + '.csv'
         try:

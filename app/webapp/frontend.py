@@ -1,3 +1,4 @@
+# Import necessari
 import dash_core_components as dcc
 import dash_html_components as html
 import dash_bootstrap_components as dbc
@@ -5,6 +6,7 @@ import dash_bootstrap_components as dbc
 from .utils import get_lisd_dir, create_collapse, read_markdown
 
 
+# Personalizzazione dell stile dell'applicazione web
 SIDEBAR_STYLE = {
         "position": "fixed",
         "top": 0,
@@ -15,6 +17,7 @@ SIDEBAR_STYLE = {
         "backgroundColor": "#f8f9fa",
     }
 
+# Definizione del sidebar
 sidebar = html.Div(
         [
             html.H2("AutoML BenchMark", className="display-4"),
@@ -38,9 +41,10 @@ sidebar = html.Div(
         style=SIDEBAR_STYLE,
     )
 
-
+# Ddefinizone della pagina home
 home = dcc.Markdown(read_markdown())
 
+# definizione della pagina openmlbenchmark
 openmlbenchmark = html.Div([
                     dbc.Card([
                         dbc.CardBody([
@@ -86,6 +90,7 @@ openmlbenchmark = html.Div([
                 ],size="lg", color="primary", type="border", fullscreen=True)
             ])
 
+# Definizone della pagina kagglebenchmark
 kagglebenchmark = html.Div([
                 dbc.Card([
                     dbc.CardBody([
@@ -134,6 +139,7 @@ kagglebenchmark = html.Div([
             ],size="lg", color="primary", type="border", fullscreen=True)
     ])
 
+# Definizone della pagina testbenchmark
 testbenchmark = html.Div([
         dbc.Card([
                     dbc.CardBody([
@@ -166,8 +172,8 @@ testbenchmark = html.Div([
                                 width=5,
                             ),
                         ],row=True),
-                        dbc.Button("Start BenchMark", id='submit-test', color="primary", className="mr-1"),
                         create_collapse('AutoSklearn', 'Minutes', 1, False), create_collapse('TPOT', 'Minutes', 1, False), create_collapse('H2O', 'Minutes', 1, False), create_collapse('AutoKeras', 'Epochs', 10, False), create_collapse('AutoGluon', 'Minutes', 1, False),
+                        dbc.Button("Start BenchMark", id='submit-test', color="primary", className="mr-1"),
                     ])
                 ], style={"width": "auto"},
             ),
@@ -175,6 +181,7 @@ testbenchmark = html.Div([
         dbc.Spinner(children=[html.Div(id='res-bench-test')],size="lg", color="primary", type="border", fullscreen=True)
     ])
 
+# Definizone della pagina get_pastresultopenml
 def get_pastresultopenml():
     return html.Div([
         dbc.Select(id='pastresultopenml', options=get_lisd_dir('OpenML'),
@@ -191,7 +198,7 @@ def get_pastresultopenml():
         ],size="lg", color="primary", type="border", fullscreen=False),
     ])
 
-
+# Definizone della pagina get_pastresultkaggle
 def get_pastresultkaggle():
     return html.Div([
         dbc.Select(id='pastresultkaggle', options=get_lisd_dir('Kaggle'),

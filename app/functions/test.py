@@ -1,4 +1,4 @@
-from typing import List
+# Import necessari
 from sklearn.datasets import fetch_openml
 import pandas as pd
 import os
@@ -10,6 +10,7 @@ from algorithms.h2o import H2O
 from termcolor import colored
 import openml
 
+# Funzione per la ricerca dii un specifico DataFrame nelle cartelle dei risultati precedenti
 def serch_df(df_id):
     for task in ['classification', 'regression']:
         lis = os.listdir('./dataframes/OpenML/'+ task +'/')
@@ -18,6 +19,7 @@ def serch_df(df_id):
                 return d
     return None
 
+# Dizionario utilizzato come swith case per l'esecizione di uno o tutti gli algoritmi per un determinato DataFrame
 def switch(algo, df, name, task, options):
     return {
         'autosklearn': lambda df, task: auto_sklearn(df, task, options['autosklearn']),
@@ -37,8 +39,10 @@ def switch(algo, df, name, task, options):
 def test(id, algo, options):
     print('----------------'+str(id)+'-----------'+str(algo)+'-------------')
     try:
+        # Esecuzione del test
         return do_test(id, algo, options)
     except Exception as e:
+        # Ritorno di un eccezione in caso di errore
         text = (
             'An error occured during the benchmak of the dataframe: '
             + str(id)
@@ -50,8 +54,9 @@ def test(id, algo, options):
         return None, text
 
 def do_test(id, algo, options):
-    search = serch_df(id)
+    search = serch_df(id) # Inizialmente controllo se il DataFrame che ha scelto l'utente sia presente o meno in una delle due cartelle
     if search is None:
+        # Se non è presente lo scarico attraverso lapposita API
         X, y = fetch_openml(data_id=id, as_frame=True, return_X_y=True, cache=True)
         name = str(id)+ '_' +openml.datasets.get_dataset(id).name + '.csv'
 
@@ -63,7 +68,8 @@ def do_test(id, algo, options):
 
         print(df.info())
         print(df.head())
-
+        
+        # Ottengo il tipo di task
         tasks = openml.tasks.list_tasks(data_id=id, output_format="dataframe")
         ts = tasks['task_type'].unique()
         if ('Supervised Classification' not in ts and 'Supervised Regression' not in ts):
@@ -71,14 +77,16 @@ def do_test(id, algo, options):
         task = 'classification' if 'Supervised Classification' in ts else 'regression'
         file_dir =  './dataframes/OpenML/' + task + '/'
         fullname = os.path.join(file_dir, name)
+
+        # Effettuo il salvataggio del DataFrame nell cartella corrispondente
         df.to_csv(fullname, index=False, header=True)
 
     else:
+        # Se è già presente lo leggo e ottengo il task
         df = pd.read_csv(search)
         task = search.split('/')[3]
         print(df.head())
 
+    # Esegui il test benchmark
     res = switch(algo, df, name, task, options)
-    print(task)
-    print(res)
     return task, res

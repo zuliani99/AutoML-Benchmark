@@ -1,3 +1,4 @@
+# Import necessari
 import pandas as pd
 from datetime import datetime
 import os
@@ -7,8 +8,10 @@ from algorithms.auto_gluon import autogluon
 from algorithms.tpot import TPOT
 from algorithms.h2o import H2O
 
+# Creazione della classe Result addetta all'esecuzione di tutti gli algoritmi per un determinato DataFrame
 class Result:
     def __init__(self, t):
+        # Derfinizione dei campi della classe
         self.t = t
         self.res_class_acc = pd.DataFrame({'dataframe': [], 'autosklearn-acc': [], 'tpot-acc': [], 'h2o-acc': [], 'autokeras-acc': [], 'autogluon-acc': []})
         self.res_class_f1 = pd.DataFrame({'dataframe': [], 'autosklearn-f1': [], 'tpot-f1': [], 'h2o-f1': [], 'autokeras-f1': [], 'autogluon-f1': []})
@@ -21,8 +24,9 @@ class Result:
 
         self.options = None
 
-    
+    # Funzione addetta all'esecuzione degli algoritmi per un determinato DataFrame e acnhe all'aggiornamento dei campi della classe
     def run_benchmark(self, df, task, df_name, leader, options):
+        # Esecuzione degli algoritmi
         res_as = auto_sklearn(df, task, options['autosklearn'])
         res_t = TPOT(df, task, options['tpot'])
         res_h = H2O(df, task, options['h2o'])
@@ -37,6 +41,7 @@ class Result:
             'autogluon': [options['autogluon']['time'], res_ag[3]]
         })
 
+        # Aggiornamento dei campi di calssificazione o regressione a seconda del tipo
         if (task == 'classification'):
             new_row_acc, new_row_f1, new_row_pipelines_class = populate_row(df_name, leader, res_as, res_t, res_h, res_ak, res_ag, ('acc', 'f1'))
 
@@ -53,7 +58,7 @@ class Result:
 
 
 
-
+    # FUnzione rivolta alla conversione dei DataFrame in file csv per il mantenimento dei risultati
     def print_res(self):
         date = datetime.now()
         if(not self.res_class_acc.empty and not self.res_class_f1.empty):
@@ -62,7 +67,6 @@ class Result:
             print('---------------------------------RISULTATI DI CLASSIFICAZIONE ' + self.t + '---------------------------------')
             print(self.res_class_acc)
             print(self.res_class_f1)
-            #print(self.pipelines_class)
 
             self.res_class_acc.to_csv(pathcla + '/acc.csv', index = False)
             self.res_class_f1.to_csv(pathcla + '/f1_score.csv', index = False)
@@ -74,7 +78,6 @@ class Result:
             print('\n\n---------------------------------RISULTATI DI REGRESSIONE ' + self.t +'---------------------------------')
             print(self.res_reg_rmse)
             print(self.res_reg_r2)
-            #print(self.pipelines_reg)
 
             self.res_reg_rmse.to_csv(pathreg + '/rmse.csv', index = False)
             self.res_reg_r2.to_csv(pathreg + '/r2_score.csv', index = False)
@@ -82,12 +85,11 @@ class Result:
 
         self.options.to_csv('./results/' + self.t + '/' + str(date).replace(' ', '-')+ '/options.csv', index = False)
 
-
-        # Ritorno i dataframe oppure None se sono vuoti, ritorna una una lista di 4 dataframe
+        # Unico paramentro di ritorno è il timestamp che sarà utile poi per la visaulizzazione dei risultati
         return (str(date).replace(' ', '-'))
 
 
-
+# Funnzione d'appoggio per il salvataggio la creazione delle nuove righe da inserire nei rispettivi DataFrame
 def populate_row(df_name, leader, res_as, res_t, res_h, res_ak, res_ag, s):
     if leader is None:
         new_row_acc = {'dataframe': df_name, 'autosklearn-'+s[0]: res_as[0], 'tpot-'+s[0]: res_t[0], 'h2o-'+s[0]: res_h[0], 'autokeras-'+s[0]: res_ak[0], 'autogluon-'+s[0]: res_ag[0]}
