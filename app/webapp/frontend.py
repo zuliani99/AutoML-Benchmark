@@ -23,7 +23,7 @@ sidebar = html.Div(
             html.H2("AutoML BenchMark", className="display-4"),
             html.Hr(),
             html.P(
-                "Choose the Benchmark to be made", className="lead"
+                "Choose an Options", className="lead"
             ),
             dbc.Nav(
                 [
@@ -48,9 +48,9 @@ home = dcc.Markdown(read_markdown())
 openmlbenchmark = html.Div([
                     dbc.Card([
                         dbc.CardBody([
-                            html.H4("OpenMl BenchMark", className="card-title"),
+                            html.H4("OpenML BenchMark", className="card-title"),
                             dbc.FormGroup([
-                                dbc.Label("Number of dataframe to test", width=5),
+                                dbc.Label("Number of DataFrame to test each for classification tasks and regression tasks", width=5),
                                 dbc.Col([
                                     dbc.InputGroup([
                                         dbc.Input(
@@ -67,7 +67,7 @@ openmlbenchmark = html.Div([
                                         dbc.Input(
                                             id="nmore", type="number", placeholder="Number of instances", min=50, max=100000
                                         ),
-                                        dbc.InputGroupAddon("at least 50", addon_type="prepend"),
+                                        dbc.InputGroupAddon("at least 50 and at most 100000", addon_type="prepend"),
                                     ])
                                 ],width=5),
                             ],row=True),
@@ -144,7 +144,6 @@ testbenchmark = html.Div([
         dbc.Card([
                     dbc.CardBody([
                         html.H4("Test BenchMark", className="card-title"),
-                        #html.P("This is some card text", className="card-text"),
                         dbc.FormGroup([
                             dbc.Label("DataFrame Id to test", width=5),
                             dbc.Col(
@@ -167,7 +166,8 @@ testbenchmark = html.Div([
                                         {'label': 'AutoGluon', 'value': 'autogluon'},
                                         {'label': 'All', 'value': 'all'}
                                     ],
-                                    value='autosklearn'
+                                    value='autosklearn',
+                                    searchable=False
                                 ),
                                 width=5,
                             ),

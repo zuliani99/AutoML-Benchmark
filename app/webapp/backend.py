@@ -33,8 +33,8 @@ def render_page_content_function(pathname):
 
 #Output('store_class_openml', 'data'), Output('store_reg_openml', 'data'), Output('store_pipelines_class_openml', 'data'), Output('store_pipelines_reg_openml', 'data'), Output('res-bench-openml-table-class', 'children'), Output('res-bench-openml-table-reg', 'children')],
 # Funzione per l'esecuzione del OpenML Benchmark
-def start_openml_function(nmore, ndf, options):
-    if nmore is None and ndf is None:
+def start_openml_function(ndf, nmore, options):
+    if (ndf is None and nmore is None) or ndf < 1 and nmore < 50 or nmore > 100000:
         raise PreventUpdate
     res = openml_benchmark(ndf, nmore, options)
     return get_store_past_bech_function(res, 'OpenML')
@@ -50,7 +50,7 @@ def start_kaggle_function(kaggledataframe, options):
 
 # Funzione per l'esecuzione del Test Benchmark
 def start_test_function(dfid, algorithms, options):
-    if dfid is None or algorithms is None:
+    if dfid is None or algorithms is None or dfid < 1:
         raise PreventUpdate
     task, res = test(dfid, algorithms, options) # Scomposizione del risultato ottenuto
     if isinstance(res, pd.DataFrame):

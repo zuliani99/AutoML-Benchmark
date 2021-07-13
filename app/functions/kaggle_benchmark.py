@@ -65,6 +65,10 @@ def kaggle_benchmark(list_df, options):
 
         train = pd.read_csv(path + '/train.csv')
         test = pd.read_csv(path + '/test.csv')
+        '''csvs = ['sample_submission', 'sampleSubmission', 'gender_submission']
+        for csv in csvs:
+            if os.path.isfile(path + csv + '.csv'):
+                submission = pd.read_csv(path + csv + '.csv')'''
 
         leaderboard = api.competition_view_leaderboard(df) # Download della leaderboard della competizione Kaggle
         leader = get_leader(leaderboard) # ottendo il Leader
