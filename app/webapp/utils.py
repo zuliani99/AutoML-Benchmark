@@ -67,6 +67,7 @@ def get_store_past_bech_function(timestamp, type):
 
 def get_store_and_tables(dfs, type):
     res_class_acc, res_class_f1, res_reg_rmse, res_reg_r2, pipelines_class, pipelines_reg, options = dfs # Scomposizione dell'array dato a parametro
+    print()
 
     # Definizone dei dizionari ed array che andremo a restituire a fine funzione
     store_dict = { 'class': {}, 'reg': {} }
@@ -95,18 +96,18 @@ def retrun_graph_table(dfs, pipelines, title, task, t, opts, scores):
         for col in df.columns[1:-1]:
             scatters.append(go.Scatter(x=df['dataframe'], y=df[col], name=col.split('-')[0], mode='lines+markers'))
             histos.append(go.Bar(x=df['dataframe'], y=df[col], name=col.split('-')[0]))
-
-    table.extend(create_table(df), (
-        dbc.Tabs(
-            [
-                dbc.Tab(label="Histograms", tab_id="histogram"),
-                dbc.Tab(label="Scatter", tab_id="scatter"),
-                dbc.Tab(label="Algorithm Options", tab_id="algo-options"),
-            ],
-            id="tabs-"+task,
-            active_tab="histogram",
-        ) 
-    ))
+        table.append(create_table(df))
+    table.append(
+            dbc.Tabs(
+                [
+                    dbc.Tab(label="Histograms", tab_id="histogram"),
+                    dbc.Tab(label="Scatter", tab_id="scatter"),
+                    dbc.Tab(label="Algorithm Options", tab_id="algo-options"),
+                ],
+                id="tabs-"+task,
+                active_tab="histogram",
+            ) 
+        )
 
     # Creazione della sezione rivolta alla visualizzazione delle opzioni degli algoritmi inserite dall'utente
     opts = opts.to_dict()
