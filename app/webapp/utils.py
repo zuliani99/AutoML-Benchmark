@@ -32,7 +32,7 @@ def make_options(as_tl=1, h2o_tl=1, t_tl=1, ak_tl=10, ag_tl=1, as_f=False, h2o_f
 
 # Funzione per il controllo che le opzioni inseirte dall'utnete siano valide
 def checkoptions(options):
-    return all(value['time'] >= value['min'] for key, value in options.items())
+    return all(int(value['time']) >= int(value['min']) for key, value in options.items())
 
 # Funzione per la definizone del dizionario dato alla gestione dei collapse
 def render_collapse_options(choice):

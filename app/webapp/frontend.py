@@ -145,7 +145,7 @@ testbenchmark = html.Div([
                     dbc.CardBody([
                         html.H4("Test BenchMark", className="card-title"),
                         dbc.FormGroup([
-                            dbc.Label("DataFrame Id to test", width=5),
+                            dbc.Label("OpenML DataFrame ID to test", width=5),
                             dbc.Col(
                                 dbc.Input(
                                     id="dfid", type="number", placeholder="DataFrame ID", min=1

@@ -34,24 +34,39 @@ def render_page_content_function(pathname):
 #Output('store_class_openml', 'data'), Output('store_reg_openml', 'data'), Output('store_pipelines_class_openml', 'data'), Output('store_pipelines_reg_openml', 'data'), Output('res-bench-openml-table-class', 'children'), Output('res-bench-openml-table-reg', 'children')],
 # Funzione per l'esecuzione del OpenML Benchmark
 def start_openml_function(ndf, nmore, options):
-    if (ndf is None and nmore is None) or (ndf < 1 and (nmore < 50 or nmore > 100000)) or not checkoptions(options):
+    if ndf is None or nmore is None or ndf < 1 or nmore < 50 or nmore > 100000:
         raise PreventUpdate
+    if not checkoptions(options):  # Verifica delle opzioni degli algoritmi inserite
+        return None, None, None, None, [
+            html.P('Please check the algorithms options inserted', style={'color':'red'}),
+            dbc.Tabs( 
+                [], id="tabs-class", active_tab="", style={'hidden':'true'})],[ dbc.Tabs( 
+                [], id="tabs-reg", active_tab="", style={'hidden':'true'} )]
     res = openml_benchmark(ndf, nmore, options)
     return get_store_past_bech_function(res, 'OpenML')
     
 
 # Funzione per l'esecuzione del Kagle Benchmark
 def start_kaggle_function(kaggledataframe, options):
-    if kaggledataframe is None or not checkoptions(options):
+    if kaggledataframe is None:
         raise PreventUpdate
+    if not checkoptions(options): # Verifica delle opzioni degli algoritmi inserite
+        return None, None, None, None, [
+            html.P('Please check the algorithms options inserted', style={'color':'red'}),
+            dbc.Tabs( 
+                [], id="tabs-class", active_tab="", style={'hidden':'true'})],[ dbc.Tabs( 
+                [], id="tabs-reg", active_tab="", style={'hidden':'true'} )]
     res = kaggle_benchmark(kaggledataframe, options)
     return get_store_past_bech_function(res, 'Kaggle')
 
 
 # Funzione per l'esecuzione del Test Benchmark
 def start_test_function(dfid, algorithms, options):
-    if dfid is None or algorithms is None or dfid < 1 or not checkoptions(options):
+    if dfid is None or algorithms is None or dfid < 1:
         raise PreventUpdate
+    if not checkoptions(options): # Verifica delle opzioni degli algoritmi inserite
+        if algorithms == 'all': return [html.P('Please check the algorithms options inserted', style={'color':'red'})] # Test Benchmark su tutti gli algoritmi
+        else: return [html.P('Please check the ' + algorithms +' options inserted', style={'color':'red'})] # Test Benchmark su un solo algoritmo
     task, res = test(dfid, algorithms, options) # Scomposizione del risultato ottenuto
     if isinstance(res, pd.DataFrame):
         return return_all_algorithms(task, res, res['dataframe'][0]) # Se il risultato è un DataFrame questo significa cheil test è stato fatto girare per tutti gli algoritmi a dispopsizione 
