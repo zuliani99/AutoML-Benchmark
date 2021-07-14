@@ -74,8 +74,8 @@ def get_store_and_tables(dfs, type):
     store_pipelines = { 'class': {}, 'reg': {} }
     tables = [[None], [None]]
 
-    store_dict['class'], store_pipelines['class'], tables[0] = retrun_graph_table([res_class_acc, res_class_f1], pipelines_class, 'Classification Results', 'class', type, options, ('acc', 'f1'))
-    store_dict['reg'], store_pipelines['reg'], tables[1] = retrun_graph_table([res_reg_rmse, res_reg_r2], pipelines_reg, 'Regression Results', 'reg', type, options, ('rmse', 'r2'))
+    store_dict['class'], store_pipelines['class'], tables[0] = retrun_graph_table([res_class_acc, res_class_f1], pipelines_class, 'Classification Results', 'class', type, options, ('Accuracy', 'F1'))
+    store_dict['reg'], store_pipelines['reg'], tables[1] = retrun_graph_table([res_reg_rmse, res_reg_r2], pipelines_reg, 'Regression Results', 'reg', type, options, ('RMSE', 'R2'))
 
     return store_dict['class'], store_dict['reg'], store_pipelines['class'], store_pipelines['reg'], tables[0], tables[1]
 
@@ -89,7 +89,7 @@ def retrun_graph_table(dfs, pipelines, title, task, t, opts, scores):
             )
     scatters = []
     histos = []
-    for df in dfs:
+    for index, df in enumerate(dfs):
         df['pipelines'] = get_pipelines_button(df[['dataframe']], df.columns[1].split('-')[1])
 
         # Populamento degli array con i relativi grafici e tabelle
@@ -97,7 +97,7 @@ def retrun_graph_table(dfs, pipelines, title, task, t, opts, scores):
             if isinstance(df[col][0], float): # Aggiorno gli array solo se si tratta di un istanza di tipo float, quindi escludo le celle con valore "no value"
                 scatters.append(go.Scatter(x=df['dataframe'], y=df[col], name=col.split('-')[0], mode='lines+markers'))
                 histos.append(go.Bar(x=df['dataframe'], y=df[col], name=col.split('-')[0]))
-        table.append(create_table(df))
+        table.extend((html.H4(scores[index] + ' Score'), create_table(df)))
 
     table.append(
         dbc.Tabs(
@@ -133,7 +133,6 @@ def retrun_graph_table(dfs, pipelines, title, task, t, opts, scores):
 
 # Funzione per la visualizzazione di un messaggio di errore se presente
 def print_err_table(cell):
-    print(cell, type(cell))
     if isinstance(cell, float) and math.isnan(cell):
         return "Error", {"border": "1px solid black", 'color': 'red'}
     return cell, {"border": "1px solid black"}
@@ -317,7 +316,6 @@ def get_body_from_pipelines(pipeline, df_name):
 # Funzione per la gestione della visualizzazione delle pipelines  
 def show_hide_pipelines_function(store_pipelines_class, store_pipelines_reg, n1, n2, value, is_open):
     if n1 or n2:
-        print(value)
         score = value.split('-')[0]
         df_name = value.split(score+'-')[1]
         if score in ['acc', 'f1']:

@@ -89,10 +89,8 @@ def return_all_algorithms(task, res, name):
 
     bars = {'first': [], 'second': []}
     titles = []
-    if(task == 'classification'):
-        titles = ['Accuracy Score', 'F1 Score']
-    else:
-        titles = ['RMSE Score', 'R2 Score']
+    if(task == 'classification'): titles = ['Accuracy Score', 'F1 Score']
+    else: titles = ['RMSE Score', 'R2 Score']
     
     # Popolamento del dizionario bars necessario successivamente per la visualizzazione del grafico
     for col in first_scores.iloc[:, 1:]:
@@ -101,7 +99,7 @@ def return_all_algorithms(task, res, name):
 
     return [
             html.Div([
-                html.H2('Test Results form DataFrame ' + name),
+                html.H3('Test Results form DataFrame ' + name),
                 html.H4(titles[0]),
                 create_table(first_scores.iloc[:, 1:]),     # Generazione della tabella per la visualizzazione del primo score
                 html.H4(titles[1]),

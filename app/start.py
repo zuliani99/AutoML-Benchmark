@@ -105,30 +105,30 @@ def start():
 
     # Callback relativi all'aggiornamento del grafico visualizzante i risultati di classificazione di Kaggle e OpenML
     @app.callback([Output('res-bench-openml-graph-class', 'children')], [Input("tabs-class", "active_tab"), Input('store_class_openml', 'data')])
-    def render_tab_content_class(active_tab, store_class_openml): return render_tab_content_function(active_tab, store_class_openml, ('acc', 'f1'))
+    def render_tab_content_class(active_tab, store_class_openml): return render_tab_content_function(active_tab, store_class_openml, ('Accuracy', 'F1'))
 
     @app.callback([Output('res-bench-kaggle-graph-class', 'children')], [Input("tabs-class", "active_tab"), Input('store_class_kaggle', 'data')])
-    def render_tab_content_class(active_tab, store_class_kaggle): return render_tab_content_function(active_tab, store_class_kaggle, ('acc', 'f1'))
+    def render_tab_content_class(active_tab, store_class_kaggle): return render_tab_content_function(active_tab, store_class_kaggle, ('Accuracy', 'F1'))
 
     @app.callback([Output('result-past-bench-openml-graph-class', 'children')], [Input("tabs-class", "active_tab"), Input('store_class_results_openml', 'data')])
-    def render_tab_content_class(active_tab, store_class_results_openml): return render_tab_content_function(active_tab, store_class_results_openml, ('acc', 'f1'))
+    def render_tab_content_class(active_tab, store_class_results_openml): return render_tab_content_function(active_tab, store_class_results_openml, ('Accuracy', 'F1'))
 
     @app.callback([Output('result-past-bench-kaggle-graph-class', 'children')], [Input("tabs-class", "active_tab"), Input('store_class_results_kaggle', 'data')])
-    def render_tab_content_class(active_tab, store_class_results_kaggle): return render_tab_content_function(active_tab, store_class_results_kaggle, ('acc', 'f1'))
+    def render_tab_content_class(active_tab, store_class_results_kaggle): return render_tab_content_function(active_tab, store_class_results_kaggle, ('Accuracy', 'F1'))
 
 
     # Callback relativi all'aggiornamento del grafico visualizzante i risultati di regressione di Kaggle e OpenML
     @app.callback([Output('res-bench-openml-graph-reg', 'children')], [Input("tabs-reg", "active_tab"), Input('store_reg_openml', 'data')])
-    def render_tab_content_reg(active_tab, store_reg_openml): return render_tab_content_function(active_tab, store_reg_openml, ('rmse', 'r2'))
+    def render_tab_content_reg(active_tab, store_reg_openml): return render_tab_content_function(active_tab, store_reg_openml, ('RMSE', 'R2'))
 
     @app.callback([Output('res-bench-kaggle-graph-reg', 'children')], [Input("tabs-reg", "active_tab"), Input('store_reg_kaggle', 'data')])
-    def render_tab_content_reg(active_tab, store_reg_kaggle): return render_tab_content_function(active_tab, store_reg_kaggle, ('rmse', 'r2'))
+    def render_tab_content_reg(active_tab, store_reg_kaggle): return render_tab_content_function(active_tab, store_reg_kaggle, ('RMSE', 'R2'))
 
     @app.callback([Output('result-past-bench-openml-graph-reg', 'children')], [Input("tabs-reg", "active_tab"), Input('store_reg_results_openml', 'data')])
-    def render_tab_content_reg(active_tab, store_reg_results_openml): return render_tab_content_function(active_tab, store_reg_results_openml, ('rmse', 'r2'))
+    def render_tab_content_reg(active_tab, store_reg_results_openml): return render_tab_content_function(active_tab, store_reg_results_openml, ('RMSE', 'R2'))
 
     @app.callback([Output('result-past-bench-kaggle-graph-reg', 'children')], [Input("tabs-reg", "active_tab"), Input('store_reg_results_kaggle', 'data')])
-    def render_tab_content_reg(active_tab, store_reg_results_kaggle): return render_tab_content_function(active_tab, store_reg_results_kaggle, ('rmse', 'r2'))
+    def render_tab_content_reg(active_tab, store_reg_results_kaggle): return render_tab_content_function(active_tab, store_reg_results_kaggle, ('RMSE', 'R2'))
 
     # Callback per la gestione dei collapse relativi alle opzioni degli algoritmi
     @app.callback(
