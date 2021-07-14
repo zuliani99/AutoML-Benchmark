@@ -94,8 +94,9 @@ def retrun_graph_table(dfs, pipelines, title, task, t, opts, scores):
 
         # Populamento degli array con i relativi grafici e tabelle
         for col in df.columns[1:-1]:
-            scatters.append(go.Scatter(x=df['dataframe'], y=df[col], name=col.split('-')[0], mode='lines+markers'))
-            histos.append(go.Bar(x=df['dataframe'], y=df[col], name=col.split('-')[0]))
+            if isinstance(df[col][0], float): # Aggiorno gli array solo se si tratta di un istanza di tipo float, quindi escludo le celle con valore "no value"
+                scatters.append(go.Scatter(x=df['dataframe'], y=df[col], name=col.split('-')[0], mode='lines+markers'))
+                histos.append(go.Bar(x=df['dataframe'], y=df[col], name=col.split('-')[0]))
         table.append(create_table(df))
 
     table.append(
