@@ -21,16 +21,20 @@ def read_markdown():
     return data
     
 # Funzione per definizone del dizionario contenente le opzioni inseirte dell'utente
-def make_options(as_tl, h2o_tl, t_tl, ak_tl, ag_tl, as_f, h2o_f, t_f, ak_f, ag_f):
+def make_options(as_tl=1, h2o_tl=1, t_tl=1, ak_tl=10, ag_tl=1, as_f=False, h2o_f=False, t_f=False, ak_f=False, ag_f=False):
     return {
-        'autosklearn': {'time': as_tl, 'rerun': as_f, 'type': 'minute/s'},
-        'h2o': {'time': h2o_tl, 'rerun': h2o_f, 'type': 'minute/s'},
-        'tpot': {'time': t_tl, 'rerun': t_f, 'type': 'minute/s'},
-        'autokeras': {'time': ak_tl, 'rerun': ak_f, 'type': 'epoch/s'},
-        'autogluon': {'time': ag_tl, 'rerun': ag_f, 'type': 'minute/s'},
+        'autosklearn': {'min': 1, 'time': as_tl, 'rerun': as_f, 'type': 'minute/s'},
+        'h2o': {'min': 1,'time': h2o_tl, 'rerun': h2o_f, 'type': 'minute/s'},
+        'tpot': {'min': 1,'time': t_tl, 'rerun': t_f, 'type': 'minute/s'},
+        'autokeras': {'min': 10,'time': ak_tl, 'rerun': ak_f, 'type': 'epoch/s'},
+        'autogluon': {'min': 1,'time': ag_tl, 'rerun': ag_f, 'type': 'minute/s'},
     }
 
-# FUnzione per la definizone del dizionario dato alla gestione dei collapse
+# Funzione per il controllo che le opzioni inseirte dall'utnete siano valide
+def checkoptions(options):
+    return all(value['time'] >= value['min'] for key, value in options.items())
+
+# Funzione per la definizone del dizionario dato alla gestione dei collapse
 def render_collapse_options(choice):
     return {
         'autosklearn': [False, True, True, True, True],
@@ -67,7 +71,6 @@ def get_store_past_bech_function(timestamp, type):
 
 def get_store_and_tables(dfs, type):
     res_class_acc, res_class_f1, res_reg_rmse, res_reg_r2, pipelines_class, pipelines_reg, options = dfs # Scomposizione dell'array dato a parametro
-    print()
 
     # Definizone dei dizionari ed array che andremo a restituire a fine funzione
     store_dict = { 'class': {}, 'reg': {} }
@@ -113,7 +116,6 @@ def retrun_graph_table(dfs, pipelines, title, task, t, opts, scores):
 
     # Creazione della sezione rivolta alla visualizzazione delle opzioni degli algoritmi inserite dall'utente
     opts = opts.to_dict()
-    print(opts)
     options = [
         html.Div([
             html.P(["Autosklearn -> Starting running time: " + str(opts['autosklearn'][0]) + " minute/s, Final running time: " + str(opts['autosklearn'][1]) + " minute/s"]),
@@ -238,42 +240,45 @@ def render_tab_content(active_tab, data, type):
 
 
 # Funzione per la generazione di collapse relativi alla scelta del tempo passimo di esecuzione dell'algoritmo e alla scelta di effettuare una riesecuzione in caso il tempo specificato non sia sufficiente
-def create_collapse(algo, measure, min, disabled):
-    return dbc.Card(
-                                [
-                                    dbc.CardHeader(
-                                        html.H2(
-                                            dbc.Button(
-                                                algo + " Options",
-                                                color="link",
-                                                id=algo.lower()+"-options",
-                                                disabled=disabled
-                                            )
-                                        )
+def create_collapses(): # algo, measure, min, disabled
+    options = make_options()
+    return [
+        dbc.Card([
+                dbc.CardHeader(
+                    html.H2( dbc.Button(key.upper() + " Options", color="link", id=key + "-options", disabled=False,))
+                ),
+                dbc.Collapse(
+                    dbc.CardBody([
+                            dbc.FormGroup([
+                                    dbc.Label("Running time in " + val['type'], width=5),
+                                    dbc.Col([
+                                            dbc.InputGroup([
+                                                    dbc.Input(id=key + "-timelife", type="number", value=val['min'], placeholder=val['type'], min=val['min']),
+                                                    dbc.InputGroupAddon("at least " + str(val['min']), addon_type="prepend"),
+                                            ]),
+                                        ],width=5,
                                     ),
-                                    dbc.Collapse(
-                                        dbc.CardBody([
-                                            dbc.FormGroup([
-                                                dbc.Label("Running time in "+measure,  width=5),
-                                                dbc.Col([
-                                                    dbc.InputGroup([
-                                                        dbc.Input( id=algo.lower()+"-timelife", type="number", value=min, placeholder=measure, min=min, max=100000),
-                                                        dbc.InputGroupAddon("at least " + str(min), addon_type="prepend"),
-                                                        ]
-                                                    ),
-                                                ], width=5),
-                                                dcc.Checklist(
-                                                                options=[
-                                                                    {'label': 'Allow the algorithm to re-run with a bigger timelife?', 'value': algo.lower()+'-flag-rerun'},
-                                                                ],
-                                                                id=algo.lower()+'-flag-rerun',
-                                                                labelStyle={'display': 'inline-block'}
-                                                        )
-                                            ],row=True),
-                                        ]), id="collapse-"+algo.lower()
+                                    dcc.Checklist(
+                                        options=[
+                                            {
+                                                'label': ' Allow the algorithm to re-run with a bigger timelife?',
+                                                'value': key + '-flag-rerun',
+                                            },
+                                        ],
+                                        id=key + '-flag-rerun',
+                                        labelStyle={'display': 'inline-block'},
                                     ),
-                                ]
-                            )
+                                ],
+                                row=True,
+                            ),
+                        ]
+                    ),
+                    id="collapse-" + key,
+                ),
+            ]
+        )
+        for key, val in options.items()
+    ]
 
 
 # Funzione per la manipolazione del testo del moodal pipeline

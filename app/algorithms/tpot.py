@@ -13,8 +13,9 @@ le = LabelEncoder()
 
 def make_classification(X_train, X_test, y_train, y_test, timelife, y):
   # Modello Calssificazione
-  model =  TPOTClassifier(generations=3, cv=5, max_time_mins=timelife, random_state=1, verbosity=2, n_jobs=1, max_eval_time_mins=0.05) #, subsample=0.5
-  model.fit(X_train, y_train)
+  model =  TPOTClassifier(generations=3, cv=5, max_time_mins=timelife, random_state=1, verbosity=2, n_jobs=1, max_eval_time_mins=0.05)
+  #model.fit(X_train, y_train)
+  model.fit(np.array(X_train), np.array(y_train).ravel())
   y_pred = model.predict(X_test)
   pipelines = model.export() # Ottengo la pipeline
 
@@ -27,9 +28,9 @@ def make_classification(X_train, X_test, y_train, y_test, timelife, y):
 
 def make_regression(X_train, X_test, y_train, y_test, timelife):
   # Modello Regressione
-  model =  TPOTRegressor(generations=3, cv=5, max_time_mins=timelife, random_state=1, verbosity=2, n_jobs=1, max_eval_time_mins=0.05) #, subsample=0.5
-  print(type(X_train), type(y_train))
-  model.fit(X_train, y_train)
+  model =  TPOTRegressor(generations=3, cv=5, max_time_mins=timelife, random_state=1, verbosity=2, n_jobs=1, max_eval_time_mins=0.05)
+  #model.fit(X_train, y_train)
+  model.fit(np.array(X_train), np.array(y_train).ravel())
   y_pred = model.predict(X_test)
   pipelines = model.export() # Ottengo la pipeline
   print("-----------------------------------TPOT------------------------------------\n\n")

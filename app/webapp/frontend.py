@@ -3,7 +3,7 @@ import dash_core_components as dcc
 import dash_html_components as html
 import dash_bootstrap_components as dbc
 
-from .utils import get_lisd_dir, create_collapse, read_markdown
+from .utils import get_lisd_dir, create_collapses, read_markdown
 
 
 # Personalizzazione dell stile dell'applicazione web
@@ -71,7 +71,7 @@ openmlbenchmark = html.Div([
                                     ])
                                 ],width=5),
                             ],row=True),
-                            create_collapse('AutoSklearn', 'Minutes', 1, False), create_collapse('TPOT', 'Minutes', 1, False), create_collapse('H2O', 'Minutes', 1, False), create_collapse('AutoKeras', 'Epochs', 10, False), create_collapse('AutoGluon', 'Minutes', 1, False),
+                            html.Div(create_collapses()),
 
                             dbc.Button("Start BenchMark", id='submit-openml', color="primary", className="mr-1")
                         ])
@@ -120,7 +120,7 @@ kagglebenchmark = html.Div([
                                 width=5,
                             )
                         ],row=True),
-                        create_collapse('AutoSklearn', 'Minutes', 1, False), create_collapse('TPOT', 'Minutes', 1, False), create_collapse('H2O', 'Minutes', 1, False), create_collapse('AutoKeras', 'Epochs', 10, False), create_collapse('AutoGluon', 'Minutes', 1, False),
+                        html.Div(create_collapses()),
 
                         dbc.Button("Start BenchMark", id='submit-kaggle', color="primary", className="mr-1")
                     ])
@@ -172,7 +172,8 @@ testbenchmark = html.Div([
                                 width=5,
                             ),
                         ],row=True),
-                        create_collapse('AutoSklearn', 'Minutes', 1, False), create_collapse('TPOT', 'Minutes', 1, False), create_collapse('H2O', 'Minutes', 1, False), create_collapse('AutoKeras', 'Epochs', 10, False), create_collapse('AutoGluon', 'Minutes', 1, False),
+                        html.Div(create_collapses()),
+                        
                         dbc.Button("Start BenchMark", id='submit-test', color="primary", className="mr-1"),
                     ])
                 ], style={"width": "auto"},

@@ -5,7 +5,7 @@ import dash_html_components as html
 import dash_bootstrap_components as dbc
 from dash.exceptions import PreventUpdate
 from .frontend import openmlbenchmark, kagglebenchmark, testbenchmark, get_pastresultopenml, get_pastresultkaggle, home
-from .utils import render_tab_content, get_store_past_bech_function, set_body, create_table, get_body_from_pipelines
+from .utils import render_tab_content, get_store_past_bech_function, set_body, create_table, get_body_from_pipelines, checkoptions
 from functions.openml_benchmark import openml_benchmark
 from functions.kaggle_benchmark import kaggle_benchmark
 from functions.test import test
@@ -34,7 +34,7 @@ def render_page_content_function(pathname):
 #Output('store_class_openml', 'data'), Output('store_reg_openml', 'data'), Output('store_pipelines_class_openml', 'data'), Output('store_pipelines_reg_openml', 'data'), Output('res-bench-openml-table-class', 'children'), Output('res-bench-openml-table-reg', 'children')],
 # Funzione per l'esecuzione del OpenML Benchmark
 def start_openml_function(ndf, nmore, options):
-    if (ndf is None and nmore is None) or ndf < 1 and nmore < 50 or nmore > 100000:
+    if (ndf is None and nmore is None) or (ndf < 1 and (nmore < 50 or nmore > 100000)) or not checkoptions(options):
         raise PreventUpdate
     res = openml_benchmark(ndf, nmore, options)
     return get_store_past_bech_function(res, 'OpenML')
@@ -42,7 +42,7 @@ def start_openml_function(ndf, nmore, options):
 
 # Funzione per l'esecuzione del Kagle Benchmark
 def start_kaggle_function(kaggledataframe, options):
-    if kaggledataframe is None:
+    if kaggledataframe is None or not checkoptions(options):
         raise PreventUpdate
     res = kaggle_benchmark(kaggledataframe, options)
     return get_store_past_bech_function(res, 'Kaggle')
@@ -50,7 +50,7 @@ def start_kaggle_function(kaggledataframe, options):
 
 # Funzione per l'esecuzione del Test Benchmark
 def start_test_function(dfid, algorithms, options):
-    if dfid is None or algorithms is None or dfid < 1:
+    if dfid is None or algorithms is None or dfid < 1 or not checkoptions(options):
         raise PreventUpdate
     task, res = test(dfid, algorithms, options) # Scomposizione del risultato ottenuto
     if isinstance(res, pd.DataFrame):
@@ -59,11 +59,12 @@ def start_test_function(dfid, algorithms, options):
         return [html.P(res, style={'color':'red'})] # Se il task non è presente vuol dire che c'è stato un errore di esecuzione durante il download del DataFrame
     s1, s2, pipeline, timelife = res
     if pipeline[0:5] == 'Error': # Se i primi 5 caratteri della variabile pipeline sono Error vuol dire che è statat generata un'eccezione durante l'esecuzione dell'algoritmo
-        return html.Div([
-                        html.P('The execution of the benchmark for the dataframe: ' + dfid + ' whit the algorithm: ' + algorithms + ' for ' + options['time'] + ' ' + options['type'] + ' throw an exception.'),
+        #print(options[algorithms])
+        return [html.Div([
+                        html.P('The execution of the benchmark for the dataframe: ' + str(dfid) + ' whit the algorithm: ' + algorithms + ' for ' + str(options[algorithms]['time']) + ' ' + options[algorithms]['type'] + ' throw an exception.'),
                         html.P(pipeline)
                     ], style={'color':'red'}
-                )
+                )]
     # Definizione del test da visualizzare contenente i risultati dei due scores
     if(task == 'classification'):
         text = 'Accuracy: ' + str(s1) + '     f1_score: ' + str(s2)
@@ -72,7 +73,7 @@ def start_test_function(dfid, algorithms, options):
     # Visualizzazione competa del risultato
     return [html.Div([
             html.P(
-                'Dataframe results ' + str(dfid) + ' by using the algorithm: ' + str(algorithms) + ' with starting running time: ' + str(options[algorithms]['time']) + ' ' + str(options[algorithms]['type'])
+                'Dataframe results ' + str(dfid) + ' by using the algorithm: ' + str(algorithms) + ' with starting running time: ' + str(options[algorithms]['time']) + ' ' + options[algorithms]['type']
                 + ' and with final running time: ' + str(timelife) + ' ' + str(options[algorithms]['type'])
             ),
             html.P(text),
