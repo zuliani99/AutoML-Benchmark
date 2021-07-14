@@ -3,12 +3,24 @@ Benchmark for some usual automated machine learning, such as: [auto-sklearn](htt
 
 
 ## Installation
-First of all download the full package or clone it where ever you want. Then all you have to do is to run thid line of code in your bash window: 
+First of all install the python3-pip package and then the virtual environment for safety reason: 
 ```bash
 sudo apt install install python3-pip
+sudo pip3 install virtualenv 
 ```
 
-To install all dependencies run 
+Then create a new virtual environment:
+```bash
+virtualenv my_venv
+```
+
+Access at it and activate it:
+```bash
+cd my_venv
+source bin/activate.fish
+```
+
+Clone my repository and install all dependencies with:
 ```bash
 make install
 ```
