@@ -1,5 +1,5 @@
 # AutoML-Benchmark
-Benchmark for some usual automated machine learning, such as: [auto-sklearn](https://automl.github.io/auto-sklearn/master/), [auto-keras](https://autokeras.com/), [h20](https://docs.h2o.ai/h2o/latest-stable/h2o-docs/automl.html), [tpot](http://epistasislab.github.io/tpot/) and [autogluon](http://epistasislab.github.io/tpot/). All visualized via a responsive [Dash Ploty](https://dash.plotly.com/) Web Application.
+Benchmark for some usual automated machine learning, such as: [AutoSklearn](https://automl.github.io/auto-sklearn/master/), [AutoKeras](https://autokeras.com/), [H2O](https://docs.h2o.ai/h2o/latest-stable/h2o-docs/automl.html), [TPOT](http://epistasislab.github.io/tpot/) and [AutoGluon](http://epistasislab.github.io/tpot/). All visualized via a responsive [Dash Ploty](https://dash.plotly.com/) Web Application.
 
 
 ## Installation
