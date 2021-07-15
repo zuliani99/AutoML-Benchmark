@@ -92,7 +92,7 @@ def get_store_and_tables(dfs, type):
     return store_dict['class'], store_dict['reg'], store_pipelines['class'], store_pipelines['reg'], tables[0], tables[1]
 
 
-
+# Funzione per il rendering e visualizzazione dei risultati relativi al Benchmark preso in esame
 def retrun_graph_table(dfs, pipelines, title, task, t, opts, scores):
     table = [html.H3(title)]
     if (dfs[0] is None or dfs[1] is None):
@@ -220,7 +220,7 @@ def get_pipelines_button(dfs, task):
     ]
 
 
-# Funzione per al visualizzazione la visaulizzazione del bar chart, del scatter plot oppure dei timelife degli algoritmi
+# Funzione per la visaulizzazione del bar chart o del scatter plot oppure dei timelife degli algoritmi
 def render_tab_content(active_tab, data, type):
     if active_tab and data is not None:
         if active_tab == "scatter":
@@ -248,7 +248,7 @@ def render_tab_content(active_tab, data, type):
     return "No tab selected"
 
 
-# Funzione per la generazione di collapse relativi alla scelta del tempo passimo di esecuzione dell'algoritmo e alla scelta di effettuare una riesecuzione in caso il tempo specificato non sia sufficiente
+# Funzione per la generazione di collapse relativi alla scelta del tempo massimo di esecuzione dell'algoritmo e alla scelta di effettuare una riesecuzione in caso il tempo specificato sia insufficiente
 def create_collapses(): # algo, measure, min, disabled
     options = make_options()
     return [
@@ -290,7 +290,7 @@ def create_collapses(): # algo, measure, min, disabled
     ]
 
 
-# Funzione per la manipolazione del testo del moodal pipeline
+# Funzione per la manipolazione del testo del modal pipeline
 def set_body(name, pipeline):
     if (
         name == 'tpot'

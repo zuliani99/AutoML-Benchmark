@@ -10,7 +10,7 @@ from termcolor import colored
 def openml_benchmark(df_n, morethan, options):
     print(df_n, morethan)
     list_df = []
-    res_openml = Result('OpenML') # Creazione di un nuovo Result con tipo OpenML
+    res_openml = Result('OpenML') # Creazione di un nuovo Result di tipo OpenML
 
     # Ottemgo tutti i task di tipo SUPERVISED_CLASSIFICATION e SUPERVISED_REGRESSION tramite l'API di OpenML
     tasks_class = pd.DataFrame.from_dict(openml.tasks.list_tasks(task_type=TaskType.SUPERVISED_CLASSIFICATION), orient="index")
@@ -20,7 +20,7 @@ def openml_benchmark(df_n, morethan, options):
     filtered_tasks_class = tasks_class.query("NumberOfInstances > " + str(morethan) + " and NumberOfInstances < " + str(2*morethan))
     filtered_tasks_reg = tasks_reg.query("NumberOfInstances > " + str(morethan) + " and NumberOfInstances < " + str(2*morethan))
     
-    # Elimino i duooplicati e tutte le colonne eccetto did e name
+    # Elimino i duplicati e tutte le colonne eccetto did e name
     datalist_class = filtered_tasks_class[["did", "name"]].drop_duplicates(subset=['did' and 'name'], inplace=False)
     datalist_reg = filtered_tasks_reg[["did", "name"]].drop_duplicates(subset=['did' and 'name'], inplace=False)
 

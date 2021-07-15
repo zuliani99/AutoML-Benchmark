@@ -70,7 +70,7 @@ def autogluon(df, task, options):
     print("----------------------------------AUTOGLUON--------------------------------\n\n")
     if task != 'classification':
       return (abs(round(res['root_mean_squared_error'], 3)), round(res['r2'], 3), pipelines, options['time'])
-    # Se il parametro f1 non è presente nella variabile risultato vuol dire che siamo in un caso di calssificazione multilables e quindi è necessario calcolarsi l'f1_score manualmente
+    # Se il parametro 'f1' non è presente nella variabile risultato vuol dire che siamo in un caso di calssificazione multilables e quindi è necessario calcolarsi l'f1_score manualmente
     try: return (round(res['accuracy'], 3),  round(res['f1'], 3), pipelines, options['time'])
     except: return (round(res['accuracy'], 3),  round(f1(y_test, y_pred), 3), pipelines, options['time'])
 

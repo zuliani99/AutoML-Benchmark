@@ -21,7 +21,7 @@ def render_page_content_function(pathname):
         '/test': testbenchmark,
         '/results-openml': get_pastresultopenml(),
         '/results-kaggle': get_pastresultkaggle()
-    }.get(pathname,
+    }.get(pathname, # In caso la pagina non sai presente verrà mostrato l'errore 404
         dbc.Jumbotron(
             [
                 html.H1("404: Not found", className="text-danger"),
@@ -31,7 +31,6 @@ def render_page_content_function(pathname):
         )
     )
 
-#Output('store_class_openml', 'data'), Output('store_reg_openml', 'data'), Output('store_pipelines_class_openml', 'data'), Output('store_pipelines_reg_openml', 'data'), Output('res-bench-openml-table-class', 'children'), Output('res-bench-openml-table-reg', 'children')],
 # Funzione per l'esecuzione del OpenML Benchmark
 def start_openml_function(ndf, nmore, options):
     if ndf is None or nmore is None or ndf < 1 or nmore < 50 or nmore > 100000:
@@ -64,7 +63,6 @@ def start_test_function(dfid, algorithms, options):
         return [html.P(res, style={'color':'red'})] # Se il task non è presente vuol dire che c'è stato un errore di esecuzione durante il download del DataFrame
     s1, s2, pipeline, timelife = res
     if pipeline[0:5] == 'Error': # Se i primi 5 caratteri della variabile pipeline sono Error vuol dire che è statat generata un'eccezione durante l'esecuzione dell'algoritmo
-        #print(options[algorithms])
         return [html.Div([
                         html.P('The execution of the benchmark for the dataframe: ' + str(dfid) + ' whit the algorithm: ' + algorithms + ' for ' + str(options[algorithms]['time']) + ' ' + options[algorithms]['type'] + ' throw an exception.'),
                         html.P(pipeline)

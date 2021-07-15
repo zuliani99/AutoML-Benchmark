@@ -24,6 +24,7 @@ def start():
 
     algorithms = ['autosklearn', 'h2o', 'tpot', 'autokeras', 'autogluon']
 
+    # Stile della pagina
     CONTENT_STYLE = {
         "marginLeft": "22rem",
         "marginRight": "2rem",
@@ -53,7 +54,7 @@ def start():
     def render_page_content(pathname): return render_page_content_function(pathname)
 
 
-    # Callback per il populamento dei componenti Store e tabelle relativi ad un OpenML Bnechmark
+    # Callback per il populamento dei componenti Store e tabelle relativi ad un OpenML Benchmark
     @app.callback(
         [Output('store_class_openml', 'data'), Output('store_reg_openml', 'data'), Output('store_pipelines_class_openml', 'data'), Output('store_pipelines_reg_openml', 'data'), Output('res-bench-openml-table-class', 'children'), Output('res-bench-openml-table-reg', 'children')],
         [Input('submit-openml', 'n_clicks')],
@@ -85,7 +86,6 @@ def start():
     )
     def start_test(n_clicks, dfid, algorithms, as_tl, h2o_tl, t_tl, ak_tl, ag_tl, as_f, h2o_f, t_f, ak_f, ag_f):
         return start_test_function(dfid, algorithms, make_options(as_tl, h2o_tl, t_tl, ak_tl, ag_tl, as_f, h2o_f, t_f, ak_f, ag_f))
-
 
 
     # Populamento dei Store necessari per la visualizzazione dei risultati di vecchi OpenML Benchmark
@@ -144,7 +144,7 @@ def start():
     )
     def disable_buttons_collapse(choice): return render_collapse_options(choice)
 
-    # Callbakc per la gestione della visualizzazione del modal nel quale sono visibili le pipelines degli algoritmi relativi a quel resultato
+    # Callback per la gestione della visualizzazione del modal nel quale sono visibili le pipelines degli algoritmi relativi a quel resultato
     @app.callback(
         [Output({"type":"modal-Pipelines", "index": MATCH}, "is_open"), Output({"type": 'body-modal-Pipelines', "index": MATCH}, 'children')],
         [Input({"type": "open-Pipelines", "index": MATCH}, "n_clicks"), Input({"type": "close-modal-Pipelines", "index": MATCH}, "n_clicks"), Input({"type": "open-Pipelines", "index": MATCH}, "value"), Input("url", "pathname"),

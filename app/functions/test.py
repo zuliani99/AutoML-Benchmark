@@ -43,13 +43,7 @@ def test(id, algo, options):
         return do_test(id, algo, options)
     except Exception as e:
         # Ritorno di un eccezione in caso di errore
-        text = (
-            'An error occured during the benchmak of the dataframe: '
-            + str(id)
-            + ' reason: '
-            + str(e)
-        )
-
+        text = 'An error occured during the benchmak of the dataframe: ' + str(id) + ' reason: ' + str(e)
         print(colored(text + '\n', 'red'))
         return None, text
 
