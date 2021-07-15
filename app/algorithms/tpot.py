@@ -56,11 +56,14 @@ def TPOT(df, task, options):
   except Exception as e:
     # In caso di eccezione
     print(colored('Error: ' + str(e), 'red'))
-    if (str(e) == 'There was an error in the TPOT optimization process. This could be because the data was not formatted properly, or because data for a regression problem was provided to the TPOTClassifier object. Please make sure you passed the data to TPOT correctly. If you enabled PyTorch estimators, please check the data requirements in the online documentation: https://epistasislab.github.io/tpot/using/' 
-      and options['rerun'] == True):
-      # Se l'eccezione è provocata del poco tempo messo a disposizione dall'utente ma esso ha spuntato la checkbox per la riesecuzione dell'algoritmo si va a rieseguirlo con un tempo maggiore
-      return TPOT(df, task, {'time': options['time']+5, 'rerun': options['rerun']})
+    if str(e) == 'There was an error in the TPOT optimization process. This could be because the data was not formatted properly, or because data for a regression problem was provided to the TPOTClassifier object. Please make sure you passed the data to TPOT correctly. If you enabled PyTorch estimators, please check the data requirements in the online documentation: https://epistasislab.github.io/tpot/using/':
+      if options['rerun'] == True:
+        # Se l'eccezione è provocata del poco tempo messo a disposizione dall'utente ma esso ha spuntato la checkbox per la riesecuzione dell'algoritmo si va a rieseguirlo con un tempo maggiore
+        return TPOT(df, task, {'time': options['time']+5, 'rerun': options['rerun']})
+      print("-----------------------------------TPOT------------------------------------\n\n")
+      return (None, None, 'Expected Error duo to short algorithm timelife: ' + str(e), None)
+
     # Altrimenti si ritornano dei None con l'eccezione posto sulla pipeline 
     print("-----------------------------------TPOT------------------------------------\n\n")
-    return (None, None, 'Error: ' + str(e), None)
+    return (None, None, 'Unexpected Error: ' + str(e), None)
 

@@ -58,13 +58,15 @@ def H2O(df, task, options):
   except Exception as e:
     # In caso di eccezione
     print(colored('Error: ' + str(e), 'red'))
-    if (str(e) == 'Argument `data` should be an H2OFrame, got NoneType None'
-        and options['rerun'] == True):
-      # Se l'eccezione è provocata del poco tempo messo a disposizione dall'utente ma esso ha spuntato la checkbox per la riesecuzione dell'algoritmo si va a rieseguirlo con un tempo maggiore
-      return H2O(df, task, {'time': options['time'] + 1, 'rerun': options['rerun']})
+    if str(e) == 'Argument `data` should be an H2OFrame, got NoneType None':
+      if options['rerun'] == True:
+        # Se l'eccezione è provocata del poco tempo messo a disposizione dall'utente ma esso ha spuntato la checkbox per la riesecuzione dell'algoritmo si va a rieseguirlo con un tempo maggiore
+        return H2O(df, task, {'time': options['time'] + 1, 'rerun': options['rerun']})
+      print('------------------------------------H2O------------------------------------\n\n')
+      return None, None, 'Expected Error duo to short algorithm timelife: ' + str(e), None
     # Altrimenti si ritornano dei None con l'eccezione posto sulla pipeline 
     print('------------------------------------H2O------------------------------------\n\n')
-    return None, None, 'Error: ' + str(e), None
+    return None, None, 'Unexpected Error: ' + str(e), None
 
 def do_h20(df, task, timelife):
   pd.options.mode.chained_assignment = None

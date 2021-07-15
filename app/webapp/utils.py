@@ -19,6 +19,15 @@ def read_markdown():
     with open('../README.md', 'r') as file:
         data = file.read()
     return data
+
+# Funzione per la visualizzazione dell'errore relativo al mal inseirmento delle opzioni degli algoritmi
+def displaying_error():
+    return None, None, None, None, [
+        html.P('Please check the algorithms options inserted', style={'color':'red'}),
+            dbc.Tabs( 
+                [], id="tabs-class", active_tab="", style={'hidden':'true'})],[
+            dbc.Tabs( 
+                [], id="tabs-reg", active_tab="", style={'hidden':'true'})]
     
 # Funzione per definizone del dizionario contenente le opzioni inseirte dell'utente
 def make_options(as_tl=1, h2o_tl=1, t_tl=1, ak_tl=10, ag_tl=1, as_f=False, h2o_f=False, t_f=False, ak_f=False, ag_f=False):

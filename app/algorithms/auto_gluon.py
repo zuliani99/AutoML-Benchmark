@@ -77,10 +77,13 @@ def autogluon(df, task, options):
   except Exception as e:
     # In caso di eccezione
     print(colored('Error: ' + str(e), 'red'))
-    if str(e) == 'AutoGluon did not successfully train any models' and options['rerun'] == True:
-      # Se l'eccezione è provocata del poco tempo messo a disposizione dall'utente ma esso ha spuntato la checkbox per la riesecuzione dell'algoritmo si va a rieseguirlo con un tempo maggiore
-      return autogluon(df, task, {'time': options['time']+1, 'rerun': options['rerun']})
+    if str(e) == 'AutoGluon did not successfully train any models':
+      if options['rerun'] == True:
+        # Se l'eccezione è provocata del poco tempo messo a disposizione dall'utente ma esso ha spuntato la checkbox per la riesecuzione dell'algoritmo si va a rieseguirlo con un tempo maggiore
+        return autogluon(df, task, {'time': options['time']+1, 'rerun': options['rerun']})
+      print("----------------------------------AUTOGLUON--------------------------------\n\n")
+      return (None, None, 'Expected Error duo to short algorithm timelife: ' + str(e), None)
     # Altrimenti si ritornano dei None con l'eccezione posto sulla pipeline 
     print("----------------------------------AUTOGLUON--------------------------------\n\n")
-    return (None, None, 'Error: ' + str(e), None)
+    return (None, None, 'Unexpected Error: ' + str(e), None)
 

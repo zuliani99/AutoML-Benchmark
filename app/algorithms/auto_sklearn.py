@@ -66,13 +66,14 @@ def auto_sklearn(df, task, options):
   except Exception as e:
     # In caso di eccezione
     print(colored('Error: ' + str(e), 'red'))
-    if (str(e) ==
-        'No valid model found in run history. This means smac was not able to fit a valid model. Please check the log file for errors.'
-        ) and options['rerun'] == True:
-      # Se l'eccezione è provocata del poco tempo messo a disposizione dell'utente ma esso ha spuntato la checkbox per la riesecuzione dall'algoritmo si va a rieseguirlo con un tempo maggiore
-      return auto_sklearn(df, task, {'time': options['time']+1, 'rerun': options['rerun']})
+    if str(e) == 'No valid model found in run history. This means smac was not able to fit a valid model. Please check the log file for errors.':
+      if options['rerun'] == True:
+        # Se l'eccezione è provocata del poco tempo messo a disposizione dell'utente ma esso ha spuntato la checkbox per la riesecuzione dall'algoritmo si va a rieseguirlo con un tempo maggiore
+        return auto_sklearn(df, task, {'time': options['time']+1, 'rerun': options['rerun']})
+      print("--------------------------------AUTOSKLEARN--------------------------------\n\n")
+      return (None, None, 'Expected Error duo to short algorithm timelife: ' + str(e), None)
     # Altrimenti si ritornano dei None con l'eccezione posto sulla pipeline 
     print("--------------------------------AUTOSKLEARN--------------------------------\n\n")
-    return (None, None, 'Error: ' + str(e), None)
+    return (None, None, 'Unexpected Error: ' + str(e), None)
     
     

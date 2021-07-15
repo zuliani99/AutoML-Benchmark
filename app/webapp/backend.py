@@ -5,7 +5,7 @@ import dash_html_components as html
 import dash_bootstrap_components as dbc
 from dash.exceptions import PreventUpdate
 from .frontend import openmlbenchmark, kagglebenchmark, testbenchmark, get_pastresultopenml, get_pastresultkaggle, home
-from .utils import render_tab_content, get_store_past_bech_function, set_body, create_table, get_body_from_pipelines, checkoptions
+from .utils import render_tab_content, get_store_past_bech_function, set_body, create_table, get_body_from_pipelines, checkoptions, displaying_error
 from functions.openml_benchmark import openml_benchmark
 from functions.kaggle_benchmark import kaggle_benchmark
 from functions.test import test
@@ -37,13 +37,8 @@ def start_openml_function(ndf, nmore, options):
     if ndf is None or nmore is None or ndf < 1 or nmore < 50 or nmore > 100000:
         raise PreventUpdate
     if not checkoptions(options):  # Verifica delle opzioni degli algoritmi inserite
-        return None, None, None, None, [
-            html.P('Please check the algorithms options inserted', style={'color':'red'}),
-            dbc.Tabs( 
-                [], id="tabs-class", active_tab="", style={'hidden':'true'})],[ dbc.Tabs( 
-                [], id="tabs-reg", active_tab="", style={'hidden':'true'} )]
-    res = openml_benchmark(ndf, nmore, options)
-    return get_store_past_bech_function(res, 'OpenML')
+        return displaying_error() # Visualizzazione dell'errore
+    return get_store_past_bech_function(openml_benchmark(ndf, nmore, options), 'OpenML')
     
 
 # Funzione per l'esecuzione del Kagle Benchmark
@@ -51,13 +46,8 @@ def start_kaggle_function(kaggledataframe, options):
     if kaggledataframe is None:
         raise PreventUpdate
     if not checkoptions(options): # Verifica delle opzioni degli algoritmi inserite
-        return None, None, None, None, [
-            html.P('Please check the algorithms options inserted', style={'color':'red'}),
-            dbc.Tabs( 
-                [], id="tabs-class", active_tab="", style={'hidden':'true'})],[ dbc.Tabs( 
-                [], id="tabs-reg", active_tab="", style={'hidden':'true'} )]
-    res = kaggle_benchmark(kaggledataframe, options)
-    return get_store_past_bech_function(res, 'Kaggle')
+        return displaying_error() # Visualizzazione dell'errore
+    return get_store_past_bech_function(kaggle_benchmark(kaggledataframe, options), 'Kaggle')
 
 
 # Funzione per l'esecuzione del Test Benchmark
