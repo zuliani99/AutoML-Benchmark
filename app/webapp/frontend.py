@@ -44,6 +44,7 @@ sidebar = html.Div(
 # Ddefinizone della pagina home
 home = dcc.Markdown(read_markdown())
 
+# Definizone del Tab perlativo al OpenML Benchmark per una sequenza specifica di DataFrame
 knownID = dbc.CardBody([
                         html.H4("OpenML BenchMark", className="card-title"),
                         dbc.FormGroup([
@@ -59,7 +60,7 @@ knownID = dbc.CardBody([
                     ])
 
             
-
+# Definizone del Tab perlativo al OpenML Benchmark per uan sequenza di n Dataframe di calssificazione e regressione con un numero maggiore di x istanze
 unknownID = dbc.CardBody([
                                 html.H4("OpenML BenchMark", className="card-title"),
                                 dbc.FormGroup([
@@ -217,6 +218,9 @@ def get_pastresultopenml():
     return html.Div([
         dbc.Select(id='pastresultopenml', options=get_lisd_dir('OpenML'),
             placeholder='Filter a BenchMark by Date',
+        ),
+        dbc.Select(id='pastresultopenml-comapre',
+            placeholder='Compare with',
         ),
         html.Hr(),
         html.Div(id='result-past-bench-openml-table-class'),

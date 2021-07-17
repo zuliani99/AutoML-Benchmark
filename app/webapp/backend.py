@@ -42,7 +42,7 @@ def start_openml_function(active_tab, dfs_squence, ndf, nmore, options):
         return displaying_error('')
     if not checkoptions(options):  # Verifica delle opzioni degli algoritmi inserite
         return displaying_error('Please check the algorithms options inserted') # Visualizzazione dell'errore
-    return get_store_past_bech_function(openml_benchmark((ndf, nmore), options), 'OpenML') # Avvio del benchmark con le opzioni inserite dall'utente
+    return get_store_past_bech_function(openml_benchmark((ndf, nmore), options), 'start-OpenML') # Avvio del benchmark con le opzioni inserite dall'utente
 
 # Funzione per l'esecuzione del OpenML Benchmark su una sequenza specifica di DataFrame
 def start_openml_function_knownID(dfs_squence, options):
@@ -54,7 +54,7 @@ def start_openml_function_knownID(dfs_squence, options):
     res = openml_benchmark(dfs_squence, options) # Esecuzione del benchmark
     if isinstance(res, str) and res[0:5] == 'Error': # In caso di errore stampo l'eccezione ritornata
         return displaying_error(res)
-    return get_store_past_bech_function(res, 'OpenML') # Visualizzazione dei risultati ottenuti
+    return get_store_past_bech_function(res, 'start-OpenML') # Visualizzazione dei risultati ottenuti
     
     
 
@@ -64,7 +64,7 @@ def start_kaggle_function(kaggledataframe, options):
         return displaying_error('')
     if not checkoptions(options): # Verifica delle opzioni degli algoritmi inserite
         return displaying_error('Please check the algorithms options inserted') # Visualizzazione dell'errore
-    return get_store_past_bech_function(kaggle_benchmark(kaggledataframe, options), 'Kaggle')
+    return get_store_past_bech_function(kaggle_benchmark(kaggledataframe, options), 'start-Kaggle')
 
 
 # Funzione per l'esecuzione del Test Benchmark

@@ -57,28 +57,29 @@ def render_collapse_options(choice):
 
 # Funzione per la gestione della visualizzazione delle tabelle e grafici dei benchmarks
 def get_store_past_bech_function(timestamp, type):
+    type_bench = type.split('-')[1]
     if timestamp is None:
         raise PreventUpdate
     dfs = []
     scores = [('classification','acc'), ('classification','f1_score'), ('regression','rmse'), ('regression','r2_score')]
     # Memorizzazione dei file csv relativi al benchmark che si vuole prendere in esame
     for score in scores:
-        if os.path.exists('./results/'+ type +'/'+timestamp+'/'+ str(score[0]) +'/'+ str(score[1]) +'.csv'):
-            dfs.append(pd.read_csv('./results/'+ type +'/'+timestamp+'/'+ str(score[0]) +'/'+ str(score[1]) +'.csv'))
+        if os.path.exists('./results/'+ type_bench +'/'+timestamp+'/'+ str(score[0]) +'/'+ str(score[1]) +'.csv'):
+            dfs.append(pd.read_csv('./results/'+ type_bench +'/'+timestamp+'/'+ str(score[0]) +'/'+ str(score[1]) +'.csv'))
         else:
             dfs.append(None)
     # Memorizzazione dei file csv relativi alle pipelines del benchmark
     for t in ('classification', 'regression'):
-        if os.path.exists('./results/'+ type +'/'+timestamp+'/'+ t + '/pipelines.csv'):
-            dfs.append(pd.read_csv('./results/'+ type +'/'+timestamp+'/'+ t + '/pipelines.csv', sep='@').to_dict())
+        if os.path.exists('./results/'+ type_bench +'/'+timestamp+'/'+ t + '/pipelines.csv'):
+            dfs.append(pd.read_csv('./results/'+ type_bench +'/'+timestamp+'/'+ t + '/pipelines.csv', sep='@').to_dict())
         else:
             dfs.append(None)
     # Memorizzazione del file csv relativo alle opzioni che ha inserito l'utente
-    dfs.append(pd.read_csv('./results/'+ type +'/'+timestamp+'/options.csv'))
-    return get_store_and_tables(dfs, type)
+    dfs.append(pd.read_csv('./results/'+ type_bench +'/'+timestamp+'/options.csv'))
+    return get_store_and_tables(dfs, type, timestamp)
 
 
-def get_store_and_tables(dfs, type):
+def get_store_and_tables(dfs, type, timestamp):
     res_class_acc, res_class_f1, res_reg_rmse, res_reg_r2, pipelines_class, pipelines_reg, options = dfs # Scomposizione dell'array dato a parametro
 
     # Definizone dei dizionari ed array che andremo a restituire a fine funzione
@@ -86,10 +87,39 @@ def get_store_and_tables(dfs, type):
     store_pipelines = { 'class': {}, 'reg': {} }
     tables = [[None], [None]]
 
-    store_dict['class'], store_pipelines['class'], tables[0] = retrun_graph_table([res_class_acc, res_class_f1], pipelines_class, 'Classification Results', 'class', type, options, ('Accuracy', 'F1'))
-    store_dict['reg'], store_pipelines['reg'], tables[1] = retrun_graph_table([res_reg_rmse, res_reg_r2], pipelines_reg, 'Regression Results', 'reg', type, options, ('RMSE', 'R2'))
+    store_dict['class'], store_pipelines['class'], tables[0] = retrun_graph_table([res_class_acc, res_class_f1], pipelines_class, 'Classification Results', 'class', type.split('-')[1], options, ('Accuracy', 'F1'))
+    store_dict['reg'], store_pipelines['reg'], tables[1] = retrun_graph_table([res_reg_rmse, res_reg_r2], pipelines_reg, 'Regression Results', 'reg', type.split('-')[1], options, ('RMSE', 'R2'))
+
+    if type.split('-')[0] == 'past':
+        dataframe_acc = res_class_acc['dataframe'].to_numpy() if res_class_acc is not None else None
+        dataframe_reg = res_reg_rmse['dataframe'].to_numpy() if res_reg_rmse is not None else None
+        all_list = os.listdir('./results/'+type.split('-')[1])
+        all_list.remove('.gitignore')
+        all_list.remove(timestamp)
+        dataframe_comapre = get_dfs_to_compare(dataframe_acc, dataframe_reg, options.iloc[options.shape[0]-1].to_numpy(), type.split('-')[1], all_list)
+        return store_dict['class'], store_dict['reg'], store_pipelines['class'], store_pipelines['reg'], tables[0], tables[1], dataframe_comapre
 
     return store_dict['class'], store_dict['reg'], store_pipelines['class'], store_pipelines['reg'], tables[0], tables[1]
+
+def get_dfs_to_compare(dfs_class, dfs_reg, options, type, all_list): # quindi ora ho i df calss, df reg e tutta la lista dei becnhmarkl passati ecetto me stesso
+    dfs_comapre = []
+    for past_bench in all_list:
+        if os.path.exists('./results/'+ type +'/'+past_bench+'/classification/acc.csv'):
+            cls = (pd.read_csv('./results/'+ type +'/'+past_bench+'/classification/acc.csv')['dataframe'].to_numpy())
+        else: cls = None
+        if os.path.exists('./results/'+ type +'/'+past_bench+'/regression/rmse.csv'):
+            reg = (pd.read_csv('./results/'+ type +'/'+past_bench+'/regression/rmse.csv')['dataframe'].to_numpy())
+        else: reg = None
+        piptemp = pd.read_csv('./results/'+ type +'/'+past_bench+'/options.csv')
+        pip = piptemp.iloc[piptemp.shape[0]-1].to_numpy()
+        
+        print(cls, reg, pip)
+
+        if (cls == dfs_class).all() and (reg == dfs_reg).all() and (pip != options).any():
+            # controlliamo che abbiano differenti timelife
+            print('aggiungo')
+            dfs_comapre.append(past_bench)
+    return dfs_comapre
 
 
 # Funzione per il rendering e visualizzazione dei risultati relativi al Benchmark preso in esame

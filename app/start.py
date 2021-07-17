@@ -90,17 +90,17 @@ def start():
 
     # Populamento dei Store necessari per la visualizzazione dei risultati di vecchi OpenML Benchmark
     @app.callback(
-        [Output('store_class_results_openml', 'data'), Output('store_reg_results_openml', 'data'),Output('store_pipelines_results_class_openml', 'data'), Output('store_pipelines_results_reg_openml', 'data'), Output('result-past-bench-openml-table-class', 'children'), Output('result-past-bench-openml-table-reg', 'children'), ],
+        [Output('store_class_results_openml', 'data'), Output('store_reg_results_openml', 'data'),Output('store_pipelines_results_class_openml', 'data'), Output('store_pipelines_results_reg_openml', 'data'), Output('result-past-bench-openml-table-class', 'children'), Output('result-past-bench-openml-table-reg', 'children'), Output('pastresultopenml-comapre', 'options')],
         [Input('pastresultopenml', 'value')]
     )
-    def get_store_past_bech_openml(timestamp): return get_store_past_bech_function(timestamp, 'OpenML')
+    def get_store_past_bech_openml(timestamp): return get_store_past_bech_function(timestamp, 'past-OpenML')
 
     # Populamento dei Store necessari per la visualizzazione dei risultati di vecchi Kaggle Benchmark
     @app.callback(
         [Output('store_class_results_kaggle', 'data'), Output('store_reg_results_kaggle', 'data'),Output('store_pipelines_results_class_kaggle', 'data'), Output('store_pipelines_results_reg_kaggle', 'data'), Output('result-past-bench-kaggle-table-class', 'children'), Output('result-past-bench-kaggle-table-reg', 'children'), ],
         [Input('pastresultkaggle', 'value')]
     )
-    def get_store_past_bech_kaggle(timestamp): return get_store_past_bech_function(timestamp, 'Kaggle')
+    def get_store_past_bech_kaggle(timestamp): return get_store_past_bech_function(timestamp, 'past-Kaggle')
 
 
     # Callback relativi all'aggiornamento del grafico visualizzante i risultati di classificazione di Kaggle e OpenML
