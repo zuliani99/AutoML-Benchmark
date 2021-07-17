@@ -21,9 +21,9 @@ def read_markdown():
     return data
 
 # Funzione per la visualizzazione dell'errore relativo al mal inseirmento delle opzioni degli algoritmi
-def displaying_error():
+def displaying_error(error):
     return None, None, None, None, [
-        html.P('Please check the algorithms options inserted', style={'color':'red'}),
+        html.P(error, style={'color':'red'}),
             dbc.Tabs( 
                 [], id="tabs-class", active_tab="", style={'hidden':'true'})],[
             dbc.Tabs( 
@@ -337,3 +337,15 @@ def show_hide_pipelines_function(store_pipelines_class, store_pipelines_reg, n1,
         else:
             return not is_open, get_body_from_pipelines(store_pipelines_reg, df_name)
     return is_open, None
+
+
+def check_dfs_sequence(dfs_sequence):
+    if dfs_sequence is None:
+        raise PreventUpdate
+    dfs = dfs_sequence.split(',')
+    for df in dfs:
+        try:
+            int(df)
+        except:
+            return False
+    return True

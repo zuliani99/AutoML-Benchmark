@@ -58,11 +58,11 @@ def start():
     @app.callback(
         [Output('store_class_openml', 'data'), Output('store_reg_openml', 'data'), Output('store_pipelines_class_openml', 'data'), Output('store_pipelines_reg_openml', 'data'), Output('res-bench-openml-table-class', 'children'), Output('res-bench-openml-table-reg', 'children')],
         [Input('submit-openml', 'n_clicks')],
-        [State('ndf', 'value'), State('nmore', 'value'), State("autosklearn-timelife", "value"), State("h2o-timelife", "value"), State("tpot-timelife", "value"), State("autokeras-timelife", "value"), State("autogluon-timelife", "value"),
+        [State("openmlbenchmark-tabs", "active_tab"), State("dfs-sequence", "value"), State('ndf', 'value'), State('nmore', 'value'), State("autosklearn-timelife", "value"), State("h2o-timelife", "value"), State("tpot-timelife", "value"), State("autokeras-timelife", "value"), State("autogluon-timelife", "value"),
         State("autosklearn-flag-rerun", "value"), State("h2o-flag-rerun", "value"), State("tpot-flag-rerun", "value"), State("autokeras-flag-rerun", "value"), State("autogluon-flag-rerun", "value")]
     )
-    def start_openml(n_clicks, ndf, nmore, as_tl, h2o_tl, t_tl, ak_tl, ag_tl, as_f, h2o_f, t_f, ak_f, ag_f):
-        return start_openml_function(ndf, nmore, make_options(as_tl, h2o_tl, t_tl, ak_tl, ag_tl, as_f, h2o_f, t_f, ak_f, ag_f))
+    def start_openml(n_clicks, active_tab, dfs_squence, ndf, nmore, as_tl, h2o_tl, t_tl, ak_tl, ag_tl, as_f, h2o_f, t_f, ak_f, ag_f):
+        return start_openml_function(active_tab, dfs_squence, ndf, nmore, make_options(as_tl, h2o_tl, t_tl, ak_tl, ag_tl, as_f, h2o_f, t_f, ak_f, ag_f))
 
 
 
@@ -166,7 +166,6 @@ def start():
             return show_hide_pipelines_function(s[0], s[1], n1, n2, value, is_open)
         else:
             return None, None
-
 
     app.run_server(debug=True)
     
