@@ -44,39 +44,69 @@ sidebar = html.Div(
 # Ddefinizone della pagina home
 home = dcc.Markdown(read_markdown())
 
+knownID = dbc.CardBody([
+                        html.H4("OpenML BenchMark", className="card-title"),
+                        dbc.FormGroup([
+                                    dbc.Label("Specify the sequence of DatFrame IDs that you whant to test, each ID must be followed by a comma like so: 10,52,111", width=5),
+                                    dbc.Col([
+                                        dbc.InputGroup([
+                                            dbc.Input(
+                                                id="dfs-sequence", type="text", placeholder="Sequence of DF"
+                                            ),
+                                        ])
+                                    ],width=5)
+                                ],row=True),
+                    ])
+
+            
+
+unknownID = dbc.CardBody([
+                                html.H4("OpenML BenchMark", className="card-title"),
+                                dbc.FormGroup([
+                                    dbc.Label("Number of DataFrame to test each for classification tasks and regression tasks or ", width=5),
+                                    dbc.Col([
+                                        dbc.InputGroup([
+                                            dbc.Input(
+                                                id="ndf", type="number", placeholder="Number of DF", min=1
+                                            ),
+                                            dbc.InputGroupAddon("at least 1", addon_type="prepend"),
+                                        ])
+                                    ],width=5)
+                                ],row=True),
+                                dbc.FormGroup([
+                                    dbc.Label("Minimum number of instances for each DataFrame",  width=5),
+                                    dbc.Col([
+                                        dbc.InputGroup([
+                                            dbc.Input(
+                                                id="nmore", type="number", placeholder="Number of instances", min=50, max=100000
+                                            ),
+                                            dbc.InputGroupAddon("at least 50 and at most 100000", addon_type="prepend"),
+                                        ])
+                                    ],width=5),
+                                ],row=True),
+                    ])
+            
+
 # definizione della pagina openmlbenchmark
 openmlbenchmark = html.Div([
                     dbc.Card([
                         dbc.CardBody([
-                            html.H4("OpenML BenchMark", className="card-title"),
-                            dbc.FormGroup([
-                                dbc.Label("Number of DataFrame to test each for classification tasks and regression tasks", width=5),
-                                dbc.Col([
-                                    dbc.InputGroup([
-                                        dbc.Input(
-                                            id="ndf", type="number", placeholder="Number of DF", min=1
-                                        ),
-                                        dbc.InputGroupAddon("at least 1", addon_type="prepend"),
-                                    ])
-                                ],width=5)
-                            ],row=True),
-                            dbc.FormGroup([
-                                dbc.Label("Minimum number of instances for each DataFrame",  width=5),
-                                dbc.Col([
-                                    dbc.InputGroup([
-                                        dbc.Input(
-                                            id="nmore", type="number", placeholder="Number of instances", min=50, max=100000
-                                        ),
-                                        dbc.InputGroupAddon("at least 50 and at most 100000", addon_type="prepend"),
-                                    ])
-                                ],width=5),
-                            ],row=True),
+                            dbc.Tabs(
+                                [
+                                    dbc.Tab(knownID, label="Benchmark for known DataFrame IDs", tab_id='knownID'),
+                                    dbc.Tab(unknownID, label="Benchmark for unknown DataFrame IDs", tab_id='unknownID'),
+                                ],
+                                id='openmlbenchmark-tabs',
+                                card=True,
+                                active_tab="knownID"
+                            ),
                             html.Div(create_collapses()),
-
-                            dbc.Button("Start BenchMark", id='submit-openml', color="primary", className="mr-1")
-                        ])
+                            dbc.Button("Start BenchMark", id='submit-openml', color="primary", className="mr-1"),
+                        ]),
                     ], style={"width": "auto"},
                 ),
+                
+                
                 html.Hr(),
                 dbc.Spinner(children=[
                     html.Div(id='res-bench-openml-table-class'),

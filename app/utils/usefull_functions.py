@@ -3,6 +3,7 @@ import os
 import pandas as pd
 from termcolor import colored
 from sklearn.datasets import fetch_openml
+import openml
 
 # Funzione per ottenere la colonna target
 def get_target(train, test):
@@ -94,3 +95,63 @@ def get_df_list(datalist, n_df, task):
             break
 
     return list_df
+
+
+
+# Funzione per la ricerca di un specifico DataFrame nelle cartelle dei risultati precedenti
+def serch_df(df_id):
+    for task in ['classification', 'regression']:
+        lis = os.listdir('./dataframes/OpenML/'+ task +'/')
+        for d in lis:
+            if d.split('_')[0] == df_id:
+                return './dataframes/OpenML/'+ task +'/' + d
+    return None
+
+# Funzione addetta al download della dei DataFrame provenienti dalla lista di ID inseirta dall'utente
+def download_dfs(ids):
+    list_df = { 'classification': [], 'regression': []}
+    for id in ids:
+        search = serch_df(id) # Inizialmente controllo se il DataFrame che ha scelto l'utente sia presente o meno in una delle due cartelle
+        try:
+            if search is None:
+                # Se non è presente lo scarico attraverso lapposita API
+                print('dopo il try ', search)
+                X, y = fetch_openml(data_id=id, as_frame=True, return_X_y=True, cache=True)
+                name = str(id)+ '_' +openml.datasets.get_dataset(id).name + '.csv'
+
+                if not isinstance(y, pd.DataFrame):
+                    y = y.to_frame()
+                X[y.columns[0]] = y
+
+                df = X
+
+                print(df.info())
+                print(df.head())
+                
+                # Ottengo il tipo di task
+                tasks = openml.tasks.list_tasks(data_id=id, output_format="dataframe")
+                print(task)
+                ts = tasks['task_type'].unique()
+                if ('Supervised Classification' not in ts and 'Supervised Regression' not in ts):
+                    return None, None
+                task = 'classification' if 'Supervised Classification' in ts else 'regression'
+                file_dir =  './dataframes/OpenML/' + task + '/'
+                fullname = os.path.join(file_dir, name)
+
+                # Effettuo il salvataggio del DataFrame nell cartella corrispondente
+                df.to_csv(fullname, index=False, header=True)
+
+            else:
+                # Se è già presente lo salvo e ottengo il task
+                fullname = search
+                task = search.split('/')[3]
+                print(pd.read_csv(fullname).head())
+
+            list_df[task].append(fullname) # Aggiunta del path del dataframe al relativo array del dizionario list_df
+
+        except Exception as e:
+            # In caso di errore ritrono un messaggio
+            return "Error Can't download the DataFrame " + id + ' reason: '+ str(e)
+
+    list_df['classification'].extend(list_df['regression']) # Concatenazione dei due array 
+    return list_df['classification']

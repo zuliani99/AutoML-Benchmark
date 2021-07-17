@@ -1,11 +1,12 @@
 # Import necessari
+from typing import Sequence
 import dash
 import dash_core_components as dcc
 import dash_html_components as html
 import dash_bootstrap_components as dbc
 from dash.exceptions import PreventUpdate
 from .frontend import openmlbenchmark, kagglebenchmark, testbenchmark, get_pastresultopenml, get_pastresultkaggle, home
-from .utils import render_tab_content, get_store_past_bech_function, set_body, create_table, get_body_from_pipelines, checkoptions, displaying_error
+from .utils import render_tab_content, get_store_past_bech_function, set_body, create_table, get_body_from_pipelines, checkoptions, displaying_error,check_dfs_sequence
 from functions.openml_benchmark import openml_benchmark
 from functions.kaggle_benchmark import kaggle_benchmark
 from functions.test import test
@@ -32,20 +33,37 @@ def render_page_content_function(pathname):
     )
 
 # Funzione per l'esecuzione del OpenML Benchmark
-def start_openml_function(ndf, nmore, options):
+def start_openml_function(active_tab, dfs_squence, ndf, nmore, options):
+    if active_tab == 'knownID':
+        # Se il benchmark è voluto su una lista di ID specificata
+        return start_openml_function_knownID(dfs_squence, options)
+    # Altrimenti vuol dire che si è scelta l'opzione di effettuare un benchmark su DataFrame filtrati da paramentri inseriti dall'utente
     if ndf is None or nmore is None or ndf < 1 or nmore < 50 or nmore > 100000:
-        raise PreventUpdate
+        return displaying_error('')
     if not checkoptions(options):  # Verifica delle opzioni degli algoritmi inserite
-        return displaying_error() # Visualizzazione dell'errore
-    return get_store_past_bech_function(openml_benchmark(ndf, nmore, options), 'OpenML')
+        return displaying_error('Please check the algorithms options inserted') # Visualizzazione dell'errore
+    return get_store_past_bech_function(openml_benchmark((ndf, nmore), options), 'OpenML') # Avvio del benchmark con le opzioni inserite dall'utente
+
+# Funzione per l'esecuzione del OpenML Benchmark su una sequenza specifica di DataFrame
+def start_openml_function_knownID(dfs_squence, options):
+    # Controllo dei paramentri inseirti dall'utente
+    if dfs_squence is None or dfs_squence == '': 
+        return displaying_error('')
+    if not check_dfs_sequence(dfs_squence):
+        return displaying_error('Please make sure each ID is followed by a comma')
+    res = openml_benchmark(dfs_squence, options) # Esecuzione del benchmark
+    if isinstance(res, str) and res[0:5] == 'Error': # In caso di errore stampo l'eccezione ritornata
+        return displaying_error(res)
+    return get_store_past_bech_function(res, 'OpenML') # Visualizzazione dei risultati ottenuti
+    
     
 
 # Funzione per l'esecuzione del Kagle Benchmark
 def start_kaggle_function(kaggledataframe, options):
     if kaggledataframe is None:
-        raise PreventUpdate
+        return displaying_error('')
     if not checkoptions(options): # Verifica delle opzioni degli algoritmi inserite
-        return displaying_error() # Visualizzazione dell'errore
+        return displaying_error('Please check the algorithms options inserted') # Visualizzazione dell'errore
     return get_store_past_bech_function(kaggle_benchmark(kaggledataframe, options), 'Kaggle')
 
 
