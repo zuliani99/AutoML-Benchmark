@@ -1,5 +1,7 @@
 # Import necessari
 import os
+
+from pandas.core.frame import DataFrame
 import dash_core_components as dcc
 import dash_html_components as html
 import dash_bootstrap_components as dbc
@@ -7,6 +9,8 @@ import plotly.graph_objects as go
 import math
 from dash.exceptions import PreventUpdate
 import pandas as pd
+import collections
+import copy
 
 # Funzione per ottenere le date dei vecchi Benchmarks
 def get_lisd_dir(test):
@@ -54,91 +58,134 @@ def render_collapse_options(choice):
         'all': [False, False, False, False, False],
     }.get(choice)
 
+def modify_dropdown_comparedf_function(timestamp, comapre_list, type):
+    if(timestamp is None):
+        raise PreventUpdate
+    dfs = get_dfs_from_timestamp([timestamp], type)
+    dfs_compare = get_dfs_from_timestamp(comapre_list, type) if comapre_list is not None else [None]
+
+    dataframe_acc = dfs[0][0]['dataframe'].to_list() if dfs[0][0] is not None else [None]
+    dataframe_reg = dfs[0][2]['dataframe'].to_list() if dfs[0][2] is not None else [None]
+
+    all_list = os.listdir('./results/'+ type)
+    all_list.remove('.gitignore')
+    all_list.remove(timestamp)
+    if dfs_compare is not None:
+        for df in dfs_compare:
+            if df in all_list: all_list.remove(df)
+
+    print(dfs[0][7])
+
+    return [get_dfs_to_compare(dataframe_acc, dataframe_reg, dfs[0][7].iloc[0].to_list(), type, all_list)]
+
+
+def get_dfs_from_timestamp(timestamp, type_bench): # ritorna una lista di liste di dataframes
+    dfs = []
+    scores = [('classification','acc'), ('classification','f1_score'), ('regression','rmse'), ('regression','r2_score')]
+    for ts in timestamp:
+        df = []
+        # Memorizzazione dei file csv relativi al benchmark che si vuole prendere in esame
+        for score in scores:
+            if os.path.exists('./results/'+ type_bench +'/'+ts+'/'+ str(score[0]) +'/'+ str(score[1]) +'.csv'):
+                df.append(pd.read_csv('./results/'+ type_bench +'/'+ts+'/'+ str(score[0]) +'/'+ str(score[1]) +'.csv'))
+            else:
+                df.append(None)
+        # Memorizzazione dei file csv relativi alle pipelines del benchmark
+        for t in ('classification', 'regression'):
+            if os.path.exists('./results/'+ type_bench +'/'+ts+'/'+ t + '/pipelines.csv'):
+                df.append(pd.read_csv('./results/'+ type_bench +'/'+ts+'/'+ t + '/pipelines.csv', sep='@').to_dict())
+            else:
+                df.append(None)
+        # Memorizzazione del file csv relativo alle opzioni che ha inserito l'utente
+        df.append(pd.read_csv('./results/'+ type_bench +'/'+ts+'/options_start.csv'))
+        df.append(pd.read_csv('./results/'+ type_bench +'/'+ts+'/options_end.csv'))
+        dfs.append(df)
+    return dfs
+
 
 # Funzione per la gestione della visualizzazione delle tabelle e grafici dei benchmarks
-def get_store_past_bech_function(timestamp, type):
+def get_store_past_bech_function(timestamp, type, compare_with):
     type_bench = type.split('-')[1]
     if timestamp is None:
         raise PreventUpdate
-    dfs = []
-    scores = [('classification','acc'), ('classification','f1_score'), ('regression','rmse'), ('regression','r2_score')]
-    # Memorizzazione dei file csv relativi al benchmark che si vuole prendere in esame
-    for score in scores:
-        if os.path.exists('./results/'+ type_bench +'/'+timestamp+'/'+ str(score[0]) +'/'+ str(score[1]) +'.csv'):
-            dfs.append(pd.read_csv('./results/'+ type_bench +'/'+timestamp+'/'+ str(score[0]) +'/'+ str(score[1]) +'.csv'))
-        else:
-            dfs.append(None)
-    # Memorizzazione dei file csv relativi alle pipelines del benchmark
-    for t in ('classification', 'regression'):
-        if os.path.exists('./results/'+ type_bench +'/'+timestamp+'/'+ t + '/pipelines.csv'):
-            dfs.append(pd.read_csv('./results/'+ type_bench +'/'+timestamp+'/'+ t + '/pipelines.csv', sep='@').to_dict())
-        else:
-            dfs.append(None)
-    # Memorizzazione del file csv relativo alle opzioni che ha inserito l'utente
-    dfs.append(pd.read_csv('./results/'+ type_bench +'/'+timestamp+'/options.csv'))
-    return get_store_and_tables(dfs, type, timestamp)
+    return get_store_and_tables(get_dfs_from_timestamp([timestamp], type_bench), type, compare_with)
 
 
-def get_store_and_tables(dfs, type, timestamp):
-    res_class_acc, res_class_f1, res_reg_rmse, res_reg_r2, pipelines_class, pipelines_reg, options = dfs # Scomposizione dell'array dato a parametro
+def combile_dfs(df_from, dfs_comapre):
+    to_return = copy.copy(df_from)
+    for df in dfs_comapre: # per tutti gli algoritmi che devo comaprate con to_return 
+        for index in range(len(to_return)): # per tutte le colonne che abbiamo entrambi eccetto  -> MESSO ANCHE OPTIONS
+            if(to_return[index] is not None and df[index] is not None):
+                if(isinstance(to_return[index], dict)):
+                    #print(pd.DataFrame.from_dict(to_return[index]))
+                    #to_return[index].update(df[index])
+                    #print(pd.DataFrame.from_dict(to_return[index]).append(pd.DataFrame.from_dict(df[index])).reset_index(drop=True).to_dict())
+                    to_return[index] = ((pd.DataFrame.from_dict(to_return[index]).append(pd.DataFrame.from_dict(df[index]))).reset_index(drop=True)).to_dict()
+                else:
+                    to_return[index] = to_return[index].append(df[index]).reset_index(drop=True)
+
+    return to_return
+
+
+def get_store_and_tables(dfs, type, compare_with):
+    res_class_acc, res_class_f1, res_reg_rmse, res_reg_r2, pipelines_class, pipelines_reg, options_start, options_end = dfs[0] # Scomposizione dell'array dato a parametro
+    dfs_compare = get_dfs_from_timestamp(compare_with, type.split('-')[1]) if compare_with is not None else None # Lista di dataframe comparabili
 
     # Definizone dei dizionari ed array che andremo a restituire a fine funzione
     store_dict = { 'class': {}, 'reg': {} }
     store_pipelines = { 'class': {}, 'reg': {} }
     tables = [[None], [None]]
 
-    store_dict['class'], store_pipelines['class'], tables[0] = retrun_graph_table([res_class_acc, res_class_f1], pipelines_class, 'Classification Results', 'class', type.split('-')[1], options, ('Accuracy', 'F1'))
-    store_dict['reg'], store_pipelines['reg'], tables[1] = retrun_graph_table([res_reg_rmse, res_reg_r2], pipelines_reg, 'Regression Results', 'reg', type.split('-')[1], options, ('RMSE', 'R2'))
 
-    if type.split('-')[0] == 'past':
-        dataframe_acc = res_class_acc['dataframe'].to_numpy() if res_class_acc is not None else None
-        dataframe_reg = res_reg_rmse['dataframe'].to_numpy() if res_reg_rmse is not None else None
-        all_list = os.listdir('./results/'+type.split('-')[1])
-        all_list.remove('.gitignore')
-        all_list.remove(timestamp)
-        dataframe_comapre = get_dfs_to_compare(dataframe_acc, dataframe_reg, options.iloc[options.shape[0]-1].to_numpy(), type.split('-')[1], all_list)
-        return store_dict['class'], store_dict['reg'], store_pipelines['class'], store_pipelines['reg'], tables[0], tables[1], dataframe_comapre
+    if dfs_compare is not None:
+        res_class_acc, res_class_f1, res_reg_rmse, res_reg_r2, pipelines_class, pipelines_reg, options_start, options_end = combile_dfs(dfs[0], dfs_compare)
+        # manca l'aggiornamtneo delle options
+
+
+    store_dict['class'], store_pipelines['class'], tables[0] = retrun_graph_table([res_class_acc, res_class_f1], pipelines_class, 'Classification Results', 'class', type.split('-')[1], options_start, options_end, ('Accuracy', 'F1'))
+    store_dict['reg'], store_pipelines['reg'], tables[1] = retrun_graph_table([res_reg_rmse, res_reg_r2], pipelines_reg, 'Regression Results', 'reg', type.split('-')[1], options_start, options_end, ('RMSE', 'R2'))
+
+    tables[0]
 
     return store_dict['class'], store_dict['reg'], store_pipelines['class'], store_pipelines['reg'], tables[0], tables[1]
 
-def get_dfs_to_compare(dfs_class, dfs_reg, options, type, all_list): # quindi ora ho i df calss, df reg e tutta la lista dei becnhmarkl passati ecetto me stesso
+
+def get_dfs_to_compare(dfs_class, dfs_reg, options_end, type, all_list): # quindi ora ho i df calss, df reg e tutta la lista dei becnhmarkl passati ecetto me stesso
     dfs_comapre = []
     for past_bench in all_list:
         if os.path.exists('./results/'+ type +'/'+past_bench+'/classification/acc.csv'):
-            cls = (pd.read_csv('./results/'+ type +'/'+past_bench+'/classification/acc.csv')['dataframe'].to_numpy())
-        else: cls = None
+            cls = (pd.read_csv('./results/'+ type +'/'+past_bench+'/classification/acc.csv')['dataframe'].to_list())
+        else: cls = [None]
         if os.path.exists('./results/'+ type +'/'+past_bench+'/regression/rmse.csv'):
-            reg = (pd.read_csv('./results/'+ type +'/'+past_bench+'/regression/rmse.csv')['dataframe'].to_numpy())
-        else: reg = None
-        piptemp = pd.read_csv('./results/'+ type +'/'+past_bench+'/options.csv')
-        pip = piptemp.iloc[piptemp.shape[0]-1].to_numpy()
+            reg = (pd.read_csv('./results/'+ type +'/'+past_bench+'/regression/rmse.csv')['dataframe'].to_list())
+        else: reg = [None]
+        piptemp = pd.read_csv('./results/'+ type +'/'+past_bench+'/options_end.csv')
+        pip = piptemp.iloc[0].to_list()
         
-        print(cls, reg, pip)
 
-        if (cls == dfs_class).all() and (reg == dfs_reg).all() and (pip != options).any():
+        if collections.Counter(cls) == collections.Counter(dfs_class) and collections.Counter(reg) == collections.Counter(dfs_reg) and collections.Counter(pip) != collections.Counter(options_end):
             # controlliamo che abbiano differenti timelife
-            print('aggiungo')
-            dfs_comapre.append(past_bench)
+            dfs_comapre.append({'label': past_bench, 'value': past_bench})
     return dfs_comapre
 
 
 # Funzione per il rendering e visualizzazione dei risultati relativi al Benchmark preso in esame
-def retrun_graph_table(dfs, pipelines, title, task, t, opts, scores):
-    table = [html.H3(title)]
+def retrun_graph_table(dfs, pipelines, title, task, t, options_start, options_end, scores):
     if (dfs[0] is None or dfs[1] is None):
         return {'scatter_'+scores[0]: None, 'histo_'+scores[0]: None, 'scatter_'+scores[1]: None, 'histo_'+scores[1]: None, 'options': None}, None, dbc.Tabs( 
                 [], id="tabs-class" if task == "class" else "tabs-reg", active_tab="", style={'hidden':'true'} 
             )
+    table = [html.H3('Timelifes algorithms'), html.H4('Start Time'), create_table(options_start), html.H4('End Time'), create_table(options_end), html.H3(title)]
     scatters = []
     histos = []
     for index, df in enumerate(dfs):
-        df['pipelines'] = get_pipelines_button(df[['dataframe']], df.columns[1].split('-')[1])
+        df['pipelines'] = get_pipelines_button(df[['date', 'dataframe']], df.columns[2].split('-')[1])
 
         # Populamento degli array con i relativi grafici e tabelle
-        for col in df.columns[1:-1]:
+        for col in df.columns[2:-1]:
             if isinstance(df[col][0], float): # Aggiorno gli array solo se si tratta di un istanza di tipo float, quindi escludo le celle con valore "no value"
-                scatters.append(go.Scatter(x=df['dataframe'], y=df[col], name=col.split('-')[0], mode='lines+markers'))
-                histos.append(go.Bar(x=df['dataframe'], y=df[col], name=col.split('-')[0]))
+                scatters.append(go.Scatter(x=(df['date'], df['dataframe']), y=df[col], name=col.split('-')[0], mode='lines+markers'))
+                histos.append(go.Bar(x=(df['date'], df['dataframe']), y=df[col], name=col.split('-')[0]))
         table.extend((html.H4(scores[index] + ' Score'), create_table(df)))
 
     table.append(
@@ -146,29 +193,17 @@ def retrun_graph_table(dfs, pipelines, title, task, t, opts, scores):
             [
                 dbc.Tab(label="Histograms", tab_id="histogram"),
                 dbc.Tab(label="Scatter", tab_id="scatter"),
-                dbc.Tab(label="Algorithm Options", tab_id="algo-options"),
             ],
             id="tabs-"+task,
             active_tab="histogram",
         ) 
     )
 
-    # Creazione della sezione rivolta alla visualizzazione delle opzioni degli algoritmi inserite dall'utente
-    opts = opts.to_dict()
-    options = [
-        html.Div([
-            html.P(["Autosklearn -> Starting running time: " + str(opts['autosklearn'][0]) + " minute/s, Final running time: " + str(opts['autosklearn'][1]) + " minute/s"]),
-            html.P(["TPOT -> starting running time " + str(opts['tpot'][0]) + " minutes/s, Final running time: " + str(opts['tpot'][1]) + " minutes/s"]),
-            html.P(["H2O -> starting running time " + str(opts['h2o'][0]) + " minute/s, Final running time: " + str(opts['h2o'][1]) + " minute/s"]),
-            html.P(["AutoKeras -> starting running time  " + str(opts['autokeras'][0]) + " epoch/s, Final running time: " + str(opts['autokeras'][1]) + " epoch/s"]),
-            html.P(["AutoGluon -> starting running time  " + str(opts['autogluon'][0]) + " minute/s, Final running time: " + str(opts['autogluon'][1]) + " minute/s"]),
-        ])
-    ]
-
     limit = 5 if t == 'OpenML' else 6 # Limite posto a 5 se siamo nel caso di un OpenML Benchmark altrimenti a 6 nel caso di un Kaggle Benchmark perchè c'è alche la presenza del leader
 
+
     return {
-        'scatter_'+scores[0]: scatters[:limit], 'histo_'+scores[0]: histos[:limit], 'scatter_'+scores[1]: scatters[limit:], 'histo_'+scores[1]: histos[limit:], 'options': options
+        'scatter_'+scores[0]: scatters[:limit], 'histo_'+scores[0]: histos[:limit], 'scatter_'+scores[1]: scatters[limit:], 'histo_'+scores[1]: histos[limit:]
     }, pipelines, table
 
 
@@ -210,7 +245,7 @@ def get_pipelines_button(dfs, task):
                     dbc.ModalBody(
                         id={
                             'type': "body-modal-Pipelines",
-                            'index': task + '-' + str(row['dataframe']),
+                            'index': task + '@' + str(row['date']) + '@' + str(row['dataframe']),
                         }
                     ),
                     dbc.ModalFooter(
@@ -218,7 +253,7 @@ def get_pipelines_button(dfs, task):
                             "Close",
                             id={
                                 'type': "close-modal-Pipelines",
-                                'index': task + '-' + str(row['dataframe']),
+                                'index': task + '@' + str(row['date']) + '@' + str(row['dataframe']),
                             },
                             className="ml-auto",
                             n_clicks=0,
@@ -226,7 +261,7 @@ def get_pipelines_button(dfs, task):
                     ),
                 ],id={
                     'type': "modal-Pipelines",
-                    'index': task + '-' + str(row['dataframe']),
+                    'index': task + '@' + str(row['date']) + '@' + str(row['dataframe']),
                 },
                 size="xl",
                 is_open=False,
@@ -237,9 +272,9 @@ def get_pipelines_button(dfs, task):
                         "Pipelines",
                         id={
                             'type': "open-Pipelines",
-                            'index': task + '-' + str(row['dataframe']),
+                            'index': task + '@' + str(row['date']) + '@' + str(row['dataframe']),
                         },
-                        value=task + '-' + str(row['dataframe']),
+                        value=task + '@' + str(row['date']) + '@' + str(row['dataframe']),
                         className="mr-1",
                         n_clicks=0,
                     )
@@ -271,10 +306,6 @@ def render_tab_content(active_tab, data, type):
                                 ], align="center"
                             )
                         )]
-        else:
-            return [
-                data['options']
-            ]
     return "No tab selected"
 
 
@@ -342,13 +373,16 @@ def set_body(name, pipeline):
         return html.Div(pipeline)
 
 # Funzione per la gestione del testo da aggiungere al modal pipelines
-def get_body_from_pipelines(pipeline, df_name):
+def get_body_from_pipelines(pipeline, date, df_name):
     df = pd.DataFrame.from_dict(pipeline) if not isinstance(pipeline, pd.DataFrame) else pipeline
     df.reset_index(drop=True, inplace=True)
+
+    print(df)
+
     col = df.columns
     index = df.index
-    condition = df['dataframe'] == df_name
-    row = index[condition].tolist()
+    condition = (df['date'] == date) & (df['dataframe'] == df_name)
+    row = index[condition].to_list()
     pipeline = df.iloc[int(row[0])]
     return [html.Div([
         html.H4(name),
@@ -360,12 +394,11 @@ def get_body_from_pipelines(pipeline, df_name):
 # Funzione per la gestione della visualizzazione delle pipelines  
 def show_hide_pipelines_function(store_pipelines_class, store_pipelines_reg, n1, n2, value, is_open):
     if n1 or n2:
-        score = value.split('-')[0]
-        df_name = value.split(score+'-')[1]
+        score, date, df_name = value.split('@')
         if score in ['acc', 'f1']:
-            return not is_open, get_body_from_pipelines(store_pipelines_class, df_name)
+            return not is_open, get_body_from_pipelines(store_pipelines_class, date, df_name)
         else:
-            return not is_open, get_body_from_pipelines(store_pipelines_reg, df_name)
+            return not is_open, get_body_from_pipelines(store_pipelines_reg, date, df_name)
     return is_open, None
 
 

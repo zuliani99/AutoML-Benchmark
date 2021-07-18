@@ -219,9 +219,10 @@ def get_pastresultopenml():
         dbc.Select(id='pastresultopenml', options=get_lisd_dir('OpenML'),
             placeholder='Filter a BenchMark by Date',
         ),
-        dbc.Select(id='pastresultopenml-comapre',
-            placeholder='Compare with',
+        dcc.Dropdown(
+            id='pastresultopenml-comapre', placeholder="Compare with", multi=True, searchable=False
         ),
+        dbc.Button("Search", id='submit-search-openml', color="primary", className="mr-1"),
         html.Hr(),
         html.Div(id='result-past-bench-openml-table-class'),
         dbc.Spinner(children=[

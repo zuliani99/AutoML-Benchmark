@@ -19,10 +19,9 @@ class Result:
         self.res_reg_rmse = pd.DataFrame({'dataframe': [], 'autosklearn-rmse': [], 'tpot-rmse': [], 'h2o-rmse': [], 'autokeras-rmse': [],'autogluon-rmse': []})
         self.res_reg_r2 = pd.DataFrame({'dataframe': [], 'autosklearn-r2': [], 'tpot-r2': [], 'h2o-r2': [], 'autokeras-r2': [], 'autogluon-r2': []})
 
-        self.pipelines_class = pd.DataFrame({'dataframe': [], 'autosklearn': [], 'tpot': [], 'h2o': [], 'autokeras': [], 'autogluon': []})
-        self.pipelines_reg = pd.DataFrame({'dataframe': [], 'autosklearn': [], 'tpot': [], 'h2o': [], 'autokeras': [], 'autogluon': []})
-
-        self.options = None
+        self.pipelines_class = self.pipelines_reg = pd.DataFrame({'dataframe': [], 'autosklearn': [], 'tpot': [], 'h2o': [], 'autokeras': [], 'autogluon': []})
+    
+        self.options_start = self.options_end = None
 
     # Funzione addetta all'esecuzione degli algoritmi per un determinato DataFrame e acnhe all'aggiornamento dei campi della classe
     def run_benchmark(self, df, task, df_name, leader, options):
@@ -33,12 +32,20 @@ class Result:
         res_ak = autokeras(df, task, options['autokeras'])
         res_ag = autogluon(df, task, options['autogluon'])
 
-        self.options = pd.DataFrame({
-            'autosklearn': [options['autosklearn']['time'], res_as[3]],
-            'tpot': [options['tpot']['time'], res_t[3]],
-            'h2o': [options['h2o']['time'], res_h[3]],
-            'autokeras': [options['autokeras']['time'], res_ak[3]],
-            'autogluon': [options['autogluon']['time'], res_ag[3]]
+        self.options_start = pd.DataFrame({
+            'autosklearn': [options['autosklearn']['time']],
+            'tpot': [options['tpot']['time']],
+            'h2o': [options['h2o']['time']],
+            'autokeras': [options['autokeras']['time']],
+            'autogluon': [options['autogluon']['time']]
+        })
+
+        self.options_end = pd.DataFrame({
+            'autosklearn': [res_as[3]],
+            'tpot': [res_t[3]],
+            'h2o': [res_h[3]],
+            'autokeras': [res_ak[3]],
+            'autogluon': [res_ag[3]]
         })
 
         # Aggiornamento dei campi di calssificazione o regressione a seconda del tipo
@@ -58,15 +65,18 @@ class Result:
 
 
 
-    # FUnzione rivolta alla conversione dei DataFrame in file csv per il mantenimento dei risultati
+    # Funzione rivolta alla conversione dei DataFrame in file csv per il mantenimento dei risultati
     def print_res(self):
         date = datetime.now()
         if(not self.res_class_acc.empty and not self.res_class_f1.empty):
             pathcla = './results/' + self.t + '/' + str(date).replace(' ', '-') + '/classification'
             os.makedirs(pathcla)
-            print('---------------------------------RISULTATI DI CLASSIFICAZIONE ' + self.t + '---------------------------------')
+            print('---------------------------------CLASSIFICATION RESULTS ' + self.t + '---------------------------------')
             print(self.res_class_acc)
             print(self.res_class_f1)
+
+            self.res_class_acc.insert(0, 'date', date)
+            self.res_class_f1.insert(0, 'date', date)
 
             self.res_class_acc.to_csv(pathcla + '/acc.csv', index = False)
             self.res_class_f1.to_csv(pathcla + '/f1_score.csv', index = False)
@@ -75,15 +85,21 @@ class Result:
         if(not self.res_reg_rmse.empty and not self.res_reg_r2.empty):
             pathreg = './results/' + self.t + '/' + str(date).replace(' ', '-') + '/regression'
             os.makedirs(pathreg)
-            print('\n\n---------------------------------RISULTATI DI REGRESSIONE ' + self.t +'---------------------------------')
+            print('\n\n---------------------------------REGRESSION RESULTS ' + self.t +'---------------------------------')
             print(self.res_reg_rmse)
             print(self.res_reg_r2)
+
+            self.res_reg_rmse.insert(0, 'date', date)
+            self.res_reg_r2.insert(0, 'date', date)
 
             self.res_reg_rmse.to_csv(pathreg + '/rmse.csv', index = False)
             self.res_reg_r2.to_csv(pathreg + '/r2_score.csv', index = False)
             self.pipelines_reg.to_csv(pathreg + '/pipelines.csv', sep='@', index = False)
 
-        self.options.to_csv('./results/' + self.t + '/' + str(date).replace(' ', '-')+ '/options.csv', index = False)
+        self.options_start.insert(0, 'date', date)
+        self.options_end.insert(0, 'date', date)
+        self.options_start.to_csv('./results/' + self.t + '/' + str(date).replace(' ', '-')+ '/options_start.csv', index = False)
+        self.options_end.to_csv('./results/' + self.t + '/' + str(date).replace(' ', '-')+ '/options_end.csv', index = False)
 
         # Unico paramentro di ritorno è il timestamp che sarà utile poi per la visaulizzazione dei risultati
         return (str(date).replace(' ', '-'))

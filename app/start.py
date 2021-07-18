@@ -8,6 +8,7 @@ import dash_core_components as dcc
 import dash_html_components as html
 from dash.dependencies import Input, Output, State, MATCH
 import dash_bootstrap_components as dbc
+from dash.exceptions import PreventUpdate
 
 import os
 os.environ['KAGGLE_USERNAME'] = "zullle" # Username per l'utilizzo dell'API di Kaggle
@@ -15,7 +16,7 @@ os.environ['KAGGLE_KEY'] = "24df22da033e9547780e278280a6ae2b" # Key per l'utiliz
 
 from webapp.frontend import sidebar, openmlbenchmark, kagglebenchmark, testbenchmark, get_pastresultopenml, get_pastresultkaggle
 from webapp.backend import render_page_content_function, start_openml_function, start_kaggle_function, start_test_function, render_tab_content_function, collapse_alogrithms_options_function
-from webapp.utils import get_store_past_bech_function, render_collapse_options, show_hide_pipelines_function, make_options
+from webapp.utils import get_store_past_bech_function, render_collapse_options, show_hide_pipelines_function, make_options, modify_dropdown_comparedf_function
 
 def start():
     app = dash.Dash(__name__, external_stylesheets=[dbc.themes.BOOTSTRAP], suppress_callback_exceptions=True)
@@ -90,17 +91,30 @@ def start():
 
     # Populamento dei Store necessari per la visualizzazione dei risultati di vecchi OpenML Benchmark
     @app.callback(
-        [Output('store_class_results_openml', 'data'), Output('store_reg_results_openml', 'data'),Output('store_pipelines_results_class_openml', 'data'), Output('store_pipelines_results_reg_openml', 'data'), Output('result-past-bench-openml-table-class', 'children'), Output('result-past-bench-openml-table-reg', 'children'), Output('pastresultopenml-comapre', 'options')],
-        [Input('pastresultopenml', 'value')]
+        [Output('store_class_results_openml', 'data'), Output('store_reg_results_openml', 'data'),Output('store_pipelines_results_class_openml', 'data'), Output('store_pipelines_results_reg_openml', 'data'), Output('result-past-bench-openml-table-class', 'children'), Output('result-past-bench-openml-table-reg', 'children')],
+        [Input('submit-search-openml', 'n_clicks')],
+        [State('pastresultopenml', 'value'), State('pastresultopenml-comapre', 'value')]
     )
-    def get_store_past_bech_openml(timestamp): return get_store_past_bech_function(timestamp, 'past-OpenML')
+    def get_store_past_bech_openml(n_clicks, timestamp, compare_with):
+        print(timestamp, ' from')
+        print(compare_with, 'compare with')
+        return get_store_past_bech_function(timestamp, 'past-OpenML', compare_with)
+
+
+    @app.callback(
+        [Output('pastresultopenml-comapre', 'options')],
+        [Input('pastresultopenml', 'value'), Input('pastresultopenml-comapre', 'value')]
+    )
+    def modify_dropdown_comparedf(timestamp, comapre_list):
+        return modify_dropdown_comparedf_function(timestamp, comapre_list, 'OpenML')
+
 
     # Populamento dei Store necessari per la visualizzazione dei risultati di vecchi Kaggle Benchmark
     @app.callback(
         [Output('store_class_results_kaggle', 'data'), Output('store_reg_results_kaggle', 'data'),Output('store_pipelines_results_class_kaggle', 'data'), Output('store_pipelines_results_reg_kaggle', 'data'), Output('result-past-bench-kaggle-table-class', 'children'), Output('result-past-bench-kaggle-table-reg', 'children'), ],
         [Input('pastresultkaggle', 'value')]
     )
-    def get_store_past_bech_kaggle(timestamp): return get_store_past_bech_function(timestamp, 'past-Kaggle')
+    def get_store_past_bech_kaggle(timestamp): return get_store_past_bech_function(timestamp, 'past-Kaggle', None) # dopo sarà anche qua il compare_with
 
 
     # Callback relativi all'aggiornamento del grafico visualizzante i risultati di classificazione di Kaggle e OpenML
