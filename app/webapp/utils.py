@@ -58,6 +58,7 @@ def render_collapse_options(choice):
         'all': [False, False, False, False, False],
     }.get(choice)
 
+# Funzione per la modifica del dropdown relativo ai bechmarks confrontabili
 def modify_dropdown_comparedf_function(timestamp, comapre_list, type):
     if(timestamp is None):
         raise PreventUpdate
@@ -73,8 +74,6 @@ def modify_dropdown_comparedf_function(timestamp, comapre_list, type):
     if dfs_compare is not None:
         for df in dfs_compare:
             if df in all_list: all_list.remove(df)
-
-    print(dfs[0][7])
 
     return [get_dfs_to_compare(dataframe_acc, dataframe_reg, dfs[0][7].iloc[0].to_list(), type, all_list)]
 
@@ -113,13 +112,11 @@ def get_store_past_bech_function(timestamp, type, compare_with):
 
 def combile_dfs(df_from, dfs_comapre):
     to_return = copy.copy(df_from)
-    for df in dfs_comapre: # per tutti gli algoritmi che devo comaprate con to_return 
-        for index in range(len(to_return)): # per tutte le colonne che abbiamo entrambi eccetto  -> MESSO ANCHE OPTIONS
+    for df in dfs_comapre: # Per tutti gli algoritmi che devo comaprate con to_return 
+        for index in range(len(to_return)): # Per tutte le colonne che abbiamo entrambi eccetto  -> MESSO ANCHE OPTIONS
             if(to_return[index] is not None and df[index] is not None):
+                # Concaetno to_return[index] con df[index]
                 if(isinstance(to_return[index], dict)):
-                    #print(pd.DataFrame.from_dict(to_return[index]))
-                    #to_return[index].update(df[index])
-                    #print(pd.DataFrame.from_dict(to_return[index]).append(pd.DataFrame.from_dict(df[index])).reset_index(drop=True).to_dict())
                     to_return[index] = ((pd.DataFrame.from_dict(to_return[index]).append(pd.DataFrame.from_dict(df[index]))).reset_index(drop=True)).to_dict()
                 else:
                     to_return[index] = to_return[index].append(df[index]).reset_index(drop=True)
@@ -136,16 +133,12 @@ def get_store_and_tables(dfs, type, compare_with):
     store_pipelines = { 'class': {}, 'reg': {} }
     tables = [[None], [None]]
 
-
     if dfs_compare is not None:
+        # Se ho dei benchamrk da confrontare devo aggiornare le variabili
         res_class_acc, res_class_f1, res_reg_rmse, res_reg_r2, pipelines_class, pipelines_reg, options_start, options_end = combile_dfs(dfs[0], dfs_compare)
-        # manca l'aggiornamtneo delle options
-
 
     store_dict['class'], store_pipelines['class'], tables[0] = retrun_graph_table([res_class_acc, res_class_f1], pipelines_class, 'Classification Results', 'class', type.split('-')[1], options_start, options_end, ('Accuracy', 'F1'))
     store_dict['reg'], store_pipelines['reg'], tables[1] = retrun_graph_table([res_reg_rmse, res_reg_r2], pipelines_reg, 'Regression Results', 'reg', type.split('-')[1], options_start, options_end, ('RMSE', 'R2'))
-
-    tables[0]
 
     return store_dict['class'], store_dict['reg'], store_pipelines['class'], store_pipelines['reg'], tables[0], tables[1]
 
@@ -162,9 +155,8 @@ def get_dfs_to_compare(dfs_class, dfs_reg, options_end, type, all_list): # quind
         piptemp = pd.read_csv('./results/'+ type +'/'+past_bench+'/options_end.csv')
         pip = piptemp.iloc[0].to_list()
         
-
+        # Verifica se il benchmark è confrontabile con quello selezionato inizialmente
         if collections.Counter(cls) == collections.Counter(dfs_class) and collections.Counter(reg) == collections.Counter(dfs_reg) and collections.Counter(pip) != collections.Counter(options_end):
-            # controlliamo che abbiano differenti timelife
             dfs_comapre.append({'label': past_bench, 'value': past_bench})
     return dfs_comapre
 
@@ -376,12 +368,9 @@ def set_body(name, pipeline):
 def get_body_from_pipelines(pipeline, date, df_name):
     df = pd.DataFrame.from_dict(pipeline) if not isinstance(pipeline, pd.DataFrame) else pipeline
     df.reset_index(drop=True, inplace=True)
-
-    print(df)
-
     col = df.columns
     index = df.index
-    condition = (df['date'] == date) & (df['dataframe'] == df_name)
+    condition = (df['date'] == date) & (df['dataframe'] == df_name) if date is not None else (df['dataframe'] == df_name)
     row = index[condition].to_list()
     pipeline = df.iloc[int(row[0])]
     return [html.Div([
@@ -401,14 +390,12 @@ def show_hide_pipelines_function(store_pipelines_class, store_pipelines_reg, n1,
             return not is_open, get_body_from_pipelines(store_pipelines_reg, date, df_name)
     return is_open, None
 
-
+# Funzione per la verifica della corretta struttura della sequenza di Dataframe IDs
 def check_dfs_sequence(dfs_sequence):
     if dfs_sequence is None:
         raise PreventUpdate
     dfs = dfs_sequence.split(',')
     for df in dfs:
-        try:
-            int(df)
-        except:
-            return False
+        try: int(df)
+        except: return False
     return True

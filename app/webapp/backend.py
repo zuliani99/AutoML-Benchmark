@@ -137,7 +137,7 @@ def return_all_algorithms(task, res, name):
                     )
                 ),
                 html.H4("Pipelines"),
-                html.Div(get_body_from_pipelines(pipelines, name)) # Visualizzazione delle pipelines degli algoritmi
+                html.Div(get_body_from_pipelines(pipelines, None, name)) # Visualizzazione delle pipelines degli algoritmi
             ])
     ]
 

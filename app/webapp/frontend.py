@@ -138,7 +138,6 @@ kagglebenchmark = html.Div([
                                         {'label': "Ghouls Goblins and Ghosts Boo - Classification", 'value': 'ghouls-goblins-and-ghosts-boo'},
                                         
                                         {'label': 'BigQuery-Geotab Intersection Congestion - Regression', 'value': 'bigquery-geotab-intersection-congestion'},
-                                        {'label': 'Restaurant Revenue Prediction - Regression', 'value': 'restaurant-revenue-prediction'},
                                         {'label': 'CommonLit Readability Prize - Regression', 'value': 'commonlitreadabilityprize'},
                                         {'label': 'Tabular Playground Series - Feb 2021 - Regression', 'value': 'tabular-playground-series-feb-2021'},
                                         {'label': 'Global Energy Forecasting Competition 2012 - Regression', 'value': 'GEF2012-wind-forecasting'},
@@ -240,6 +239,10 @@ def get_pastresultkaggle():
         dbc.Select(id='pastresultkaggle', options=get_lisd_dir('Kaggle'),
             placeholder='Filter a BenchMark by Date',
         ),
+        dcc.Dropdown(
+            id='pastresultkaggle-comapre', placeholder="Compare with", multi=True, searchable=False
+        ),
+        dbc.Button("Search", id='submit-search-kaggle', color="primary", className="mr-1"),
         html.Hr(),
         html.Div(id='result-past-bench-kaggle-table-class'),
         dbc.Spinner(children=[

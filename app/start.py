@@ -95,26 +95,31 @@ def start():
         [Input('submit-search-openml', 'n_clicks')],
         [State('pastresultopenml', 'value'), State('pastresultopenml-comapre', 'value')]
     )
-    def get_store_past_bech_openml(n_clicks, timestamp, compare_with):
-        print(timestamp, ' from')
-        print(compare_with, 'compare with')
-        return get_store_past_bech_function(timestamp, 'past-OpenML', compare_with)
+    def get_store_past_bech_openml(n_clicks, timestamp, compare_with): return get_store_past_bech_function(timestamp, 'past-OpenML', compare_with)
 
-
+    # Callback per la modifica del Dropdown dei becnhmarks confrontabili
     @app.callback(
         [Output('pastresultopenml-comapre', 'options')],
         [Input('pastresultopenml', 'value'), Input('pastresultopenml-comapre', 'value')]
     )
-    def modify_dropdown_comparedf(timestamp, comapre_list):
-        return modify_dropdown_comparedf_function(timestamp, comapre_list, 'OpenML')
+    def modify_dropdown_comparedf(timestamp, comapre_list): return modify_dropdown_comparedf_function(timestamp, comapre_list, 'OpenML')
+
 
 
     # Populamento dei Store necessari per la visualizzazione dei risultati di vecchi Kaggle Benchmark
     @app.callback(
-        [Output('store_class_results_kaggle', 'data'), Output('store_reg_results_kaggle', 'data'),Output('store_pipelines_results_class_kaggle', 'data'), Output('store_pipelines_results_reg_kaggle', 'data'), Output('result-past-bench-kaggle-table-class', 'children'), Output('result-past-bench-kaggle-table-reg', 'children'), ],
-        [Input('pastresultkaggle', 'value')]
+        [Output('store_class_results_kaggle', 'data'), Output('store_reg_results_kaggle', 'data'),Output('store_pipelines_results_class_kaggle', 'data'), Output('store_pipelines_results_reg_kaggle', 'data'), Output('result-past-bench-kaggle-table-class', 'children'), Output('result-past-bench-kaggle-table-reg', 'children')],
+        [Input('submit-search-kaggle', 'n_clicks')],
+        [State('pastresultkaggle', 'value'), State('pastresultkaggle-comapre', 'value')]
     )
-    def get_store_past_bech_kaggle(timestamp): return get_store_past_bech_function(timestamp, 'past-Kaggle', None) # dopo sarà anche qua il compare_with
+    def get_store_past_bech_kaggle(n_clicks, timestamp, compare_with): return get_store_past_bech_function(timestamp, 'past-Kaggle', compare_with)
+    
+    # Callback per la modifica del Dropdown dei becnhmarks confrontabili
+    @app.callback(
+        [Output('pastresultkaggle-comapre', 'options')],
+        [Input('pastresultkaggle', 'value'), Input('pastresultkaggle-comapre', 'value')]
+    )
+    def modify_dropdown_comparedf(timestamp, comapre_list): return modify_dropdown_comparedf_function(timestamp, comapre_list, 'Kaggle')
 
 
     # Callback relativi all'aggiornamento del grafico visualizzante i risultati di classificazione di Kaggle e OpenML

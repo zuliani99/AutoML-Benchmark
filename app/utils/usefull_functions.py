@@ -107,12 +107,14 @@ def serch_df(df_id):
                 return './dataframes/OpenML/'+ task +'/' + d
     return None
 
+
 # Funzione addetta al download della dei DataFrame provenienti dalla lista di ID inseirta dall'utente
 def download_dfs(ids):
     list_df = { 'classification': [], 'regression': []}
     for id in ids:
         search = serch_df(id) # Inizialmente controllo se il DataFrame che ha scelto l'utente sia presente o meno in una delle due cartelle
         try:
+            task = None
             if search is None:
                 # Se non è presente lo scarico attraverso lapposita API
                 print('dopo il try ', search)
@@ -151,7 +153,6 @@ def download_dfs(ids):
 
         except Exception as e:
             # In caso di errore ritrono un messaggio
-            return "Error Can't download the DataFrame " + id + ' reason: '+ str(e)
-
+            return "Error Can't download the DataFrame " + str(id) + ' reason: '+ str(e)
     list_df['classification'].extend(list_df['regression']) # Concatenazione dei due array 
     return list_df['classification']

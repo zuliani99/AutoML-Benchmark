@@ -31,9 +31,13 @@ def switch(algo, df, name, task, options):
 
 def test(id, algo, options):
     print('----------------'+str(id)+'-----------'+str(algo)+'-------------')
+    # Download del dataframe
+    df = download_dfs([id])
+    if isinstance(df, str):
+        # Ritorno di un eccezione in caso di errore
+        return None, df
     try:
         # Esecuzione del test
-        df =  download_dfs((id))
         res = switch(algo, pd.read_csv(df[0]), df[0].split('/')[4], df[0].split('/')[3], options)
         return df[0].split('/')[3], res
     except Exception as e:

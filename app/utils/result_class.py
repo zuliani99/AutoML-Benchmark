@@ -77,6 +77,7 @@ class Result:
 
             self.res_class_acc.insert(0, 'date', date)
             self.res_class_f1.insert(0, 'date', date)
+            self.pipelines_class.insert(0, 'date', date)
 
             self.res_class_acc.to_csv(pathcla + '/acc.csv', index = False)
             self.res_class_f1.to_csv(pathcla + '/f1_score.csv', index = False)
@@ -91,6 +92,7 @@ class Result:
 
             self.res_reg_rmse.insert(0, 'date', date)
             self.res_reg_r2.insert(0, 'date', date)
+            self.pipelines_reg.insert(0, 'date', date)
 
             self.res_reg_rmse.to_csv(pathreg + '/rmse.csv', index = False)
             self.res_reg_r2.to_csv(pathreg + '/r2_score.csv', index = False)
