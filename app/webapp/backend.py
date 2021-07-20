@@ -88,9 +88,9 @@ def start_test_function(dfid, algorithms, options):
                 )]
     # Definizione del test da visualizzare contenente i risultati dei due scores
     if(task == 'classification'):
-        text = 'Accuracy: ' + str(s1) + '     f1_score: ' + str(s2)
+        text = 'Accuracy: ' + str(s1) + '     F1 Score: ' + str(s2)
     else:
-        text = 'RMSE: ' + str(s1) + '     r2_score: ' + str(s2)
+        text = 'RMSE: ' + str(s1) + '     R2 Score: ' + str(s2)
     # Visualizzazione competa del risultato
     return [html.Div([
             html.P(

@@ -39,8 +39,8 @@ def openml_benchmark_unknowID(options):
     tasks_reg = pd.DataFrame.from_dict(openml.tasks.list_tasks(task_type=TaskType.SUPERVISED_REGRESSION), orient="index")
 
     # Filtro entrambi i DataFrame per il numero di istanze minime e massime
-    filtered_tasks_class = tasks_class.query("NumberOfInstances > " + str(morethan) + " and NumberOfInstances < " + str(2*morethan))
-    filtered_tasks_reg = tasks_reg.query("NumberOfInstances > " + str(morethan) + " and NumberOfInstances < " + str(2*morethan))
+    filtered_tasks_class = tasks_class.query("NumberOfInstances > " + str(morethan)) # + " and NumberOfInstances < " + str(2*morethan))
+    filtered_tasks_reg = tasks_reg.query("NumberOfInstances > " + str(morethan)) # + " and NumberOfInstances < " + str(2*morethan))
 
     # Elimino i duplicati e tutte le colonne eccetto did e name
     datalist_class = filtered_tasks_class[["did", "name"]].drop_duplicates(subset=['did' and 'name'], inplace=False)

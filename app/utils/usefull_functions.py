@@ -117,9 +117,18 @@ def download_dfs(ids):
             task = None
             if search is None:
                 # Se non è presente lo scarico attraverso lapposita API
-                print('dopo il try ', search)
                 X, y = fetch_openml(data_id=id, as_frame=True, return_X_y=True, cache=True)
                 name = str(id)+ '_' +openml.datasets.get_dataset(id).name + '.csv'
+
+                # Ottengo il tipo di tasks
+                tasks = openml.tasks.list_tasks(data_id=id, output_format="dataframe")
+                ts = tasks['task_type'].unique()
+                if ('Supervised Classification' not in ts and 'Supervised Regression' not in ts):
+                    return 'Error: Invalid Dataframe task'
+                task = 'classification' if 'Supervised Classification' in ts else 'regression'
+                file_dir =  './dataframes/OpenML/' + task + '/'
+                fullname = os.path.join(file_dir, name)
+
 
                 if not isinstance(y, pd.DataFrame):
                     y = y.to_frame()
@@ -130,16 +139,6 @@ def download_dfs(ids):
                 print(df.info())
                 print(df.head())
                 
-                # Ottengo il tipo di task
-                tasks = openml.tasks.list_tasks(data_id=id, output_format="dataframe")
-                print(task)
-                ts = tasks['task_type'].unique()
-                if ('Supervised Classification' not in ts and 'Supervised Regression' not in ts):
-                    return None, None
-                task = 'classification' if 'Supervised Classification' in ts else 'regression'
-                file_dir =  './dataframes/OpenML/' + task + '/'
-                fullname = os.path.join(file_dir, name)
-
                 # Effettuo il salvataggio del DataFrame nell cartella corrispondente
                 df.to_csv(fullname, index=False, header=True)
 
@@ -153,6 +152,6 @@ def download_dfs(ids):
 
         except Exception as e:
             # In caso di errore ritrono un messaggio
-            return "Error Can't download the DataFrame " + str(id) + ' reason: '+ str(e)
+            return "Error: Can't download the DataFrame " + str(id) + ' reason: '+ str(e)
     list_df['classification'].extend(list_df['regression']) # Concatenazione dei due array 
     return list_df['classification']

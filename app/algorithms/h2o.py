@@ -4,7 +4,7 @@ from h2o.automl import H2OAutoML
 import numpy as np
 import pandas as pd
 from sklearn.model_selection import train_test_split
-from utils.usefull_functions import return_X_y, fill_and_to_category
+from utils.usefull_functions import return_X_y, fill_and_to_category, get_list_single_df
 from sklearn.metrics import accuracy_score, mean_squared_error, f1_score, r2_score
 import copy
 from termcolor import colored
@@ -74,7 +74,7 @@ def do_h20(df, task, timelife):
   df_new = copy.copy(df) # Copia profonda del DataFrame passato a paramentro 
 
   #if isinstance(df_new, pd.DataFrame):
-  df_new = fill_and_to_category(df_new) # Pulizia iniziale del DataFrame
+  df_new = get_list_single_df(df_new) # Pulizia iniziale del DataFrame
   X, y = return_X_y(df_new) # Ottenimento dei due DataFrame X ed y pnecessari per eseguire il train_test_split
   X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=1)
 

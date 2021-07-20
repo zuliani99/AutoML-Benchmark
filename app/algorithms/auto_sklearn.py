@@ -8,6 +8,15 @@ import numpy as np
 from utils.usefull_functions import return_X_y, fill_and_to_category
 import copy
 from termcolor import colored
+import psutil
+import dash_html_components as html
+
+# Funzione per la creazione della stringa per la Pipeline
+def make_pipeline_autosklearn(str):
+  ret = []
+  for s in str:
+    ret.extend((s, html.Br()))
+  return ret
 
 
 def make_classification(X_train, X_test, y_train, y_test, timelife, y):
@@ -15,14 +24,12 @@ def make_classification(X_train, X_test, y_train, y_test, timelife, y):
   automl = autosklearn.classification.AutoSklearnClassifier(
           time_left_for_this_task=timelife*60,
           per_run_time_limit=30,
-          memory_limit=8192,
+          memory_limit=psutil.virtual_memory().available,
           n_jobs=-1
     )
   automl.fit(X_train, y_train)
   y_pred = automl.predict(X_test)
-
-  pipelines = ((pd.DataFrame(pd.Series(automl.show_models()))).to_markdown()) # Pipeline
-
+  pipelines = make_pipeline_autosklearn(pd.DataFrame(pd.Series(automl.show_models())).iloc[0].squeeze().split('\n')) # Pipeline
   print("--------------------------------AUTOSKLEARN--------------------------------\n\n")
   # Controllo se si tratta di un caso binario o multilables
   if len(np.unique(y)) > 2:
@@ -36,12 +43,12 @@ def make_regression(X_train, X_test, y_train, y_test, timelife):
   automl = autosklearn.regression.AutoSklearnRegressor(
           time_left_for_this_task=timelife*60,
           per_run_time_limit=30,
-          memory_limit=8192,
+          memory_limit=psutil.virtual_memory().available,
           n_jobs=-1
     )
   automl.fit(X_train, y_train)
   y_pred = automl.predict(X_test)
-  pipelines = ((pd.DataFrame(pd.Series(automl.show_models()))).to_markdown())
+  pipelines = make_pipeline_autosklearn(pd.DataFrame(pd.Series(automl.show_models())).iloc[0].squeeze().split('\n')) # Pipeline
   print("--------------------------------AUTOSKLEARN--------------------------------\n\n")
   return (round(np.sqrt(mean_squared_error(y_test, y_pred)), 3), round(r2_score(y_test, y_pred), 3), pipelines, timelife)
 

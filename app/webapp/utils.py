@@ -1,7 +1,5 @@
 # Import necessari
 import os
-
-from pandas.core.frame import DataFrame
 import dash_core_components as dcc
 import dash_html_components as html
 import dash_bootstrap_components as dbc
@@ -347,10 +345,11 @@ def create_collapses(): # algo, measure, min, disabled
 def set_body(name, pipeline):
     if (
         name == 'tpot'
-        and (pipeline[0:5] == 'Error')
+        and pipeline[0:5] == 'Error'
+        or pipeline[0:10] == 'Unexpected'
         or name != 'tpot'
         and name != 'dataframe'
-        and (pipeline[0:5] == 'Error')
+        and pipeline[0:5] == 'Error'
     ):
         return html.Div(pipeline, style={'color':'red'})
     elif name == 'tpot':
@@ -359,7 +358,7 @@ def set_body(name, pipeline):
         for string in strings:
             ret.extend((string, html.Br()))
         return html.Div(ret)
-    elif name != 'dataframe':
+    elif name not in ['dataframe', 'autosklearn']:
         return dcc.Markdown(pipeline)
     else:
         return html.Div(pipeline)

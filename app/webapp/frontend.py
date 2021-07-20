@@ -81,7 +81,7 @@ unknownID = dbc.CardBody([
                                             dbc.Input(
                                                 id="nmore", type="number", placeholder="Number of instances", min=50, max=100000
                                             ),
-                                            dbc.InputGroupAddon("at least 50 and at most 100000", addon_type="prepend"),
+                                            dbc.InputGroupAddon("at least 50", addon_type="prepend"),
                                         ])
                                     ],width=5),
                                 ],row=True),
