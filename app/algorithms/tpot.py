@@ -9,37 +9,58 @@ from utils.usefull_functions import return_X_y, fill_and_to_category
 import copy
 from termcolor import colored
 
-le = LabelEncoder()
+from dask.distributed import Client
+import joblib
+import shutil
 
-def make_classification(X_train, X_test, y_train, y_test, timelife, y):
+def make_classification(X_train, X_test, y_train, y_test, timelife, y, client):
+  le = LabelEncoder()
+
   # Modello Calssificazione
-  model =  TPOTClassifier(generations=3, cv=5, max_time_mins=timelife, random_state=1, verbosity=2, n_jobs=1, max_eval_time_mins=0.05)
+  model =  TPOTClassifier(generations=100, cv=5, max_time_mins=timelife, random_state=1, verbosity=2, n_jobs=-1, max_eval_time_mins=5)
   #model.fit(X_train, y_train)
-  model.fit(np.array(X_train), np.array(y_train).ravel())
+
+  with joblib.parallel_backend("dask"):
+    model.fit(np.array(X_train), np.array(y_train).ravel())
+
   y_pred = model.predict(X_test)
   pipelines = model.export() # Ottengo la pipeline
 
   print("-----------------------------------TPOT------------------------------------\n\n")
+  client.close()
+  shutil.rmtree('./dask-worker-space')
+
   # Controllo se si tratta di un caso binario o multilables
   if len(np.unique(y)) > 2:
     return round(accuracy_score(y_test, y_pred), 3), round(f1_score(y_test, y_pred, average='weighted'), 3), pipelines, timelife
   else:
     return round(accuracy_score(y_test, y_pred), 3), round(f1_score(y_test, y_pred, pos_label=np.unique(y)[0]), 3), pipelines, timelife
 
-def make_regression(X_train, X_test, y_train, y_test, timelife):
+
+def make_regression(X_train, X_test, y_train, y_test, timelife, client):
+  le = LabelEncoder()
+
   # Modello Regressione
-  model =  TPOTRegressor(generations=3, cv=5, max_time_mins=timelife, random_state=1, verbosity=2, n_jobs=1, max_eval_time_mins=0.05)
+  model =  TPOTRegressor(generations=100, cv=5, max_time_mins=timelife, random_state=1, verbosity=2, n_jobs=-1, max_eval_time_mins=5)
   #model.fit(X_train, y_train)
-  model.fit(np.array(X_train), np.array(y_train).ravel())
+
+  with joblib.parallel_backend("dask"):
+    model.fit(np.array(X_train), np.array(y_train).ravel())
+
   y_pred = model.predict(X_test)
   pipelines = model.export() # Ottengo la pipeline
+
   print("-----------------------------------TPOT------------------------------------\n\n")
+  client.close()
+  shutil.rmtree('./dask-worker-space')
+
   return round(np.sqrt(mean_squared_error(y_test, y_pred)), 3), round(r2_score(y_test, y_pred), 3), pipelines, timelife
 
 
 def TPOT(df, task, options):
   print("-----------------------------------TPOT------------------------------------")
   try:
+    client = Client(processes=False)
     df_new = copy.copy(df) # Copia profonda del DataFrame passato a paramentro 
     pd.options.mode.chained_assignment = None
 
@@ -49,9 +70,9 @@ def TPOT(df, task, options):
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=1)
 
     if task == 'classification':
-      return make_classification(X_train, X_test, y_train, y_test, options['time'], y)
+      return make_classification(X_train, X_test, y_train, y_test, options['time'], y, client)
     else:
-      return make_regression(X_train, X_test, y_train, y_test, options['time'])
+      return make_regression(X_train, X_test, y_train, y_test, options['time'], client)
 
   except Exception as e:
     # In caso di eccezione
