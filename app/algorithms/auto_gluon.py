@@ -50,15 +50,14 @@ def autogluon(df, task, options):
     if isinstance(y_test, pd.Series): y_test = y_test.to_frame()
     X_train[target] = y_train
 
-
     pt, f1 = get_options(task, y)
 
     # definizone del predittore con tutti i suoi iperparametri
     predictor = TabularPredictor(label=target , problem_type=pt).fit(
       train_data=X_train,
       time_limit=options['time']*60,
-      presets=['optimize_for_deployment', 'best_quality'],
-      hyperparameters=hyperparameters
+      presets=['best_quality'],
+      #hyperparameters=hyperparameters    # -> Questo aggiunge le NN 
     )
     results = predictor.fit_summary()
     y_pred = predictor.predict(X_test)
