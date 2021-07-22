@@ -26,7 +26,7 @@ def prepare_and_test(train, test, task, timelife):
     train[y] = train[y].asfactor()
     test[y] = test[y].asfactor()
 
-  aml = H2OAutoML(max_runtime_secs=timelife*60, nfolds=15, max_models=20, seed=1)
+  aml = H2OAutoML(max_runtime_secs=timelife*60, nfolds=10, max_models=50, seed=1)
   aml.train(x, y, training_frame=train)
   lb = aml.leaderboard
   lb = h2o.as_list(lb)
@@ -73,8 +73,7 @@ def do_h20(df, task, timelife):
   h2o.init()  # Avvio del cluster H2O
   df_new = copy.copy(df) # Copia profonda del DataFrame passato a paramentro 
 
-  #if isinstance(df_new, pd.DataFrame):
-  df_new = get_list_single_df(df_new) # Pulizia iniziale del DataFrame
+  df_new = get_list_single_df(df_new)
   X, y = return_X_y(df_new) # Ottenimento dei due DataFrame X ed y pnecessari per eseguire il train_test_split
   X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=1)
 

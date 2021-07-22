@@ -25,7 +25,8 @@ def make_classification(X_train, X_test, y_train, y_test, timelife, y):
           time_left_for_this_task=timelife*60,
           per_run_time_limit=30,
           memory_limit=psutil.virtual_memory().available,
-          n_jobs=-1
+          n_jobs=-1,
+          resampling_strategy_arguments = {'cv': 10}
     )
   automl.fit(X_train, y_train)
   y_pred = automl.predict(X_test)
@@ -44,7 +45,8 @@ def make_regression(X_train, X_test, y_train, y_test, timelife):
           time_left_for_this_task=timelife*60,
           per_run_time_limit=30,
           memory_limit=psutil.virtual_memory().available,
-          n_jobs=-1
+          n_jobs=-1,
+          resampling_strategy_arguments = {'cv': 10}
     )
   automl.fit(X_train, y_train)
   y_pred = automl.predict(X_test)

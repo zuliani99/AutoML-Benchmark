@@ -17,7 +17,7 @@ def make_classification(X_train, X_test, y_train, y_test, timelife, y, client):
   le = LabelEncoder()
 
   # Modello Calssificazione
-  model =  TPOTClassifier(generations=100, cv=5, max_time_mins=timelife, random_state=1, verbosity=2, n_jobs=-1, max_eval_time_mins=5)
+  model =  TPOTClassifier(generations=100, cv=10, max_time_mins=timelife, random_state=1, verbosity=2, n_jobs=-1, max_eval_time_mins=5)
   #model.fit(X_train, y_train)
 
   with joblib.parallel_backend("dask"):
@@ -41,7 +41,7 @@ def make_regression(X_train, X_test, y_train, y_test, timelife, client):
   le = LabelEncoder()
 
   # Modello Regressione
-  model =  TPOTRegressor(generations=100, cv=5, max_time_mins=timelife, random_state=1, verbosity=2, n_jobs=-1, max_eval_time_mins=5)
+  model =  TPOTRegressor(generations=100, cv=10, max_time_mins=timelife, random_state=1, verbosity=2, n_jobs=-1, max_eval_time_mins=5)
   #model.fit(X_train, y_train)
 
   with joblib.parallel_backend("dask"):
