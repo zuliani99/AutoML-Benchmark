@@ -33,19 +33,19 @@ class Result:
         res_ag = autogluon(df, task, options['autogluon'])
 
         self.options_start = pd.DataFrame({
-            'autosklearn': [options['autosklearn']['time']],
-            'tpot': [options['tpot']['time']],
-            'h2o': [options['h2o']['time']],
-            'autokeras': [options['autokeras']['time']],
-            'autogluon': [options['autogluon']['time']]
+            'autosklearn-min': [options['autosklearn']['time']],
+            'tpot-min': [options['tpot']['time']],
+            'h2o-min': [options['h2o']['time']],
+            'autokeras-epochs': [options['autokeras']['time']],
+            'autogluon-min': [options['autogluon']['time']]
         })
 
         self.options_end = pd.DataFrame({
-            'autosklearn': [res_as[3]],
-            'tpot': [res_t[3]],
-            'h2o': [res_h[3]],
-            'autokeras': [res_ak[3]],
-            'autogluon': [res_ag[3]]
+            'autosklearn-min': [res_as[3]],
+            'tpot-min': [res_t[3]],
+            'h2o-min': [res_h[3]],
+            'autokeras-epochs': [res_ak[3]],
+            'autogluon-min': [res_ag[3]]
         })
 
         # Aggiornamento dei campi di calssificazione o regressione a seconda del tipo
