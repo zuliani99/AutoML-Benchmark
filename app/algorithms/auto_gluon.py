@@ -53,13 +53,15 @@ def autogluon(df, task, options):
     pt, f1 = get_options(task, y)
 
     # definizone del predittore con tutti i suoi iperparametri
-    predictor = TabularPredictor(label=target , problem_type=pt).fit(
+    predictor = TabularPredictor(label=target, problem_type=pt).fit(
       train_data=X_train,
       time_limit=options['time']*60,
       presets=['best_quality'],
+      auto_stack=True
       #hyperparameters=hyperparameters    # -> Questo aggiunge le NN 
     )
-    results = predictor.fit_summary()
+    
+    predictor.fit_summary()
     y_pred = predictor.predict(X_test)
     pipelines = (predictor.leaderboard(X_train, silent=True)).to_markdown() # Pipeline
     res = predictor.evaluate_predictions(y_true=y_test.squeeze(), y_pred=y_pred, auxiliary_metrics=True)
