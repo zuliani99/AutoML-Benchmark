@@ -27,7 +27,8 @@ make install
 ```
 
 #### Changes that have to be made to run AutoKeras:
-* Search the file **auto_model.py** and modify these functions:
+Search the autokeras folder into your site-package direcotry, then
+* Open **auto_model.py** and modify the *predict*, *evaluate* and *export_model* function into:
     ```python
     def predict(self, x, batch_size=32, verbose=1, custom_objects={}, **kwargs):
         if isinstance(x, tf.data.Dataset) and self._has_y(x):
@@ -73,7 +74,7 @@ make install
             return self.tuner.get_best_model()
     ```
 
-* Search the file **tuner.py** and modify the function:
+* Go to th engine directory and open **tuner.py** and modify *get_best_model* function into:
     ```python
     def get_best_model(self, custom_objects={}):
         with hm_module.maybe_distribute(self.distribution_strategy):
