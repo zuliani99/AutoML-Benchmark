@@ -1,4 +1,4 @@
-# Import necessari
+# Import needed
 import dash_core_components as dcc
 import dash_html_components as html
 import dash_bootstrap_components as dbc
@@ -6,7 +6,7 @@ import dash_bootstrap_components as dbc
 from .utils import get_lisd_dir, create_collapses, read_markdown
 
 
-# Personalizzazione dell stile dell'applicazione web
+# Customize the style of the web application
 SIDEBAR_STYLE = {
         "position": "fixed",
         "top": 0,
@@ -17,7 +17,7 @@ SIDEBAR_STYLE = {
         "backgroundColor": "#f8f9fa",
     }
 
-# Definizione del sidebar
+# Definition of the sidebar
 sidebar = html.Div(
         [
             html.H2("AutoML BenchMark", className="display-4"),
@@ -41,10 +41,10 @@ sidebar = html.Div(
         style=SIDEBAR_STYLE,
     )
 
-# Ddefinizone della pagina home
+# Definition of the home page
 home = dcc.Markdown(read_markdown())
 
-# Definizone del Tab perlativo al OpenML Benchmark per una sequenza specifica di DataFrame
+# Definition of the OpenML Benchmark Tab for a specific DataFrame sequence
 knownID = dbc.CardBody([
                         html.H4("OpenML BenchMark", className="card-title"),
                         dbc.FormGroup([
@@ -60,7 +60,7 @@ knownID = dbc.CardBody([
                     ])
 
             
-# Definizone del Tab perlativo al OpenML Benchmark per uan sequenza di n Dataframe di calssificazione e regressione con un numero maggiore di x istanze
+# Definition of the OpenML Benchmark Tab for a sequence of n classification and regression Dataframes with a greater number of x instances
 unknownID = dbc.CardBody([
                                 html.H4("OpenML BenchMark", className="card-title"),
                                 dbc.FormGroup([
@@ -88,7 +88,7 @@ unknownID = dbc.CardBody([
                     ])
             
 
-# definizione della pagina openmlbenchmark
+# Definition of the openmlbenchmark page
 openmlbenchmark = html.Div([
                     dbc.Card([
                         dbc.CardBody([
@@ -121,7 +121,7 @@ openmlbenchmark = html.Div([
                 ],size="lg", color="primary", type="border", fullscreen=True)
             ])
 
-# Definizone della pagina kagglebenchmark
+# Definition of the kagglebenchmark page
 kagglebenchmark = html.Div([
                 dbc.Card([
                     dbc.CardBody([
@@ -169,7 +169,7 @@ kagglebenchmark = html.Div([
             ],size="lg", color="primary", type="border", fullscreen=True)
     ])
 
-# Definizone della pagina testbenchmark
+# Definition of the testbenchmark page
 testbenchmark = html.Div([
         dbc.Card([
                     dbc.CardBody([
@@ -212,7 +212,7 @@ testbenchmark = html.Div([
         dbc.Spinner(children=[html.Div(id='res-bench-test')],size="lg", color="primary", type="border", fullscreen=True)
     ])
 
-# Definizone della pagina get_pastresultopenml
+# Definition of the get_pastresultopenml page
 def get_pastresultopenml():
     return html.Div([
         dbc.Select(id='pastresultopenml', options=get_lisd_dir('OpenML'),
@@ -233,7 +233,7 @@ def get_pastresultopenml():
         ],size="lg", color="primary", type="border", fullscreen=False),
     ])
 
-# Definizone della pagina get_pastresultkaggle
+# Definition of the get_pastresultkaggle page
 def get_pastresultkaggle():
     return html.Div([
         dbc.Select(id='pastresultkaggle', options=get_lisd_dir('Kaggle'),

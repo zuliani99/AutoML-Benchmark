@@ -1,5 +1,4 @@
-# Import necessari
-from posixpath import lexists
+# Import needed
 from openml.tasks import TaskType
 from utils.usefull_functions import get_df_list, download_dfs
 import pandas as pd
@@ -7,21 +6,21 @@ import openml
 from utils.result_class import Result
 from termcolor import colored
 
-# Funzione addetta all'esecuzione del OpenML Benchmark
+# Function responsible for executing the OpenML Benchmark
 def openml_benchmark(options, algo_options):
     print('openml_benchmark', options)
-    res_openml = Result('OpenML') # Creazione di un nuovo Result di tipo OpenML
+    res_openml = Result('OpenML') # Creation of a new Result of type OpenML
 
-    if (isinstance(options, tuple)): # Se options è di tipo tupla allora avvio il benchmark con dei dataframe filtrati da openml tramite le opzioni inseirte
+    if (isinstance(options, tuple)): # If options is of type tuple then I start the benchmark with dataframes filtered by openml through the options inseirte
         list_df = openml_benchmark_unknowID(options)
     else:
         list = options.split(',')
-        list_df = download_dfs([df for df in list]) # Altrimenti avvio il benchmark per openml con la lista dei DataFrame inserita dall'utente
+        list_df = download_dfs([df for df in list]) # Otherwise I start the benchmark for OpenML with the list of DataFrames entered by the user
 
     if isinstance(list_df, str):
-        return list_df # Se il valore di ritorno è una lista vuol dire che c'è staato un errore durante il download di uno dei DataFrame
+        return list_df # If the return value is a list it means that there was an error while downloading one of the DataFrame
 
-    # Esegui gli algoritmi per i DataFrame presenti in list_df
+    # Execute the algorithms for the DataFrame present in list_df
     for d in list_df:
         str_path = d.split('/')
         df = pd.read_csv(d)
@@ -34,21 +33,21 @@ def openml_benchmark(options, algo_options):
 
 def openml_benchmark_unknowID(options):
     df_n, morethan = options
-    # Ottemgo tutti i task di tipo SUPERVISED_CLASSIFICATION e SUPERVISED_REGRESSION tramite l'API di OpenML
+    # I accomplish all SUPERVISED_CLASSIFICATION and SUPERVISED_REGRESSION type tasks through the OpenML API
     tasks_class = pd.DataFrame.from_dict(openml.tasks.list_tasks(task_type=TaskType.SUPERVISED_CLASSIFICATION), orient="index")
     tasks_reg = pd.DataFrame.from_dict(openml.tasks.list_tasks(task_type=TaskType.SUPERVISED_REGRESSION), orient="index")
 
-    # Filtro entrambi i DataFrame per il numero di istanze minime e massime
-    filtered_tasks_class = tasks_class.query("NumberOfInstances > " + str(morethan)) # + " and NumberOfInstances < " + str(2*morethan))
-    filtered_tasks_reg = tasks_reg.query("NumberOfInstances > " + str(morethan)) # + " and NumberOfInstances < " + str(2*morethan))
+    # Filter both DataFrames by the number of minimum and maximum instances
+    filtered_tasks_class = tasks_class.query("NumberOfInstances > " + str(morethan))
+    filtered_tasks_reg = tasks_reg.query("NumberOfInstances > " + str(morethan))
 
-    # Elimino i duplicati e tutte le colonne eccetto did e name
+    # Eliminate duplicates and all columns except did and name
     datalist_class = filtered_tasks_class[["did", "name"]].drop_duplicates(subset=['did' and 'name'], inplace=False)
     datalist_reg = filtered_tasks_reg[["did", "name"]].drop_duplicates(subset=['did' and 'name'], inplace=False)
 
     print(colored('--------------------------------Inizio Download Dataset --------------------------------', 'yellow'))
 
-        # Creo un unico DataFrame dato dal download di df_n Dataframe per il caso di calsssificazione e di di df_n Dataframe per regressione
+    # Create a single DataFrame given by the download of df_n Dataframe for the classification case and df_n Dataframe for the regression
     result = get_df_list(datalist_class, df_n, 'classification')
     result.extend(get_df_list(datalist_reg, df_n, 'regression'))
 

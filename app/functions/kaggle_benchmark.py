@@ -1,11 +1,11 @@
-# Import necessari
+# Import needed
 import pandas as pd
 from kaggle.api.kaggle_api_extended import KaggleApi
 from zipfile import ZipFile
 from utils.result_class import Result
 import os
 
-# Dataframe provenienti da competizioni Kaggle
+# Dataframes from Kaggle competitions
 dataframes = {
     'titanic': {'task': 'classification', 'measure': 'acc'},
     'contradictory-my-dear-watson': {'task': 'classification', 'measure': 'acc'},
@@ -18,7 +18,7 @@ dataframes = {
     'GEF2012-wind-forecasting': {'task': 'regression', 'measure': 'rmse'}, 
 }
 
-# Funzione addetta ad effettuare un aggiuntivo unzip in caso sia necessario
+# Function responsible for making an additional unzip if necessary
 def unzip_more(file_extracted, path):
     for i, file in enumerate(file_extracted):
         splitted = file.split('.')
@@ -28,7 +28,7 @@ def unzip_more(file_extracted, path):
             os.remove(path  + '/' + file)
             zf.close()
 
-# Funzione per l'ottenimento del miglio risultato proveninete dalla leaderboard del rispettivo DataFrame di una competizione
+# Function for obtaining the best result from the leaderboard of the respective DataFrame of a competition
 def get_leader(leaderboard):
     i = 0
     leader = leaderboard['submissions'][i]
@@ -37,27 +37,27 @@ def get_leader(leaderboard):
         leader = leaderboard['submissions'][i]
     return leader
 
-# Funzione per l'esecuzione del Kaggle Benchmark
+# Function for running the Kaggle Benchmark
 def kaggle_benchmark(list_df, options):
-    # Inizializzazione dell'API Kaggle
+    # Initializing the Kaggle API
     api = KaggleApi()
     api.authenticate()
 
-    res_kaggle = Result('Kaggle') # Inizializzazione di un nuove Result di tipo Kaggle
+    res_kaggle = Result('Kaggle') # Initialization of a new Result of type Kaggle
     if not isinstance(list_df, list): list_df = [list_df]
-    for df in list_df: # Per tutti i DataFrame che l'utente ha selto
+    for df in list_df: # For all DataFrames that the user has chosen
         print('------------------Dataset name: ' + df + ' - Task: ' + dataframes[df]['task'] + '------------------')
         path = './dataframes/Kaggle/' + df
 
-        if(not os.path.isdir(path)): # Se il DataFrame non è presente devo scaricarlo e unzipparlo
+        if(not os.path.isdir(path)): # If the DataFrame is not present I have to download and unzip it
             api.competition_download_files(df, path=path) 
 
-            # Estraggo le cartelle di train test e submission
+            # I extract the train test and submission folders
             zf = ZipFile(path + '/' + df + '.zip')
             zf.extractall(path) 
             zf.close()
             
-            # Rimuovo lo zip file
+            # Remove the zip file
             os.remove(path + '/' + df + '.zip')
 
             file_extracted = (os.listdir(path))
@@ -66,8 +66,8 @@ def kaggle_benchmark(list_df, options):
         train = pd.read_csv(path + '/train.csv')
         test = pd.read_csv(path + '/test.csv')
 
-        leaderboard = api.competition_view_leaderboard(df) # Download della leaderboard della competizione Kaggle
-        leader = get_leader(leaderboard) # Ottengo il Leader
+        leaderboard = api.competition_view_leaderboard(df) # Download the Kaggle competition leaderboard
+        leader = get_leader(leaderboard) # Get the Leader
             
         res_kaggle.run_benchmark((train, test), dataframes[df]['task'], df, {'measure': dataframes[df]['measure'], 'score': leader['score']}, options)
     return res_kaggle.print_res()

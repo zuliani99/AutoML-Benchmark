@@ -1,5 +1,4 @@
-# Import necessari
-from sklearn.datasets import fetch_openml
+# Import needed
 import pandas as pd
 import os
 from algorithms.auto_keras import autokeras
@@ -10,9 +9,7 @@ from algorithms.h2o import H2O
 from termcolor import colored
 from utils.usefull_functions import download_dfs
 
-
-
-# Dizionario utilizzato come swith case per l'esecizione di uno o tutti gli algoritmi per un determinato DataFrame
+# Dictionary used as a switch case for running one or all algorithms for a given DataFrame
 def switch(algo, df, name, task, options):
     return {
         'autosklearn': lambda df, task: auto_sklearn(df, task, options['autosklearn']),
@@ -31,17 +28,17 @@ def switch(algo, df, name, task, options):
 
 def test(id, algo, options):
     print('----------------'+str(id)+'-----------'+str(algo)+'-------------')
-    # Download del dataframe
+    # Download the dataframe
     df = download_dfs([id])
     if isinstance(df, str):
-        # Ritorno di un eccezione in caso di errore
+        # Return an exception on an error
         return None, df
     try:
-        # Esecuzione del test
+        # Running the test
         res = switch(algo, pd.read_csv(df[0]), df[0].split('/')[4], df[0].split('/')[3], options)
         return df[0].split('/')[3], res
     except Exception as e:
-        # Ritorno di un eccezione in caso di errore
+        # Return an exception on an error
         text = 'An error occured during the benchmak of the dataframe: ' + str(id) + ' reason: ' + str(e)
         print(colored(text + '\n', 'red'))
         return None, text

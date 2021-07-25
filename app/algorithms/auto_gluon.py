@@ -1,4 +1,4 @@
-# Import necessari
+# Import needed
 from autogluon.tabular import TabularPredictor
 from sklearn.model_selection import train_test_split
 from utils.usefull_functions import return_X_y, get_list_single_df
@@ -9,7 +9,7 @@ from sklearn.metrics import f1_score
 import numpy as np
 from termcolor import colored
 
-# Definizione degli algoritmi che autogluon andrà a testare
+# Definition of the algorithms that autogluon will test
 hyperparameters = {
   'GBM': {'num_boost_round': 10000},
   'CAT': {'iterations': 10000},
@@ -21,7 +21,7 @@ hyperparameters = {
 def get_options(task, y):
   f1 = None
   if task == 'classification':
-    # Verifica se si tratta di un caso di calssificazione binaria o multilables
+    # Check if it is a case of binary or multilables classification
     if len(y[y.columns[0]].unique()) > 2:
       pt = 'multiclass'
       f1 = lambda y_test, y_pred : f1_score(y_test, y_pred, average='weighted')
@@ -36,10 +36,10 @@ def autogluon(df, task, options):
   print("----------------------------------AUTOGLUON--------------------------------")
   try:
     pd.options.mode.chained_assignment = None
-    df_new = copy.copy(df) # Copia profonda del DataFrame passato a paramentro 
-    df_new = get_list_single_df(df_new) # Pulizia iniziale del DataFrame
+    df_new = copy.copy(df) # Deep copy of the DataFrame passed to parameter
+    df_new = get_list_single_df(df_new) # Initial cleaning of the DataFrame
 
-    X, y = return_X_y(df_new) # Ottenimento dei due DataFrame X ed y pnecessari per eseguire il train_test_split
+    X, y = return_X_y(df_new) # Obtain the two DataFrame X and y needed to execute the train_test_split
     
     if isinstance(y, pd.Series): y = y.to_frame()
 
@@ -52,7 +52,7 @@ def autogluon(df, task, options):
 
     pt, f1 = get_options(task, y)
 
-    # definizone del predittore con tutti i suoi iperparametri
+   # Definition of the predictor with all its hyperparameters
     predictor = TabularPredictor(label=target, problem_type=pt).fit(
       train_data=X_train,
       time_limit=options['time']*60,
@@ -66,25 +66,25 @@ def autogluon(df, task, options):
     pipelines = (predictor.leaderboard(X_train, silent=True)).to_markdown() # Pipeline
     res = predictor.evaluate_predictions(y_true=y_test.squeeze(), y_pred=y_pred, auxiliary_metrics=True)
 
-    shutil.rmtree('./AutogluonModels') # Eliminazione della cartella creare per il salvataggio dei modelli testati da AutoGluon
+    shutil.rmtree('./AutogluonModels') # Deleting the folder created for saving the models tested by AutoGluon
 
     print("----------------------------------AUTOGLUON--------------------------------\n\n")
     if task != 'classification':
       return (abs(round(res['root_mean_squared_error'], 3)), round(res['r2'], 3), pipelines, options['time'])
-    # Se il parametro 'f1' non è presente nella variabile risultato vuol dire che siamo in un caso di calssificazione multilables e quindi è necessario calcolarsi l'f1_score manualmente
+    # If the parameter 'f1' is not present in the result variable it means that we are in a case of multilables classification and therefore it is necessary to calculate the f1_score manually
     try: return (round(res['accuracy'], 3),  round(res['f1'], 3), pipelines, options['time'])
     except: return (round(res['accuracy'], 3),  round(f1(y_test, y_pred), 3), pipelines, options['time'])
 
   except Exception as e:
-    # In caso di eccezione
+    # In case of exception
     print(colored('Error: ' + str(e), 'red'))
     if str(e) == 'AutoGluon did not successfully train any models':
       if options['rerun'] == True:
-        # Se l'eccezione è provocata del poco tempo messo a disposizione dall'utente ma esso ha spuntato la checkbox per la riesecuzione dell'algoritmo si va a rieseguirlo con un tempo maggiore
+        # If the exception is caused by the short time made available by the user but it has ticked the checkbox for the re-execution of the algorithm, it is re-executed with a longer time
         return autogluon(df, task, {'time': options['time']+1, 'rerun': options['rerun']})
       print("----------------------------------AUTOGLUON--------------------------------\n\n")
       return (None, None, 'Expected Error duo to short algorithm timelife: ' + str(e), None)
-    # Altrimenti si ritornano dei None con l'eccezione posto sulla pipeline 
+    # Otherwise, None are returned with the exception placed on the pipeline
     print("----------------------------------AUTOGLUON--------------------------------\n\n")
     return (None, None, 'Unexpected Error: ' + str(e), None)
 

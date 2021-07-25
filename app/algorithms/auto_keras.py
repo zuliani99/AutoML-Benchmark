@@ -1,4 +1,4 @@
-# Import necessari
+# Import needed
 import pandas as pd
 import numpy as np
 import autokeras as ak
@@ -10,7 +10,7 @@ from tensorflow.keras import backend as K
 import copy
 from termcolor import colored
 
-# Funzioni d'appoggio per il calcolo del f1_score e del r2_score
+# Support functions for the calculation of f1_score and r2_score
 def recall_m(y_true, y_pred):
     true_positives = K.sum(K.round(K.clip(y_true * y_pred, 0, 1)))
     possible_positives = K.sum(K.round(K.clip(y_true, 0, 1)))
@@ -31,7 +31,7 @@ def r2_score(y_true, y_pred):
     SS_tot = K.sum(K.square( y_true - K.mean(y_true) ) )
     return ( 1 - SS_res/(SS_tot + K.epsilon()) )
 
-# Funzione per la definizone del modello automl da effettuare a seconda del task
+# Function for defining the car model to be carried out according to the task
 def get_automl(task):
   if(task == 'classification'):
     clf = ak.StructuredDataClassifier(
@@ -49,7 +49,7 @@ def get_automl(task):
     custom_obj = { 'r2_score': r2_score }
   return clf, custom_obj
 
-# Funzion per l'ottenimento della pipeline
+# Function for getting the pipeline
 def get_summary(model):
   table=pd.DataFrame(columns=["Name","Type","Shape"])
   for layer in model.layers:
@@ -57,19 +57,19 @@ def get_summary(model):
     table = table.append({"Name":layer.name, "Type": layer.__class__.__name__,"Shape":layer.output_shape}, ignore_index=True)
   return (table.to_markdown())
 
-# Caso di classificazione
+# Case of classification
 def get_classification(y_test, y_pred, model_summary, y, timelife):
-  shutil.rmtree('./structured_data_classifier') # Eliminazione della cartella creare per il salvataggio dei modelli testati da AutoKeras
+  shutil.rmtree('./structured_data_classifier') # Delete the folder create for saving the models tested by AutoKeras
   print("---------------------------------AUTOKERAS---------------------------------\n\n")
-  # Controllo se si tratta di un caso binario o multilables
+  # Check if it is a binary or multilables case
   if len(np.unique(y)) > 2:
     return round(sklearn.metrics.accuracy_score(y_test, y_pred), 3), round(sklearn.metrics.f1_score(y_test, y_pred, average='weighted'), 3), model_summary, timelife
   else:
     return round(sklearn.metrics.accuracy_score(y_test, y_pred), 3), round(sklearn.metrics.f1_score(y_test, y_pred, pos_label=np.unique(y)[0]), 3), model_summary, timelife
 
-# Caso di regressione
+# Case of regression
 def get_regression(y_test, y_pred, model_summary, timelife):
-  shutil.rmtree('./structured_data_regressor') # Eliminazione della cartella creare per il salvataggio dei modelli testati da AutoKeras
+  shutil.rmtree('./structured_data_regressor') # Delete the folder create for saving the models tested by AutoKeras
   print("---------------------------------AUTOKERAS---------------------------------\n\n")
   return round(np.sqrt(sklearn.metrics.mean_squared_error(y_test, y_pred)), 3), round(sklearn.metrics.r2_score(y_test, y_pred), 3), model_summary, timelife
 
@@ -84,11 +84,11 @@ def prepare_and_test(X, y, task, timelife):
     y_test = y_test.to_frame() 
 
 
-  clf, custom_obj = get_automl(task) # Definizone del modello a seconda del task dato con il custom_obj che è uguale al secondo score che si vuole tenere in considerazione 
+  clf, custom_obj = get_automl(task) # Definition of the model according to the given task with the custom_obj which is equal to the second score to be taken into consideration
   clf.fit(x=X_train, y=y_train, validation_split=0.15, epochs=timelife)
   model = clf.export_model(custom_objects=custom_obj)
   model.summary()
-  model_summary = get_summary(model) # Pipeline
+  model_summary = get_summary(model) # Pipelines
   y_pred = clf.predict(X_test,custom_objects=custom_obj)
   
   y_test = np.array(y_test, dtype = np.int32)
@@ -103,15 +103,15 @@ def prepare_and_test(X, y, task, timelife):
 def autokeras(df, task, options):
   print("---------------------------------AUTOKERAS---------------------------------")
   try:
-    df_new = copy.copy(df) # Copia profonda del DataFrame passato a paramentro 
-    df_new = fill_and_to_category(df_new) # Pulizia iniziale del DataFrame
+    df_new = copy.copy(df) # Deep copy of the DataFrame passed to parameter
+    df_new = fill_and_to_category(df_new) # Initial cleaning of the DataFrame
     pd.options.mode.chained_assignment = None
-    X, y = return_X_y(df_new) # Ottenimento dei due DataFrame X ed y pnecessari per eseguire il train_test_split
+    X, y = return_X_y(df_new) # Obtain the two DataFrame X and y needed to execute the train_test_split
     return (prepare_and_test(X, y, task, options['time']))
 
   except Exception as e:
-    # In caso di eccezione
+    # In case of exception
     print(colored('Error: ' + str(e), 'red'))
     print("---------------------------------AUTOKERAS---------------------------------\n\n")
-    # Ritorno dei None con l'eccezione posto sulla pipeline 
+    # Return of None with the exception placed on the pipeline
     return (None, None, 'Error: ' + str(e), None)

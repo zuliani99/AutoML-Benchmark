@@ -1,11 +1,11 @@
-# Import necessari
+# Import needed
 import os
 import pandas as pd
 from termcolor import colored
 from sklearn.datasets import fetch_openml
 import openml
 
-# Funzione per ottenere la colonna target
+# Function to get the target column
 def get_target(train, test):
     for c in train.columns:
         if c not in test.columns:
@@ -15,25 +15,25 @@ def get_list_single_df(df):
     return [df] if isinstance(df, pd.DataFrame) else df
 
 
-# Funzione per la separazione della colonna target fal resto del DataFrame
+# Function for separating the target column from the rest of the DataFrame
 def return_X_y(df):
     if not isinstance(df, tuple):
-        # Caso OpenML
+        # OpenML case
         return return_X_y_openML(df)
     target = get_target(df[0], df[1])
-    # ATTENZIONE USO SOLO IL TRAIN
+    # ATTENTION I USE ONLY THE TRAIN
     y = df[0][target]
     X = df[0].drop([target], axis=1)
     return X, y
 
-# Caso Kaggle
+# Kaggle case
 def return_X_y_openML(df):
     new = df[0]
     y = new.iloc[:, -1].to_frame()
     X = new.iloc[:, :-1]
     return X, y
 
-# Funzione di pulizia iniziale del DataFrame 
+# Initial cleaning function of the DataFrame
 def fill_and_to_category(dfs):
     dfs = get_list_single_df(dfs)
     for df in dfs:
@@ -52,7 +52,7 @@ def fill_and_to_category(dfs):
     return dfs
 
 
-# Funzione addetta al Download dei DataFrame nel caso di un OpenML Benchmark
+# Function responsible for Downloading the DataFrame in the case of an OpenML Benchmark
 def get_df_list(datalist, n_df, task):
     list_df = []
     for index, row in datalist.iterrows():
@@ -98,7 +98,7 @@ def get_df_list(datalist, n_df, task):
 
 
 
-# Funzione per la ricerca di un specifico DataFrame nelle cartelle dei risultati precedenti
+# Function to search for a specific DataFrame in the previous results folders
 def serch_df(df_id):
     for task in ['classification', 'regression']:
         lis = os.listdir('./dataframes/OpenML/'+ task +'/')
@@ -108,19 +108,19 @@ def serch_df(df_id):
     return None
 
 
-# Funzione addetta al download della dei DataFrame provenienti dalla lista di ID inseirta dall'utente
+# Function responsible for downloading the DataFrame coming from the ID list entered by the user
 def download_dfs(ids):
     list_df = { 'classification': [], 'regression': []}
     for id in ids:
-        search = serch_df(id) # Inizialmente controllo se il DataFrame che ha scelto l'utente sia presente o meno in una delle due cartelle
+        search = serch_df(id) # Initially I check if the DataFrame that the user has chosen is present or not in one of the two folders
         try:
             task = None
             if search is None:
-                # Se non è presente lo scarico attraverso lapposita API
+                # If there is no download through the appropriate API
                 X, y = fetch_openml(data_id=id, as_frame=True, return_X_y=True, cache=True)
                 name = str(id)+ '_' +openml.datasets.get_dataset(id).name + '.csv'
 
-                # Ottengo il tipo di tasks
+                # Get the type of tasks
                 tasks = openml.tasks.list_tasks(data_id=id, output_format="dataframe")
                 ts = tasks['task_type'].unique()
                 if ('Supervised Classification' not in ts and 'Supervised Regression' not in ts):
@@ -139,19 +139,19 @@ def download_dfs(ids):
                 print(df.info())
                 print(df.head())
                 
-                # Effettuo il salvataggio del DataFrame nell cartella corrispondente
+                # Save the DataFrame in the corresponding folder
                 df.to_csv(fullname, index=False, header=True)
 
             else:
-                # Se è già presente lo salvo e ottengo il task
+                # If it is already present I save it and get the task
                 fullname = search
                 task = search.split('/')[3]
                 print(pd.read_csv(fullname).head())
 
-            list_df[task].append(fullname) # Aggiunta del path del dataframe al relativo array del dizionario list_df
+            list_df[task].append(fullname) # Add the dataframe path to its list_df dictionary array
 
         except Exception as e:
-            # In caso di errore ritrono un messaggio
+            # In case of error, I return a message
             return "Error: Can't download the DataFrame " + str(id) + ' reason: '+ str(e)
-    list_df['classification'].extend(list_df['regression']) # Concatenazione dei due array 
+    list_df['classification'].extend(list_df['regression']) # Concatenation of the two arrays
     return list_df['classification']

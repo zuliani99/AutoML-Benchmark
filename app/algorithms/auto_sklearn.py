@@ -1,4 +1,4 @@
-# Import necessari
+# Import needed
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import accuracy_score, mean_squared_error, f1_score, r2_score
 import autosklearn.classification
@@ -11,7 +11,7 @@ from termcolor import colored
 import psutil
 import dash_html_components as html
 
-# Funzione per la creazione della stringa per la Pipeline
+# Function for creating the string for the Pipeline
 def make_pipeline_autosklearn(str):
   ret = []
   for s in str:
@@ -20,7 +20,7 @@ def make_pipeline_autosklearn(str):
 
 
 def make_classification(X_train, X_test, y_train, y_test, timelife, y):
-  # Modello Classificazione
+  # Classification model
   automl = autosklearn.classification.AutoSklearnClassifier(
           time_left_for_this_task=timelife*60,
           per_run_time_limit=30,
@@ -32,7 +32,7 @@ def make_classification(X_train, X_test, y_train, y_test, timelife, y):
   y_pred = automl.predict(X_test)
   pipelines = make_pipeline_autosklearn(pd.DataFrame(pd.Series(automl.show_models())).iloc[0].squeeze().split('\n')) # Pipeline
   print("--------------------------------AUTOSKLEARN--------------------------------\n\n")
-  # Controllo se si tratta di un caso binario o multilables
+  # Check if it is a binary or multilables case
   if len(np.unique(y)) > 2:
     return (round(accuracy_score(y_test, y_pred), 3), round(f1_score(y_test, y_pred, average='weighted'), 3), pipelines, timelife)
   else:
@@ -40,7 +40,7 @@ def make_classification(X_train, X_test, y_train, y_test, timelife, y):
 
 
 def make_regression(X_train, X_test, y_train, y_test, timelife):
-  # Modello Regressione
+  # Regression model
   automl = autosklearn.regression.AutoSklearnRegressor(
           time_left_for_this_task=timelife*60,
           per_run_time_limit=30,
@@ -58,11 +58,11 @@ def make_regression(X_train, X_test, y_train, y_test, timelife):
 def auto_sklearn(df, task, options):
   print("--------------------------------AUTOSKLEARN--------------------------------")
   try:
-    df_new = copy.copy(df) # Copia profonda del DataFrame passato a paramentro 
+    df_new = copy.copy(df) # Deep copy of the DataFrame passed to parameter
     pd.options.mode.chained_assignment = None
 
-    df_new = fill_and_to_category(df_new) # Pulizia iniziale del DataFrame
-    X, y = return_X_y(df_new) # Ottenimento dei due DataFrame X ed y pnecessari per eseguire il train_test_split
+    df_new = fill_and_to_category(df_new) # Initial cleaning of the DataFrame
+    X, y = return_X_y(df_new) # Obtain the two DataFrame X and y needed to execute the train_test_split
 
 
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=1)
@@ -73,15 +73,15 @@ def auto_sklearn(df, task, options):
       return make_regression(X_train, X_test, y_train, y_test, options['time'])
 
   except Exception as e:
-    # In caso di eccezione
+    # In case of exception
     print(colored('Error: ' + str(e), 'red'))
     if str(e) == 'No valid model found in run history. This means smac was not able to fit a valid model. Please check the log file for errors.':
       if options['rerun'] == True:
-        # Se l'eccezione è provocata del poco tempo messo a disposizione dell'utente ma esso ha spuntato la checkbox per la riesecuzione dall'algoritmo si va a rieseguirlo con un tempo maggiore
+        # If the exception is caused by the short time made available to the user but it has ticked the checkbox for the re-execution by the algorithm, it will be re-executed with a longer time
         return auto_sklearn(df, task, {'time': options['time']+1, 'rerun': options['rerun']})
       print("--------------------------------AUTOSKLEARN--------------------------------\n\n")
       return (None, None, 'Expected Error duo to short algorithm timelife: ' + str(e), None)
-    # Altrimenti si ritornano dei None con l'eccezione posto sulla pipeline 
+    # Otherwise, None are returned with the exception placed on the pipeline
     print("--------------------------------AUTOSKLEARN--------------------------------\n\n")
     return (None, None, 'Unexpected Error: ' + str(e), None)
     
