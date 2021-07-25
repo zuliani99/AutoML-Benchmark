@@ -97,19 +97,19 @@ There are five types of operations:
 1. **OpenML Benchmark:** Here you have two options:
     1. You can insert a sequrnce of dataframe ID where each ID is followed by a comma. This command will run a benchmark on the inserted sequence
     2. Or you can choose the number of dataframes each for classification task and for regression task and the number of instances that a dataframe at least has. This command will start a benchmark using openml dataframes
-![](https://drive.google.com/file/d/1s5AKt5-V-lI9Sbss4Nrik-ae_W6OJ9iQ/view?usp=sharing)
+![](gifs/openml.gif)
 
 2. **Kaggle Benchmark:** Here you can choose multiple kaggle's dataframes for running a benchmark on them
-![](https://drive.google.com/file/d/1zWUR3qJgzg_B1ajDTMHVaTskSlZofXGj/view?usp=sharing)
+![](gifs/kaggle.gif)
 
 3. **Test Benchmark:** Here you can run a benchmark on a specific dataframe by insering the *dataframe id* and using a single *algorithm* ot all of them by selecting a options
-![](https://drive.google.com/file/d/1GRUgLxnxdWVIYCYAhvK88LJlYV4qqjgB/view?usp=sharing)
+![](gifs/test.gif)
 
 4. **Past Results OpenML:** Here you can navigate between past *OpenML* benchmark by selecting a specific date, or you can comapre multiple OpenML Benchmarks that have the same dataframes but with different timelife 
-![](https://drive.google.com/file/d/1UH34RMLQKFea8Qq6AfvTXYNae6Q5abwI/view?usp=sharing)
+![](gifs/past_openml.gif)
 
 5. **Past Results Kaggle:** Here you can navigate between past *Kaggle* benchmark by selecting a specific date, or you can comapre multiple Kaggle Benchmarks that have the same dataframes but with different timelife
-![](https://drive.google.com/file/d/1ij3n81Cmxa9OzI9tdmAbKrrbKSqkEC1t/view?usp=sharing)
+![](gifs/past_kaggle.gif)
 
 ### Actions available 
 In all operation these action are available:
