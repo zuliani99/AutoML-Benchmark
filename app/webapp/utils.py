@@ -360,7 +360,7 @@ def set_body(name, pipeline):
         for string in strings:
             ret.extend((string, html.Br()))
         return html.Div(ret)
-    elif name not in ['dataframe', 'autosklearn']:
+    elif name not in ['dataframe', 'autosklearn', 'mljar']:
         return dcc.Markdown(pipeline)
     else:
         return html.Div(pipeline)
