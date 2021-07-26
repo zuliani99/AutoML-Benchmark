@@ -32,12 +32,12 @@ def displaying_error(error):
                 [], id="tabs-reg", active_tab="", style={'hidden':'true'})]
     
 # Function by definition of the dictionary containing the options entered by the user
-def make_options(as_tl=1, h2o_tl=1, t_tl=1, ak_tl=10, ag_tl=1, as_f=False, h2o_f=False, t_f=False, ak_f=False, ag_f=False):
+def make_options(as_tl=1, h2o_tl=1, t_tl=1, mj_tl=1, ag_tl=1, as_f=False, h2o_f=False, t_f=False, mj_f=False, ag_f=False):
     return {
         'autosklearn': {'min': 1, 'time': as_tl, 'rerun': as_f, 'type': 'minute/s'},
         'h2o': {'min': 1,'time': h2o_tl, 'rerun': h2o_f, 'type': 'minute/s'},
         'tpot': {'min': 1,'time': t_tl, 'rerun': t_f, 'type': 'minute/s'},
-        'autokeras': {'min': 10,'time': ak_tl, 'rerun': ak_f, 'type': 'epoch/s'},
+        'mljar': {'min': 1,'time': mj_tl, 'rerun': mj_f, 'type': 'minute/s'},
         'autogluon': {'min': 1,'time': ag_tl, 'rerun': ag_f, 'type': 'minute/s'},
     }
 
@@ -51,7 +51,7 @@ def render_collapse_options(choice):
         'autosklearn': [False, True, True, True, True],
         'h2o': [True, False, True, True, True],
         'tpot': [True, True, False, True, True],
-        'autokeras': [True, True, True, False, True],
+        'mljar': [True, True, True, False, True],
         'autogluon':[True, True, True, True, False],
         'all': [False, False, False, False, False],
     }.get(choice)

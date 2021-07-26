@@ -192,7 +192,7 @@ testbenchmark = html.Div([
                                         {'label': 'Autosklearn', 'value': 'autosklearn'},
                                         {'label': 'H2O', 'value': 'h2o'},
                                         {'label': 'TPOT', 'value': 'tpot'},
-                                        {'label': 'AutoKears', 'value': 'autokeras'},
+                                        {'label': 'MLJAR', 'value': 'mljar'},
                                         {'label': 'AutoGluon', 'value': 'autogluon'},
                                         {'label': 'All', 'value': 'all'}
                                     ],

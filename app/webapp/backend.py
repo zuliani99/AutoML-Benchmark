@@ -162,7 +162,7 @@ def collapse_alogrithms_options_function(n1, n2, n3, n4, n5, is_open1, is_open2,
         return [False, not is_open2, False, False, False]
     elif button_id == "tpot-options" and n3:
         return [False, False, not is_open3, False, False]
-    elif button_id == "autokeras-options" and n4:
+    elif button_id == "mljar-options" and n4:
         return [False, False, False, not is_open4, False]
     elif button_id == "autogluon-options" and n5:
         return [False, False, False, False, not is_open5]
