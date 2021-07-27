@@ -32,18 +32,18 @@ def r2_score(y_true, y_pred):
     return ( 1 - SS_res/(SS_tot + K.epsilon()) )
 
 # Function for defining the car model to be carried out according to the task
-def get_automl(task):
+def get_automl(task, timelife):
   if(task == 'classification'):
     clf = ak.StructuredDataClassifier(
       overwrite=True,
-      max_trials=3,
+      max_trials=timelife,
       metrics=['accuracy', f1_score]
     )
     custom_obj = { 'f1_score': f1_score }
   else:
     clf = ak.StructuredDataRegressor(
       overwrite=True,
-      max_trials=3,
+      max_trials=timelife,
       metrics=['mean_squared_error', r2_score]
     )
     custom_obj = { 'r2_score': r2_score }
@@ -84,8 +84,8 @@ def prepare_and_test(X, y, task, timelife):
     y_test = y_test.to_frame() 
 
 
-  clf, custom_obj = get_automl(task) # Definition of the model according to the given task with the custom_obj which is equal to the second score to be taken into consideration
-  clf.fit(x=X_train, y=y_train, validation_split=0.15, epochs=timelife)
+  clf, custom_obj = get_automl(task, timelife) # Definition of the model according to the given task with the custom_obj which is equal to the second score to be taken into consideration
+  clf.fit(x=X_train, y=y_train, validation_split=0.15, epochs=50)
   model = clf.export_model(custom_objects=custom_obj)
   model.summary()
   model_summary = get_summary(model) # Pipelines
