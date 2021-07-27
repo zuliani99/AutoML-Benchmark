@@ -1,11 +1,11 @@
 # Import needed
 import pandas as pd
 import os
+from algorithms.auto_keras import autokeras
 from algorithms.auto_sklearn import auto_sklearn
 from algorithms.auto_gluon import autogluon
 from algorithms.tpot import TPOT
 from algorithms.h2o import H2O
-from algorithms.mljar_supervised import mljar
 from termcolor import colored
 from utils.usefull_functions import download_dfs
 
@@ -15,14 +15,14 @@ def switch(algo, df, name, task, options):
         'autosklearn': lambda df, task: auto_sklearn(df, task, options['autosklearn']),
         'tpot': lambda df, task: TPOT(df, task, options['tpot']),
         'h2o': lambda df, task: H2O(df, task, options['h2o']),
-        'mljar': lambda df, task: mljar(df, task, options['mljar']),
+        'autokeras': lambda df, task: autokeras(df, task, options['autokeras']),
         'autogluon': lambda df, task: autogluon(df, task, options['autogluon']),
         'all': lambda df, task: pd.DataFrame.from_dict({
                                                         'dataframe': name,
                                                         'autosklearn': auto_sklearn(df, task, options['autosklearn']),
                                                         'tpot': TPOT(df, task, options['tpot']),
-                                                        'h2o': H2O(df, task, options['h2o']),
-                                                        'mljar': mljar(df, task, options['mljar']),
+                                                        'h2o': H2O(df, task, options['autokeras']),
+                                                        'autokeras': autokeras(df, task, options['h2o']),
                                                         'autogluon': autogluon(df, task, options['autogluon'])})
     }.get(algo)(df, task)
 

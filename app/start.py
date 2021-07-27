@@ -23,7 +23,7 @@ def start():
     
     app.title = 'AutoML Benchmark'
 
-    algorithms = ['autosklearn', 'h2o', 'tpot', 'mljar', 'autogluon']
+    algorithms = ['autosklearn', 'h2o', 'tpot', 'autokeras', 'autogluon']
 
     # Style of the page
     CONTENT_STYLE = {
@@ -59,8 +59,8 @@ def start():
     @app.callback(
         [Output('store_class_openml', 'data'), Output('store_reg_openml', 'data'), Output('store_pipelines_class_openml', 'data'), Output('store_pipelines_reg_openml', 'data'), Output('res-bench-openml-table-class', 'children'), Output('res-bench-openml-table-reg', 'children')],
         [Input('submit-openml', 'n_clicks')],
-        [State("openmlbenchmark-tabs", "active_tab"), State("dfs-sequence", "value"), State('ndf', 'value'), State('nmore', 'value'), State("autosklearn-timelife", "value"), State("h2o-timelife", "value"), State("tpot-timelife", "value"), State("mljar-timelife", "value"), State("autogluon-timelife", "value"),
-        State("autosklearn-flag-rerun", "value"), State("h2o-flag-rerun", "value"), State("tpot-flag-rerun", "value"), State("mljar-flag-rerun", "value"), State("autogluon-flag-rerun", "value")]
+        [State("openmlbenchmark-tabs", "active_tab"), State("dfs-sequence", "value"), State('ndf', 'value'), State('nmore', 'value'), State("autosklearn-timelife", "value"), State("h2o-timelife", "value"), State("tpot-timelife", "value"), State("autokeras-timelife", "value"), State("autogluon-timelife", "value"),
+        State("autosklearn-flag-rerun", "value"), State("h2o-flag-rerun", "value"), State("tpot-flag-rerun", "value"), State("autokeras-flag-rerun", "value"), State("autogluon-flag-rerun", "value")]
     )
     def start_openml(n_clicks, active_tab, dfs_squence, ndf, nmore, as_tl, h2o_tl, t_tl, ak_tl, ag_tl, as_f, h2o_f, t_f, ak_f, ag_f):
         return start_openml_function(active_tab, dfs_squence, ndf, nmore, make_options(as_tl, h2o_tl, t_tl, ak_tl, ag_tl, as_f, h2o_f, t_f, ak_f, ag_f))
@@ -71,22 +71,22 @@ def start():
     @app.callback(
         [Output('store_class_kaggle', 'data'), Output('store_reg_kaggle', 'data'), Output('store_pipelines_class_kaggle', 'data'), Output('store_pipelines_reg_kaggle', 'data'), Output('res-bench-kaggle-table-class', 'children'), Output('res-bench-kaggle-table-reg', 'children')],
         [Input('submit-kaggle', 'n_clicks')],
-        [State('kaggledataframe', 'value'), State("autosklearn-timelife", "value"), State("h2o-timelife", "value"), State("tpot-timelife", "value"), State("mljar-timelife", "value"), State("autogluon-timelife", "value"),
-        State("autosklearn-flag-rerun", "value"), State("h2o-flag-rerun", "value"), State("tpot-flag-rerun", "value"), State("mljar-flag-rerun", "value"), State("autogluon-flag-rerun", "value")]
+        [State('kaggledataframe', 'value'), State("autosklearn-timelife", "value"), State("h2o-timelife", "value"), State("tpot-timelife", "value"), State("autokeras-timelife", "value"), State("autogluon-timelife", "value"),
+        State("autosklearn-flag-rerun", "value"), State("h2o-flag-rerun", "value"), State("tpot-flag-rerun", "value"), State("autokeras-flag-rerun", "value"), State("autogluon-flag-rerun", "value")]
     )
-    def start_kaggle(n_clicks, kaggledataframe, as_tl, h2o_tl, t_tl, mj_tl, ag_tl, as_f, h2o_f, t_f, mj_f, ag_f):
-        return start_kaggle_function(kaggledataframe, make_options(as_tl, h2o_tl, t_tl, mj_tl, ag_tl, as_f, h2o_f, t_f, mj_f, ag_f))
+    def start_kaggle(n_clicks, kaggledataframe, as_tl, h2o_tl, t_tl, ak_tl, ag_tl, as_f, h2o_f, t_f, ak_f, ag_f):
+        return start_kaggle_function(kaggledataframe, make_options(as_tl, h2o_tl, t_tl, ak_tl, ag_tl, as_f, h2o_f, t_f, ak_f, ag_f))
 
 
     # Callback to run the Test Benchmark
     @app.callback(  
         [Output('res-bench-test', 'children')],
         [Input('submit-test', 'n_clicks')],
-        [State('dfid', 'value'), State('algorithms', 'value'), State("autosklearn-timelife", "value"), State("h2o-timelife", "value"), State("tpot-timelife", "value"), State("mljar-timelife", "value"), State("autogluon-timelife", "value"),
-        State("autosklearn-flag-rerun", "value"), State("h2o-flag-rerun", "value"), State("tpot-flag-rerun", "value"), State("mljar-flag-rerun", "value"), State("autogluon-flag-rerun", "value")]
+        [State('dfid', 'value'), State('algorithms', 'value'), State("autosklearn-timelife", "value"), State("h2o-timelife", "value"), State("tpot-timelife", "value"), State("autokeras-timelife", "value"), State("autogluon-timelife", "value"),
+        State("autosklearn-flag-rerun", "value"), State("h2o-flag-rerun", "value"), State("tpot-flag-rerun", "value"), State("autokeras-flag-rerun", "value"), State("autogluon-flag-rerun", "value")]
     )
-    def start_test(n_clicks, dfid, algorithms, as_tl, h2o_tl, t_tl, mj_tl, ag_tl, as_f, h2o_f, t_f, mj_f, ag_f):
-        return start_test_function(dfid, algorithms, make_options(as_tl, h2o_tl, t_tl, mj_tl, ag_tl, as_f, h2o_f, t_f, mj_f, ag_f))
+    def start_test(n_clicks, dfid, algorithms, as_tl, h2o_tl, t_tl, ak_tl, ag_tl, as_f, h2o_f, t_f, ak_f, ag_f):
+        return start_test_function(dfid, algorithms, make_options(as_tl, h2o_tl, t_tl, ak_tl, ag_tl, as_f, h2o_f, t_f, ak_f, ag_f))
 
 
     # Populating the Stores needed to view the results of old OpenML Benchmarks
@@ -94,7 +94,7 @@ def start():
         [Output('store_class_results_openml', 'data'), Output('store_reg_results_openml', 'data'),Output('store_pipelines_results_class_openml', 'data'), Output('store_pipelines_results_reg_openml', 'data'), Output('result-past-bench-openml-table-class', 'children'), Output('result-past-bench-openml-table-reg', 'children')],
         [Input('submit-search-openml', 'n_clicks')],
         [State('pastresultopenml', 'value'), State('pastresultopenml-comapre', 'value')]
-    ) 
+    )
     def get_store_past_bech_openml(n_clicks, timestamp, compare_with): return get_store_past_bech_function(timestamp, 'past-OpenML', compare_with)
 
     # Callback for changing the Dropdown of comparable markings
