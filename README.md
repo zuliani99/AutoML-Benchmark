@@ -1,5 +1,5 @@
 # AutoML-Benchmark
-Benchmark for some usual automated machine learning, such as: [AutoSklearn](https://automl.github.io/auto-sklearn/master/), [MLJAR](https://supervised.mljar.com/), [H2O](https://docs.h2o.ai/h2o/latest-stable/h2o-docs/automl.html), [TPOT](http://epistasislab.github.io/tpot/) and [AutoGluon](https://auto.gluon.ai/stable/index.html). All visualized via a responsive [Dash Ploty](https://dash.plotly.com/) Web Application.
+Benchmark for some usual automated machine learning, such as: [AutoSklearn](https://automl.github.io/auto-sklearn/master/), [AutoKeras](https://autokeras.com/), [H2O](https://docs.h2o.ai/h2o/latest-stable/h2o-docs/automl.html), [TPOT](http://epistasislab.github.io/tpot/) and [AutoGluon](https://auto.gluon.ai/stable/index.html). All visualized via a responsive [Dash Ploty](https://dash.plotly.com/) Web Application.
 
 
 ## Installation
@@ -26,6 +26,64 @@ Clone my repository and install all dependencies with:
 make install
 ```
 
+#### Changes that have to be made to run AutoKeras:
+Search the autokeras folder into your site-package direcotry, then
+* Open **auto_model.py** and modify the *predict*, *evaluate* and *export_model* function into:
+    ```python
+    def predict(self, x, batch_size=32, verbose=1, custom_objects={}, **kwargs):
+        if isinstance(x, tf.data.Dataset) and self._has_y(x):
+            x = x.map(lambda x, y: x)
+        self._check_data_format((x, None), predict=True)
+        dataset = self._adapt(x, self.inputs, batch_size)
+        pipeline = self.tuner.get_best_pipeline()
+        if custom_objects:
+            model = self.tuner.get_best_model(custom_objects=custom_objects)
+        else:
+            model = self.tuner.get_best_model()
+        dataset = pipeline.transform_x(dataset)
+        dataset = tf.data.Dataset.zip((dataset, dataset))
+        y = model.predict(dataset, **kwargs)
+        y = utils.predict_with_adaptive_batch_size(
+            model=model, batch_size=batch_size, x=dataset, verbose=verbose, **kwargs
+        )
+        return pipeline.postprocess(y)
+            
+    def evaluate(self, x, y=None, batch_size=32, verbose=1, custom_objects={},**kwargs):
+        self._check_data_format((x, y))
+        if isinstance(x, tf.data.Dataset):
+            dataset = x
+            x = dataset.map(lambda x, y: x)
+            y = dataset.map(lambda x, y: y)
+        x = self._adapt(x, self.inputs, batch_size)
+        y = self._adapt(y, self._heads, batch_size)
+        dataset = tf.data.Dataset.zip((x, y))
+        pipeline = self.tuner.get_best_pipeline()
+        dataset = pipeline.transform(dataset)
+        if custom_objects:
+            model = self.tuner.get_best_model(custom_objects=custom_objects)
+        else:
+            model = self.tuner.get_best_model()
+        return utils.evaluate_with_adaptive_batch_size(
+            model=model, batch_size=batch_size, x=dataset, verbose=verbose, **kwargs
+        )
+            
+    def export_model(self, custom_objects={}):
+        if custom_objects:
+            return self.tuner.get_best_model(custom_objects=custom_objects)
+        else:
+            return self.tuner.get_best_model()
+    ```
+
+* Go to th engine directory and open **tuner.py** and modify *get_best_model* function into:
+    ```python
+    def get_best_model(self, custom_objects={}):
+        with hm_module.maybe_distribute(self.distribution_strategy):
+            if custom_objects:
+                model = tf.keras.models.load_model(self.best_model_path, custom_objects=custom_objects)
+            else:
+                model = tf.keras.models.load_model(self.best_model_path)
+        return model
+    ```
 
 ## Usage
 To run the app execute the following line of code:
