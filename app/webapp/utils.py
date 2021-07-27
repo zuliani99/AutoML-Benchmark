@@ -34,11 +34,11 @@ def displaying_error(error):
 # Function by definition of the dictionary containing the options entered by the user
 def make_options(as_tl=1, h2o_tl=1, t_tl=1, mj_tl=1, ag_tl=1, as_f=False, h2o_f=False, t_f=False, mj_f=False, ag_f=False):
     return {
-        'autosklearn': {'min': 1, 'time': as_tl, 'rerun': as_f, 'type': 'minute/s'},
-        'h2o': {'min': 1,'time': h2o_tl, 'rerun': h2o_f, 'type': 'minute/s'},
-        'tpot': {'min': 1,'time': t_tl, 'rerun': t_f, 'type': 'minute/s'},
-        'mljar': {'min': 1,'time': mj_tl, 'rerun': mj_f, 'type': 'minute/s'},
-        'autogluon': {'min': 1,'time': ag_tl, 'rerun': ag_f, 'type': 'minute/s'},
+        'autosklearn': {'min': 1, 'default': 60, 'time': as_tl, 'rerun': as_f, 'type': 'minute/s'},
+        'h2o': {'min': 1, 'default': None, 'time': h2o_tl, 'rerun': h2o_f, 'type': 'minute/s'},
+        'tpot': {'min': 1, 'default': None,'time': t_tl, 'rerun': t_f, 'type': 'minute/s'},
+        'mljar': {'min': 1, 'default': 60,'time': mj_tl, 'rerun': mj_f, 'type': 'minute/s'},
+        'autogluon': {'min': 1, 'default': None,'time': ag_tl, 'rerun': ag_f, 'type': 'minute/s'},
     }
 
 # Function for checking that the options entered by the user are valid
@@ -315,7 +315,7 @@ def create_collapses():
                                     dbc.Label("Running time in " + val['type'], width=5),
                                     dbc.Col([
                                             dbc.InputGroup([
-                                                    dbc.Input(id=key + "-timelife", type="number", value=val['min'], placeholder=val['type'], min=val['min']),
+                                                    dbc.Input(id=key + "-timelife", type="number", value=val['default'], placeholder=val['type'], min=val['min']),
                                                     dbc.InputGroupAddon("at least " + str(val['min']), addon_type="prepend"),
                                             ]),
                                         ],width=5,

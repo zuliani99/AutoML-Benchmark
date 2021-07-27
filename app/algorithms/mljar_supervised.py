@@ -1,3 +1,4 @@
+# Import needed
 import pandas as pd
 import numpy as np
 from sklearn.model_selection import train_test_split
@@ -10,11 +11,13 @@ from termcolor import colored
 import os
 import re
 
+# Function for reading the README.md file related to one of the created pipelines
 def read_md(path):
   with open(path, 'r') as file:
     data = file.read().replace('\n', '')
   return data
 
+# Function for creating the pipeline string
 def make_pipeline_mljar(pipelines, dirs):
   for index, row in pipelines.iterrows():
     md = re.split(row['name']+'|## Validation -|## Optimized metric',dirs.get(row['name']))
@@ -29,6 +32,7 @@ def make_pipeline_mljar(pipelines, dirs):
     pipelines.at[index, 'validation_parameters'] = validation_parameters
   return pipelines
 
+# Function to get the list of folders each of which represents a tested opipeline
 def get_dirs():
   path = './AutoML_1'
   directory_contents = os.listdir(path)
@@ -42,8 +46,10 @@ def mljar(df, task, options):
   try:
     return do_mljar(df, options, task)
   except Exception as e:
+    # In case of exception
     print(colored('Error: ' + str(e), 'red'))
     print('---------------------------------MLJAR---------------------------------\n\n')
+    # Return of None with the exception placed on the pipeline
     return None, None, 'Error: ' + str(e), None
 
 def do_mljar(df, options, task):
@@ -60,7 +66,7 @@ def do_mljar(df, options, task):
 
   dirs = get_dirs()
  
-  pipelines = make_pipeline_mljar(pd.read_csv('AutoML_1/leaderboard.csv'), dirs)
+  pipelines = make_pipeline_mljar(pd.read_csv('AutoML_1/leaderboard.csv'), dirs) # Pipelines
   shutil.rmtree('./AutoML_1')
 
   print('---------------------------------MLJAR---------------------------------\n\n')
