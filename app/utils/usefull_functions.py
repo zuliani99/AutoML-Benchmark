@@ -119,9 +119,11 @@ def download_dfs(ids):
                 # If there is no download through the appropriate API
                 X, y = fetch_openml(data_id=id, as_frame=True, return_X_y=True, cache=True)
                 name = str(id)+ '_' +openml.datasets.get_dataset(id).name + '.csv'
-
+                
                 # Get the type of tasks
                 tasks = openml.tasks.list_tasks(data_id=id, output_format="dataframe")
+                if tasks is None or tasks.empty:
+                    return 'Error: dataframe ' + str(id) + " haven't any task, choose a different one" 
                 ts = tasks['task_type'].unique()
                 if ('Supervised Classification' not in ts and 'Supervised Regression' not in ts):
                     return 'Error: Invalid Dataframe task'
