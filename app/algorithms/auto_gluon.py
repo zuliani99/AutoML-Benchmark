@@ -8,6 +8,7 @@ import copy
 from sklearn.metrics import f1_score
 import numpy as np
 from termcolor import colored
+import time
 
 # Definition of the algorithms that autogluon will test
 hyperparameters = {
@@ -32,7 +33,7 @@ def get_options(task, y):
     pt = 'regression'
   return pt, f1
 
-def autogluon(df, task, options):
+def autogluon(df, task, options, time_start):
   print("----------------------------------AUTOGLUON--------------------------------")
   try:
     pd.options.mode.chained_assignment = None
@@ -69,11 +70,14 @@ def autogluon(df, task, options):
     shutil.rmtree('./AutogluonModels') # Deleting the folder created for saving the models tested by AutoGluon
 
     print("----------------------------------AUTOGLUON--------------------------------\n\n")
+
+    time_elapsed = round((time.time() - time_start)/60, 3) # Time consumed for computation
+
     if task != 'classification':
-      return (abs(round(res['root_mean_squared_error'], 3)), round(res['r2'], 3), pipelines, options['time'])
+      return (abs(round(res['root_mean_squared_error'], 3)), round(res['r2'], 3), pipelines, time_elapsed)
     # If the parameter 'f1' is not present in the result variable it means that we are in a case of multilables classification and therefore it is necessary to calculate the f1_score manually
-    try: return (round(res['accuracy'], 3),  round(res['f1'], 3), pipelines, options['time'])
-    except: return (round(res['accuracy'], 3),  round(f1(y_test, y_pred), 3), pipelines, options['time'])
+    try: return (round(res['accuracy'], 3),  round(res['f1'], 3), pipelines, time_elapsed)
+    except: return (round(res['accuracy'], 3),  round(f1(y_test, y_pred), 3), pipelines, time_elapsed)
 
   except Exception as e:
     # In case of exception
@@ -81,7 +85,7 @@ def autogluon(df, task, options):
     if str(e) == 'AutoGluon did not successfully train any models':
       if options['rerun'] == True:
         # If the exception is caused by the short time made available by the user but it has ticked the checkbox for the re-execution of the algorithm, it is re-executed with a longer time
-        return autogluon(df, task, {'time': options['time']+1, 'rerun': options['rerun']})
+        return autogluon(df, task, {'time': options['time']+1, 'rerun': options['rerun']}, time_start)
       print("----------------------------------AUTOGLUON--------------------------------\n\n")
       return (None, None, 'Error duo to short algorithm timelife: ' + str(e), None)
     # Otherwise, None are returned with the exception placed on the pipeline

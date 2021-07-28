@@ -10,6 +10,7 @@ import copy
 from termcolor import colored
 import os
 import re
+import time
 
 # Function for reading the README.md file related to one of the created pipelines
 def read_md(path):
@@ -47,10 +48,11 @@ def get_dirs():
     for item in directory_contents if os.path.isdir(path + '/' + item)
   }
 
-def mljar(df, task, options):
+
+def mljar(df, task, options, time_start):
   print("---------------------------------MLJAR---------------------------------")
   try:
-    return do_mljar(df, options, task)
+    return do_mljar(df, options, task, time_start)
   except Exception as e:
     # In case of exception
     print(colored('Error: ' + str(e), 'red'))
@@ -58,7 +60,8 @@ def mljar(df, task, options):
     # Return of None with the exception placed on the pipeline
     return None, None, 'Error: ' + str(e), None
 
-def do_mljar(df, options, task):
+
+def do_mljar(df, options, task, time_start):
   df_new = copy.copy(df) # Deep copy of the DataFrame passed to parameter
   df_new = fill_and_to_category(df_new) # Initial cleaning of the DataFrame
   pd.options.mode.chained_assignment = None
@@ -76,9 +79,11 @@ def do_mljar(df, options, task):
 
   print('---------------------------------MLJAR---------------------------------\n\n')
 
+  time_elapsed = round((time.time() - time_start)/60, 3) # Time consumed for computation
+
   if task != 'classification':
-    return (round(np.sqrt(mean_squared_error(y_test, y_pred['label'])), 3), round(r2_score(y_test, y_pred['label']), 3), pipelines, options['time'])
+    return (round(np.sqrt(mean_squared_error(y_test, y_pred['label'])), 3), round(r2_score(y_test, y_pred['label']), 3), pipelines, time_elapsed)
   # Check if it is a binary or multilables case
   if len(np.unique(y)) > 2:
-    return (round(accuracy_score(y_test, y_pred['label']), 3), round(f1_score(y_test, y_pred['label'], average='weighted'), 3), pipelines, options['time'])
-  return (round(accuracy_score(y_test, y_pred['label']), 3), round(f1_score(y_test, y_pred['label'], pos_label=np.unique(y)[0]), 3), pipelines, options['time'])
+    return (round(accuracy_score(y_test, y_pred['label']), 3), round(f1_score(y_test, y_pred['label'], average='weighted'), 3), pipelines, time_elapsed)
+  return (round(accuracy_score(y_test, y_pred['label']), 3), round(f1_score(y_test, y_pred['label'], pos_label=np.unique(y)[0]), 3), pipelines, time_elapsed)

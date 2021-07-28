@@ -8,22 +8,23 @@ from algorithms.h2o import H2O
 from algorithms.mljar_supervised import mljar
 from termcolor import colored
 from utils.usefull_functions import download_dfs
+import time
 
 # Dictionary used as a switch case for running one or all algorithms for a given DataFrame
 def switch(algo, df, name, task, options):
     return {
-        'autosklearn': lambda df, task: auto_sklearn(df, task, options['autosklearn']),
-        'tpot': lambda df, task: TPOT(df, task, options['tpot']),
-        'h2o': lambda df, task: H2O(df, task, options['h2o']),
-        'mljar': lambda df, task: mljar(df, task, options['mljar']),
-        'autogluon': lambda df, task: autogluon(df, task, options['autogluon']),
+        'autosklearn': lambda df, task: auto_sklearn(df, task, options['autosklearn'], time.time()),
+        'tpot': lambda df, task: TPOT(df, task, options['tpot'], time.time()),
+        'h2o': lambda df, task: H2O(df, task, options['h2o'], time.time()),
+        'mljar': lambda df, task: mljar(df, task, options['mljar'], time.time()),
+        'autogluon': lambda df, task: autogluon(df, task, options['autogluon'], time.time()),
         'all': lambda df, task: pd.DataFrame.from_dict({
                                                         'dataframe': name,
-                                                        'autosklearn': auto_sklearn(df, task, options['autosklearn']),
-                                                        'tpot': TPOT(df, task, options['tpot']),
-                                                        'h2o': H2O(df, task, options['h2o']),
-                                                        'mljar': mljar(df, task, options['mljar']),
-                                                        'autogluon': autogluon(df, task, options['autogluon'])})
+                                                        'autosklearn': auto_sklearn(df, task, options['autosklearn'], time.time()),
+                                                        'tpot': TPOT(df, task, options['tpot'], time.time()),
+                                                        'h2o': H2O(df, task, options['h2o'], time.time()),
+                                                        'mljar': mljar(df, task, options['mljar'], time.time()),
+                                                        'autogluon': autogluon(df, task, options['autogluon'], time.time())})
     }.get(algo)(df, task)
 
 def test(id, algo, options):

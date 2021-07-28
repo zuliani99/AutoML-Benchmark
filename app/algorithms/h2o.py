@@ -8,6 +8,7 @@ from utils.usefull_functions import return_X_y, fill_and_to_category, get_list_s
 from sklearn.metrics import accuracy_score, mean_squared_error, f1_score, r2_score
 import copy
 from termcolor import colored
+import time
 
 # Function for getting the pipeline
 def get_summary(model):
@@ -15,7 +16,7 @@ def get_summary(model):
   model.summary(print_fn=lambda x: summary.append(x))
   return '\n'.join(summary)
 
-def prepare_and_test(train, test, task, timelife):
+def prepare_and_test(train, test, task, timelife, time_start):
   x = train.columns
   y = train.columns[train.shape[1]-1]
   x.remove(y)
@@ -40,20 +41,22 @@ def prepare_and_test(train, test, task, timelife):
   h2o.shutdown() # Termination of the H2O cluster
   
   print("------------------------------------H2O------------------------------------\n\n")
+
+  time_elapsed = round((time.time() - time_start)/60, 3) # Time consumed for computation
   
   if task != 'classification':
-    return (round(np.sqrt(mean_squared_error(target, pred)), 3), round(r2_score(target, pred), 3), pipelines, timelife)
+    return (round(np.sqrt(mean_squared_error(target, pred)), 3), round(r2_score(target, pred), 3), pipelines, time_elapsed)
 
   # Check if it is a binary or multilables case
   if len(np.unique(target)) > 2:
-    return (round(accuracy_score(target, pred), 3), round(f1_score(target, pred, average='weighted'), 3), pipelines, timelife)
-  return (round(accuracy_score(target, pred), 3), round(f1_score(target, pred, pos_label=np.unique(target)[0]), 3), pipelines, timelife)
+    return (round(accuracy_score(target, pred), 3), round(f1_score(target, pred, average='weighted'), 3), pipelines, time_elapsed)
+  return (round(accuracy_score(target, pred), 3), round(f1_score(target, pred, pos_label=np.unique(target)[0]), 3), pipelines, time_elapsed)
 
 
-def H2O(df, task, options):
+def H2O(df, task, options, time_start):
   print("------------------------------------H2O------------------------------------")
   try:
-    return do_h20(df, task, options['time'])
+    return do_h20(df, task, options['time'], time_start)
 
   except Exception as e:
     # In case of exception
@@ -61,14 +64,14 @@ def H2O(df, task, options):
     if str(e) == 'Argument `data` should be an H2OFrame, got NoneType None':
       if options['rerun'] == True:
         # If the exception is caused by the short time made available by the user but it has ticked the checkbox for the re-execution of the algorithm, it is re-executed with a longer time
-        return H2O(df, task, {'time': options['time'] + 1, 'rerun': options['rerun']})
+        return H2O(df, task, {'time': options['time'] + 1, 'rerun': options['rerun']}, time_start)
       print('------------------------------------H2O------------------------------------\n\n')
       return None, None, 'Error duo to short algorithm timelife: ' + str(e), None
     # Otherwise, None are returned with the exception placed on the pipeline
     print('------------------------------------H2O------------------------------------\n\n')
     return None, None, 'Error: ' + str(e), None
 
-def do_h20(df, task, timelife):
+def do_h20(df, task, timelife, time_start):
   pd.options.mode.chained_assignment = None
   h2o.init()  # Starting the H2O cluster
   df_new = copy.copy(df) # Deep copy of the DataFrame passed to parameter
@@ -90,5 +93,5 @@ def do_h20(df, task, timelife):
   train = h2o.H2OFrame(train)
   test = h2o.H2OFrame(test)
 
-  return(prepare_and_test(train, test, task, timelife))
+  return(prepare_and_test(train, test, task, timelife, time_start))
     

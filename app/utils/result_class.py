@@ -7,6 +7,7 @@ from algorithms.auto_sklearn import auto_sklearn
 from algorithms.auto_gluon import autogluon
 from algorithms.tpot import TPOT
 from algorithms.h2o import H2O
+import time
 
 # Creation of the Result class in charge of executing all algorithms for a given DataFrame
 class Result:
@@ -26,11 +27,11 @@ class Result:
     # Function responsible for executing the algorithms for a given DataFrame and also for updating the fields of the class
     def run_benchmark(self, df, task, df_name, leader, options):
         # Execution of algorithms
-        res_as = auto_sklearn(df, task, options['autosklearn'])
-        res_t = TPOT(df, task, options['tpot'])
-        res_h = H2O(df, task, options['h2o'])
-        res_mj = mljar(df, task, options['mljar'])
-        res_ag = autogluon(df, task, options['autogluon'])
+        res_as = auto_sklearn(df, task, options['autosklearn'], time.time())
+        res_t = TPOT(df, task, options['tpot'], time.time())
+        res_h = H2O(df, task, options['h2o'], time.time())
+        res_mj = mljar(df, task, options['mljar'], time.time())
+        res_ag = autogluon(df, task, options['autogluon'], time.time())
 
         self.options_start = pd.DataFrame({
             'autosklearn-min': [options['autosklearn']['time']],
