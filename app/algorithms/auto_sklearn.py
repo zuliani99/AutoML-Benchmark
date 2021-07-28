@@ -9,14 +9,6 @@ from utils.usefull_functions import return_X_y, fill_and_to_category
 import copy
 from termcolor import colored
 import psutil
-import dash_html_components as html
-
-# Function for creating the string for the Pipeline
-def make_pipeline_autosklearn(str):
-  ret = []
-  for s in str:
-    ret.extend((s, html.Br()))
-  return ret
 
 
 def make_classification(X_train, X_test, y_train, y_test, timelife, y):
@@ -30,7 +22,7 @@ def make_classification(X_train, X_test, y_train, y_test, timelife, y):
     )
   automl.fit(X_train, y_train)
   y_pred = automl.predict(X_test)
-  pipelines = make_pipeline_autosklearn(pd.DataFrame(pd.Series(automl.show_models())).iloc[0].squeeze().split('\n')) # Pipeline
+  pipelines = str(pd.DataFrame(pd.Series(automl.show_models())).iloc[0].squeeze()) # Pipeline
   print("--------------------------------AUTOSKLEARN--------------------------------\n\n")
   # Check if it is a binary or multilables case
   if len(np.unique(y)) > 2:
@@ -50,7 +42,7 @@ def make_regression(X_train, X_test, y_train, y_test, timelife):
     )
   automl.fit(X_train, y_train)
   y_pred = automl.predict(X_test)
-  pipelines = make_pipeline_autosklearn(pd.DataFrame(pd.Series(automl.show_models())).iloc[0].squeeze().split('\n')) # Pipeline
+  pipelines = str(pd.DataFrame(pd.Series(automl.show_models())).iloc[0].squeeze().split('\n')) # Pipeline
   print("--------------------------------AUTOSKLEARN--------------------------------\n\n")
   return (round(np.sqrt(mean_squared_error(y_test, y_pred)), 3), round(r2_score(y_test, y_pred), 3), pipelines, timelife)
 
@@ -80,9 +72,9 @@ def auto_sklearn(df, task, options):
         # If the exception is caused by the short time made available to the user but it has ticked the checkbox for the re-execution by the algorithm, it will be re-executed with a longer time
         return auto_sklearn(df, task, {'time': options['time']+1, 'rerun': options['rerun']})
       print("--------------------------------AUTOSKLEARN--------------------------------\n\n")
-      return (None, None, 'Expected Error duo to short algorithm timelife: ' + str(e), None)
+      return (None, None, 'Error duo to short algorithm timelife: ' + str(e), None)
     # Otherwise, None are returned with the exception placed on the pipeline
     print("--------------------------------AUTOSKLEARN--------------------------------\n\n")
-    return (None, None, 'Unexpected Error: ' + str(e), None)
+    return (None, None, 'Error: ' + str(e), None)
     
     

@@ -8,7 +8,6 @@ import dash_core_components as dcc
 import dash_html_components as html
 from dash.dependencies import Input, Output, State, MATCH
 import dash_bootstrap_components as dbc
-from dash.exceptions import PreventUpdate
 
 import os
 os.environ['KAGGLE_USERNAME'] = "zullle" # Username for using the Kaggle API

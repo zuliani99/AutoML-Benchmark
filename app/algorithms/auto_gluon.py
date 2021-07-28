@@ -83,8 +83,8 @@ def autogluon(df, task, options):
         # If the exception is caused by the short time made available by the user but it has ticked the checkbox for the re-execution of the algorithm, it is re-executed with a longer time
         return autogluon(df, task, {'time': options['time']+1, 'rerun': options['rerun']})
       print("----------------------------------AUTOGLUON--------------------------------\n\n")
-      return (None, None, 'Expected Error duo to short algorithm timelife: ' + str(e), None)
+      return (None, None, 'Error duo to short algorithm timelife: ' + str(e), None)
     # Otherwise, None are returned with the exception placed on the pipeline
     print("----------------------------------AUTOGLUON--------------------------------\n\n")
-    return (None, None, 'Unexpected Error: ' + str(e), None)
+    return (None, None, 'Error: ' + str(e), None)
 

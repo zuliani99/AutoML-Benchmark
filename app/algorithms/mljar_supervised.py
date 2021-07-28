@@ -14,31 +14,37 @@ import re
 # Function for reading the README.md file related to one of the created pipelines
 def read_md(path):
   with open(path, 'r') as file:
-    data = file.read().replace('\n', '')
+    data = file.read()
   return data
 
 # Function for creating the pipeline string
 def make_pipeline_mljar(pipelines, dirs):
   for index, row in pipelines.iterrows():
-    md = re.split(row['name']+'|## Validation -|## Optimized metric',dirs.get(row['name']))
+    if(row['name'] != 'Ensemble'):
+      md = re.split('## ',dirs.get(row['name']))
 
-    model_parameters = re.sub('[*]', '', md[1].split('##')[1])
-    model_parameters = re.sub('[-]', ',', model_parameters).replace('n_jobs: ,1', 'n_jobs: -1')
+      model_parameters = re.sub('[*-]', '', md[1])
+      model_parameters = re.sub('[\n]', ',', model_parameters).replace('n_jobs: ,1', 'n_jobs: -1')
 
-    validation_parameters = re.sub('[*]', '', md[2])
-    validation_parameters = re.sub('[-]', ',', validation_parameters)
+      validation_parameters = re.sub('[*\n]', '', md[2])
+      validation_parameters = re.sub('[-]', ',', validation_parameters).replace('Validation , ', '')
 
-    pipelines.at[index, 'model_parameters'] = model_parameters
-    pipelines.at[index, 'validation_parameters'] = validation_parameters
-  return pipelines
+      print(validation_parameters)
+
+      pipelines.at[index, 'model_parameters'] = model_parameters
+      pipelines.at[index, 'validation_parameters'] = validation_parameters
+          
+  md = re.split('## Ensemble structure|### Metric details|## Confusion matrix',dirs.get('Ensemble'))
+
+  return str(pipelines.to_markdown()), (md[1]), (md[2])
 
 # Function to get the list of folders each of which represents a tested opipeline
 def get_dirs():
   path = './AutoML_1'
   directory_contents = os.listdir(path)
   return {
-      item: read_md(path + '/' + item + '/README.md')
-      for item in directory_contents if os.path.isdir(path + '/' + item)
+    item: read_md(path + '/' + item + '/README.md')
+    for item in directory_contents if os.path.isdir(path + '/' + item)
   }
 
 def mljar(df, task, options):
@@ -48,7 +54,7 @@ def mljar(df, task, options):
   except Exception as e:
     # In case of exception
     print(colored('Error: ' + str(e), 'red'))
-    print('---------------------------------MLJAR---------------------------------\n\n')
+    print('---------------------------------MLJARecc---------------------------------\n\n')
     # Return of None with the exception placed on the pipeline
     return None, None, 'Error: ' + str(e), None
 
@@ -63,17 +69,16 @@ def do_mljar(df, options, task):
   
   automl.fit(X_train, y_train)
   y_pred = automl.predict_all(X_test)
-
-  dirs = get_dirs()
  
+  dirs = get_dirs()
   pipelines = make_pipeline_mljar(pd.read_csv('AutoML_1/leaderboard.csv'), dirs) # Pipelines
-  shutil.rmtree('./AutoML_1')
+  shutil.rmtree('./AutoML_1') # Deleting the folder created for saving the models tested by MLJAR
 
   print('---------------------------------MLJAR---------------------------------\n\n')
 
   if task != 'classification':
-    return (round(np.sqrt(mean_squared_error(y_test, y_pred['label'])), 3), round(r2_score(y_test, y_pred['label']), 3), pipelines.to_string(index = False), options['time'])
+    return (round(np.sqrt(mean_squared_error(y_test, y_pred['label'])), 3), round(r2_score(y_test, y_pred['label']), 3), pipelines, options['time'])
   # Check if it is a binary or multilables case
   if len(np.unique(y)) > 2:
-    return (round(accuracy_score(y_test, y_pred['label']), 3), round(f1_score(y_test, y_pred['label'], average='weighted'), 3), pipelines.to_string(index = False), options['time'])
-  return (round(accuracy_score(y_test, y_pred['label']), 3), round(f1_score(y_test, y_pred['label'], pos_label=np.unique(y)[0]), 3), pipelines.to_string(index = False), options['time'])
+    return (round(accuracy_score(y_test, y_pred['label']), 3), round(f1_score(y_test, y_pred['label'], average='weighted'), 3), pipelines, options['time'])
+  return (round(accuracy_score(y_test, y_pred['label']), 3), round(f1_score(y_test, y_pred['label'], pos_label=np.unique(y)[0]), 3), pipelines, options['time'])

@@ -79,9 +79,9 @@ def TPOT(df, task, options):
         # If the exception is caused by the short time made available by the user but it has ticked the checkbox for the re-execution of the algorithm, it is re-executed with a longer time
         return TPOT(df, task, {'time': options['time']+5, 'rerun': options['rerun']})
       print("-----------------------------------TPOT------------------------------------\n\n")
-      return (None, None, 'Expected Error duo to short algorithm timelife: ' + str(e), None)
+      return (None, None, 'Error duo to short algorithm timelife: ' + str(e), None)
 
     # Otherwise, None are returned with the exception placed on the pipeline
     print("-----------------------------------TPOT------------------------------------\n\n")
-    return (None, None, 'Unexpected Error: ' + str(e), None)
+    return (None, None, 'Error: ' + str(e), None)
 

@@ -43,7 +43,12 @@ def make_options(as_tl=1, h2o_tl=1, t_tl=1, mj_tl=1, ag_tl=1, as_f=False, h2o_f=
 
 # Function for checking that the options entered by the user are valid
 def checkoptions(options):
-    return all(int(value['time']) >= int(value['min']) for key, value in options.items())
+    return not any(
+        ((key in ['autosklearn', 'mljar'] and value['time'] is None))
+        or ((value['time'] is not None) and (value['time'] < value['min']))
+        for key, value in options.items()
+    )
+    #return all(int(value['time']) >= int(value['min']) for key, value in options.items())
 
 # Function for the definition of the dictionary given to the management of collapses
 def render_collapse_options(choice):
@@ -345,25 +350,21 @@ def create_collapses():
 
 # Function for manipulating the text of the modal pipeline
 def set_body(name, pipeline):
-    if (
-        name == 'tpot'
-        and pipeline[0:5] == 'Error'
-        or pipeline[0:10] == 'Unexpected'
-        or name != 'tpot'
-        and name != 'dataframe'
-        and pipeline[0:5] == 'Error'
-    ):
+    if isinstance(pipeline, str) and pipeline[0:5] == 'Error':
         return html.Div(pipeline, style={'color':'red'})
-    elif name == 'tpot':
+    elif name in ['tpot', 'autosklearn']:
         ret = []
         strings = pipeline.split('\n')
         for string in strings:
             ret.extend((string, html.Br()))
         return html.Div(ret)
-    elif name not in ['dataframe', 'autosklearn', 'mljar']:
-        return dcc.Markdown(pipeline)
-    else:
+    elif name == 'dataframe':
         return html.Div(pipeline)
+    elif name == 'mljar':
+        return (dbc.Table(dcc.Markdown(pipeline[0])), html.h4('Ensemble Statistics'), 
+        dbc.Table(dcc.Markdown(pipeline[1])), dbc.Table(dcc.Markdown(pipeline[2])))
+    else:
+        return dbc.Table(dcc.Markdown(pipeline))
 
 # Function for managing the text to be added to the modal pipelines
 def get_body_from_pipelines(pipeline, date, df_name):
@@ -376,7 +377,7 @@ def get_body_from_pipelines(pipeline, date, df_name):
     pipeline = df.iloc[int(row[0])]
     return [html.Div([
         html.H4(name),
-        set_body(name, pipeline[i]), 
+        html.Div([set_body(name, pipeline[i])]), 
         html.Br()
     ]) for i, name in enumerate(col)]
 
