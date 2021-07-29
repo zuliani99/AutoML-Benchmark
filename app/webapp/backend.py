@@ -79,7 +79,7 @@ def start_test_function(dfid, algorithms, options):
     if task is None: 
         return [html.P(res, style={'color':'red'})] # If the task is not present it means that there was an execution error while downloading the DataFrame
     s1, s2, pipeline, timelife = res
-    if isinstance(pipeline, str) and pipeline[0:5] == 'Error': # If the first 5 characters of the pipeline variable are Error it means that an exception was thrown during the execution of the algorithm
+    if pipeline[0:5] == 'Error': # If the first 5 characters of the pipeline variable are Error it means that an exception was thrown during the execution of the algorithm
         return [html.Div([
                         html.P('The execution of the benchmark for the dataframe: ' + str(dfid) + ' whit the algorithm: ' + algorithms + ' for ' + str(options[algorithms]['time']) + ' ' + options[algorithms]['type'] + ' throw an exception.'),
                         html.P(pipeline)

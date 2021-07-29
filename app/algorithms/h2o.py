@@ -37,7 +37,7 @@ def prepare_and_test(train, test, task, timelife, time_start):
   pred = h2o.as_list(pred)['predict']
   target = h2o.as_list(test[y])
 
-  pipelines = str((h2o.as_list(h2o.automl.get_leaderboard(aml, extra_columns = 'ALL'))).to_markdown()) # Pipeline
+  pipelines = (h2o.as_list(h2o.automl.get_leaderboard(aml, extra_columns = 'ALL'))).to_markdown() # Pipeline
   h2o.shutdown() # Termination of the H2O cluster
   
   print("------------------------------------H2O------------------------------------\n\n")

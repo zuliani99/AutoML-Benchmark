@@ -78,7 +78,8 @@ def modify_dropdown_comparedf_function(timestamp, comapre_list, type):
         for df in dfs_compare:
             if df in all_list: all_list.remove(df)
 
-    return [get_dfs_to_compare(dataframe_acc, dataframe_reg, dfs[0][7].iloc[0].to_list(), type, all_list)]
+    #return [get_dfs_to_compare(dataframe_acc, dataframe_reg, dfs[0][7].iloc[0].to_list(), type, all_list)]
+    return [get_dfs_to_compare(dataframe_acc, dataframe_reg, dfs[0][8].iloc[0].to_list(), type, all_list)]
 
 # Function to get all the data of a benchmark given the timestamp
 def get_dfs_from_timestamp(timestamp, type_bench): # Return a list of lists of dataframes
@@ -90,19 +91,24 @@ def get_dfs_from_timestamp(timestamp, type_bench): # Return a list of lists of d
         for score in scores:
             if os.path.exists('./results/'+ type_bench +'/'+ts+'/'+ str(score[0]) +'/'+ str(score[1]) +'.csv'):
                 df.append(pd.read_csv('./results/'+ type_bench +'/'+ts+'/'+ str(score[0]) +'/'+ str(score[1]) +'.csv'))
-            else:
-                df.append(None)
+            else: df.append(None)
+
         # Storage of csv files related to benchmark pipelines
         for t in ('classification', 'regression'):
             if os.path.exists('./results/'+ type_bench +'/'+ts+'/'+ t + '/pipelines.csv'):
                 df.append(pd.read_csv('./results/'+ type_bench +'/'+ts+'/'+ t + '/pipelines.csv', sep='@').to_dict())
-            else:
-                df.append(None)
+            else: df.append(None)
+
+        for t in ('classification', 'regression'):
+            if os.path.exists('./results/'+ type_bench +'/'+ts+'/'+ t + '/timelife_end.csv'):
+                df.append(pd.read_csv('./results/'+ type_bench +'/'+ts+'/'+ t + '/timelife_end.csv'))
+            else: df.append(None)
+
         # Storage of the csv file relating to the options entered by the user
         df.append(pd.read_csv('./results/'+ type_bench +'/'+ts+'/options_start.csv'))
-        df.append(pd.read_csv('./results/'+ type_bench +'/'+ts+'/options_end.csv'))
         dfs.append(df)
-    return dfs
+
+    return dfs # da 0 a 8
 
 
 # Function for managing the display of tables and graphs of the benchmarks
@@ -130,8 +136,8 @@ def combile_dfs(df_from, dfs_comapre):
 
 # Function to get the components for displaying the benchmark data
 def get_store_and_tables(dfs, type, compare_with):
-    res_class_acc, res_class_f1, res_reg_rmse, res_reg_r2, pipelines_class, pipelines_reg, options_start, options_end = dfs[0] # Scomposizione dell'array dato a parametro
-    dfs_compare = get_dfs_from_timestamp(compare_with, type.split('-')[1]) if compare_with is not None else None # Lista di dataframe comparabili
+    res_class_acc, res_class_f1, res_reg_rmse, res_reg_r2, pipelines_class, pipelines_reg, options_end_class, options_end_reg, options_start = dfs[0]# Decomposition of the array given as a parameter
+    dfs_compare = get_dfs_from_timestamp(compare_with, type.split('-')[1]) if compare_with is not None else None # List of comparable data frames
 
     # Definition of dictionaries and arrays that we will return at the end of the function
     store_dict = { 'class': {}, 'reg': {} }
@@ -140,16 +146,16 @@ def get_store_and_tables(dfs, type, compare_with):
 
     if dfs_compare is not None:
         # If I have benchmarks to compare I have to update the variables
-        res_class_acc, res_class_f1, res_reg_rmse, res_reg_r2, pipelines_class, pipelines_reg, options_start, options_end = combile_dfs(dfs[0], dfs_compare)
+        res_class_acc, res_class_f1, res_reg_rmse, res_reg_r2, pipelines_class, pipelines_reg, options_end_class, options_end_reg, options_start = combile_dfs(dfs[0], dfs_compare)
 
-    store_dict['class'], store_pipelines['class'], tables[0] = retrun_graph_table([res_class_acc, res_class_f1], pipelines_class, 'Classification Results', 'class', type.split('-')[1], options_start, options_end, ('Accuracy', 'F1'))
-    store_dict['reg'], store_pipelines['reg'], tables[1] = retrun_graph_table([res_reg_rmse, res_reg_r2], pipelines_reg, 'Regression Results', 'reg', type.split('-')[1], options_start, options_end, ('RMSE', 'R2'))
+    store_dict['class'], store_pipelines['class'], tables[0] = retrun_graph_table([res_class_acc, res_class_f1], pipelines_class, 'Classification Results', 'class', type.split('-')[1], options_start, options_end_class, options_end_reg, ('Accuracy', 'F1'))
+    store_dict['reg'], store_pipelines['reg'], tables[1] = retrun_graph_table([res_reg_rmse, res_reg_r2], pipelines_reg, 'Regression Results', 'reg', type.split('-')[1], options_start, options_end_class, options_end_reg, ('RMSE', 'R2'))
 
     return store_dict['class'], store_dict['reg'], store_pipelines['class'], store_pipelines['reg'], tables[0], tables[1]
 
 
 # Function to set benchmarks comparable to the one just selected
-def get_dfs_to_compare(dfs_class, dfs_reg, options_end, type, all_list):
+def get_dfs_to_compare(dfs_class, dfs_reg, options_start, type, all_list):
     dfs_comapre = []
     for past_bench in all_list:
         if os.path.exists('./results/'+ type +'/'+past_bench+'/classification/acc.csv'):
@@ -158,22 +164,26 @@ def get_dfs_to_compare(dfs_class, dfs_reg, options_end, type, all_list):
         if os.path.exists('./results/'+ type +'/'+past_bench+'/regression/rmse.csv'):
             reg = (pd.read_csv('./results/'+ type +'/'+past_bench+'/regression/rmse.csv')['dataframe'].to_list())
         else: reg = [None]
-        piptemp = pd.read_csv('./results/'+ type +'/'+past_bench+'/options_end.csv')
-        pip = piptemp.iloc[0].to_list()
+        time_limit = (pd.read_csv('./results/'+ type +'/'+past_bench+'/options_start.csv')).iloc[0].to_list()
         
         # Check if the benchmark is comparable to the one selected initially
-        if collections.Counter(cls) == collections.Counter(dfs_class) and collections.Counter(reg) == collections.Counter(dfs_reg) and collections.Counter(pip) != collections.Counter(options_end):
+        #if collections.Counter(cls) == collections.Counter(dfs_class) and collections.Counter(reg) == collections.Counter(dfs_reg) and collections.Counter(pip) != collections.Counter(options_end):
+
+        # Ora ho messo che posso comparare dei benchmark aventi gli stessi dataframe ma con start time limit diiferenti, conmfronti effettuati tutti sul primo benchmark scelto
+        # Devo decidere se implementare il confronto tra tutti quelli selezionati
+        if collections.Counter(cls) == collections.Counter(dfs_class) and collections.Counter(reg) == collections.Counter(dfs_reg) and collections.Counter(time_limit) != collections.Counter(options_start):
             dfs_comapre.append({'label': past_bench, 'value': past_bench})
     return dfs_comapre
 
 
 # Function for rendering and displaying the results relating to the Benchmark under consideration
-def retrun_graph_table(dfs, pipelines, title, task, t, options_start, options_end, scores):
+def retrun_graph_table(dfs, pipelines, title, task, t, options_start, options_end_class, options_end_reg, scores):
     if (dfs[0] is None or dfs[1] is None):
         return {'scatter_'+scores[0]: None, 'histo_'+scores[0]: None, 'scatter_'+scores[1]: None, 'histo_'+scores[1]: None, 'options': None}, None, dbc.Tabs( 
                 [], id="tabs-class" if task == "class" else "tabs-reg", active_tab="", style={'hidden':'true'} 
             )
-    table = [html.H3('Timelifes algorithms'), html.H4('Start Time'), create_table(options_start), html.H4('End Time'), create_table(options_end), html.H3(title)]
+    options_end = options_end_class if task == 'class' else options_end_reg
+    table = [html.H3('Timelifes algorithms'), html.H4('Initial time limit'), create_table(options_start), html.H4('Effective time spent for cmputation'), create_table(options_end), html.H3(title)]
     scatters = []
     histos = []
     for index, df in enumerate(dfs):
@@ -350,7 +360,7 @@ def create_collapses():
 
 # Function for manipulating the text of the modal pipeline
 def set_body(name, pipeline):
-    if isinstance(pipeline, str) and pipeline[0:5] == 'Error':
+    if pipeline[0:5] == 'Error':
         return html.Div(pipeline, style={'color':'red'})
     elif name in ['tpot', 'autosklearn']:
         ret = []
@@ -361,8 +371,9 @@ def set_body(name, pipeline):
     elif name == 'dataframe':
         return html.Div(pipeline)
     elif name == 'mljar':
-        return (dbc.Table(dcc.Markdown(pipeline[0])), html.h4('Ensemble Statistics'), 
-        dbc.Table(dcc.Markdown(pipeline[1])), dbc.Table(dcc.Markdown(pipeline[2])))
+        #print(type(pipeline), pipeline)
+        #return html.Div([dbc.Table(dcc.Markdown(pipeline[0])), html.H6('Ensemble Statistics'), dbc.Table(dcc.Markdown(pipeline[1])), dbc.Table(dcc.Markdown(pipeline[2]))])
+        return dcc.Markdown(pipeline)
     else:
         return dbc.Table(dcc.Markdown(pipeline))
 

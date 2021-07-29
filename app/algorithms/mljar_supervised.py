@@ -37,7 +37,7 @@ def make_pipeline_mljar(pipelines, dirs):
           
   md = re.split('## Ensemble structure|### Metric details|## Confusion matrix',dirs.get('Ensemble'))
 
-  return str(pipelines.to_markdown()), (md[1]), (md[2])
+  return str(pipelines.to_markdown() + '\n\n##### Ensemble Statistics\n' + (md[1]) + (md[2]))
 
 # Function to get the list of folders each of which represents a tested opipeline
 def get_dirs():
@@ -82,7 +82,7 @@ def do_mljar(df, options, task, time_start):
   time_elapsed = round((time.time() - time_start)/60, 3) # Time consumed for computation
 
   if task != 'classification':
-    return (round(np.sqrt(mean_squared_error(y_test, y_pred['label'])), 3), round(r2_score(y_test, y_pred['label']), 3), pipelines, time_elapsed)
+    return (round(np.sqrt(mean_squared_error(y_test, y_pred)), 3), round(r2_score(y_test, y_pred), 3), pipelines, time_elapsed)
   # Check if it is a binary or multilables case
   if len(np.unique(y)) > 2:
     return (round(accuracy_score(y_test, y_pred['label']), 3), round(f1_score(y_test, y_pred['label'], average='weighted'), 3), pipelines, time_elapsed)
