@@ -20,7 +20,7 @@ SIDEBAR_STYLE = {
 # Definition of the sidebar
 sidebar = html.Div(
         [
-            html.H2("AutoML BenchMark", className="display-4"),
+            html.H2("AutoML Benchmark", className="display-4"),
             html.Hr(),
             html.P(
                 "Choose an Options", className="lead"
@@ -29,10 +29,10 @@ sidebar = html.Div(
                 [
                     dbc.NavLink("Home", href="/", active="exact"),
                     dbc.NavLink("OpenML Benchmark", href="/openml", active="exact"),
-                    dbc.NavLink("Kaggle BenchMark", href="/kaggle", active="exact"),
-                    dbc.NavLink("Test BenchMark", href="/test", active="exact"),
-                    dbc.NavLink("Past Results OpenML", href="/results-openml", active="exact"),
-                    dbc.NavLink("Past Results Kaggle", href="/results-kaggle", active="exact"),
+                    dbc.NavLink("Kaggle Benchmark", href="/kaggle", active="exact"),
+                    dbc.NavLink("Test Benchmark", href="/test", active="exact"),
+                    dbc.NavLink("Past OpenML Benchmark", href="/results-openml", active="exact"),
+                    dbc.NavLink("Past Kaggle Benchmark", href="/results-kaggle", active="exact"),
                 ],
                 vertical=True,
                 pills=True,

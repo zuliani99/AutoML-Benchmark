@@ -121,6 +121,8 @@ def populate_row(df_name, leader, res_as, res_t, res_h, res_mj, res_ag, s):
 
     return new_row_1, new_row_2, new_row_pipelines, new_row_options_end
 
+
+# Function for adding the 'date' column in each dataframe
 def add_date(dfs, date):
     for df in dfs:
         df.insert(0, 'date', date)

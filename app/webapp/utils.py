@@ -108,7 +108,7 @@ def get_dfs_from_timestamp(timestamp, type_bench): # Return a list of lists of d
         df.append(pd.read_csv('./results/'+ type_bench +'/'+ts+'/options_start.csv'))
         dfs.append(df)
 
-    return dfs # da 0 a 8
+    return dfs
 
 
 # Function for managing the display of tables and graphs of the benchmarks
@@ -166,11 +166,13 @@ def get_dfs_to_compare(dfs_class, dfs_reg, options_start, type, all_list):
         else: reg = [None]
         time_limit = (pd.read_csv('./results/'+ type +'/'+past_bench+'/options_start.csv')).iloc[0].to_list()
         
-        # Check if the benchmark is comparable to the one selected initially
+        
         #if collections.Counter(cls) == collections.Counter(dfs_class) and collections.Counter(reg) == collections.Counter(dfs_reg) and collections.Counter(pip) != collections.Counter(options_end):
 
         # Ora ho messo che posso comparare dei benchmark aventi gli stessi dataframe ma con start time limit diiferenti, conmfronti effettuati tutti sul primo benchmark scelto
         # Devo decidere se implementare il confronto tra tutti quelli selezionati
+        
+        # Check if the benchmark is comparable to the one selected initially
         if collections.Counter(cls) == collections.Counter(dfs_class) and collections.Counter(reg) == collections.Counter(dfs_reg) and collections.Counter(time_limit) != collections.Counter(options_start):
             dfs_comapre.append({'label': past_bench, 'value': past_bench})
     return dfs_comapre
