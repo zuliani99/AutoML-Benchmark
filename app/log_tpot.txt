@@ -1,0 +1,235 @@
+-----------------------------------TPOT------------------------------------
+                                                                                                                                                                        
+Generation 1 - Current best internal CV score: 0.8336363636363636
+Optimization Progress:   2%|█▉                                                                                              | 200/10100 [06:48<4:03:11,  1.47s/pipeline][WARNING] [2021-08-01 03:11:44,471:stopit] Code block execution exceeded 10 seconds timeout
+Traceback (most recent call last):
+  File "/home/riccardo/Desktop/venv/lib/python3.8/site-packages/stopit/utils.py", line 145, in wrapper
+    result = func(*args, **kwargs)
+  File "/home/riccardo/Desktop/venv/lib/python3.8/site-packages/tpot/decorators.py", line 57, in time_limited_call
+    func(*args)
+  File "/home/riccardo/Desktop/venv/lib/python3.8/site-packages/sklearn/pipeline.py", line 341, in fit
+    Xt = self._fit(X, y, **fit_params_steps)
+  File "/home/riccardo/Desktop/venv/lib/python3.8/site-packages/sklearn/pipeline.py", line 303, in _fit
+    X, fitted_transformer = fit_transform_one_cached(
+  File "/home/riccardo/Desktop/venv/lib/python3.8/site-packages/joblib/memory.py", line 352, in __call__
+    return self.func(*args, **kwargs)
+  File "/home/riccardo/Desktop/venv/lib/python3.8/site-packages/sklearn/pipeline.py", line 754, in _fit_transform_one
+    res = transformer.fit_transform(X, y, **fit_params)
+  File "/home/riccardo/Desktop/venv/lib/python3.8/site-packages/sklearn/base.py", line 702, in fit_transform
+    return self.fit(X, y, **fit_params).transform(X)
+  File "/home/riccardo/Desktop/venv/lib/python3.8/site-packages/sklearn/feature_selection/_rfe.py", line 184, in fit
+    return self._fit(X, y)
+  File "/home/riccardo/Desktop/venv/lib/python3.8/site-packages/sklearn/feature_selection/_rfe.py", line 266, in _fit
+    self.estimator_.fit(X[:, features], y)
+  File "/home/riccardo/Desktop/venv/lib/python3.8/site-packages/sklearn/ensemble/_forest.py", line 387, in fit
+    trees = Parallel(n_jobs=self.n_jobs, verbose=self.verbose,
+  File "/home/riccardo/Desktop/venv/lib/python3.8/site-packages/joblib/parallel.py", line 1054, in __call__
+    self.retrieve()
+  File "/home/riccardo/Desktop/venv/lib/python3.8/site-packages/joblib/parallel.py", line 933, in retrieve
+    self._output.extend(job.get(timeout=self.timeout))
+  File "/usr/lib/python3.8/concurrent/futures/_base.py", line 439, in result
+    self._condition.wait(timeout)
+  File "/usr/lib/python3.8/threading.py", line 302, in wait
+    waiter.acquire()
+stopit.utils.TimeoutException
+                                                                                                                                                                        
+Generation 2 - Current best internal CV score: 0.8527272727272728
+Optimization Progress:   3%|██▊                                                                                             | 300/10100 [13:32<8:36:47,  3.16s/pipeline][WARNING] [2021-08-01 03:18:30,089:stopit] Code block execution exceeded 10 seconds timeout
+Traceback (most recent call last):
+  File "/home/riccardo/Desktop/venv/lib/python3.8/site-packages/stopit/utils.py", line 145, in wrapper
+    result = func(*args, **kwargs)
+  File "/home/riccardo/Desktop/venv/lib/python3.8/site-packages/tpot/decorators.py", line 57, in time_limited_call
+    func(*args)
+  File "/home/riccardo/Desktop/venv/lib/python3.8/site-packages/sklearn/pipeline.py", line 341, in fit
+    Xt = self._fit(X, y, **fit_params_steps)
+  File "/home/riccardo/Desktop/venv/lib/python3.8/site-packages/sklearn/pipeline.py", line 303, in _fit
+    X, fitted_transformer = fit_transform_one_cached(
+  File "/home/riccardo/Desktop/venv/lib/python3.8/site-packages/joblib/memory.py", line 352, in __call__
+    return self.func(*args, **kwargs)
+  File "/home/riccardo/Desktop/venv/lib/python3.8/site-packages/sklearn/pipeline.py", line 754, in _fit_transform_one
+    res = transformer.fit_transform(X, y, **fit_params)
+  File "/home/riccardo/Desktop/venv/lib/python3.8/site-packages/sklearn/base.py", line 702, in fit_transform
+    return self.fit(X, y, **fit_params).transform(X)
+  File "/home/riccardo/Desktop/venv/lib/python3.8/site-packages/sklearn/feature_selection/_rfe.py", line 184, in fit
+    return self._fit(X, y)
+  File "/home/riccardo/Desktop/venv/lib/python3.8/site-packages/sklearn/feature_selection/_rfe.py", line 244, in _fit
+    importances = _get_feature_importances(
+  File "/home/riccardo/Desktop/venv/lib/python3.8/site-packages/sklearn/feature_selection/_base.py", line 170, in _get_feature_importances
+    elif hasattr(estimator, 'feature_importances_'):
+  File "/home/riccardo/Desktop/venv/lib/python3.8/site-packages/sklearn/ensemble/_forest.py", line 447, in feature_importances_
+    all_importances = Parallel(n_jobs=self.n_jobs,
+  File "/home/riccardo/Desktop/venv/lib/python3.8/site-packages/joblib/parallel.py", line 1054, in __call__
+    self.retrieve()
+  File "/home/riccardo/Desktop/venv/lib/python3.8/site-packages/joblib/parallel.py", line 933, in retrieve
+    self._output.extend(job.get(timeout=self.timeout))
+  File "/usr/lib/python3.8/concurrent/futures/_base.py", line 439, in result
+    self._condition.wait(timeout)
+  File "/usr/lib/python3.8/threading.py", line 302, in wait
+    waiter.acquire()
+stopit.utils.TimeoutException
+Optimization Progress:   3%|██▊                                                                                             | 300/10100 [14:00<7:23:02,  2.71s/pipeline][WARNING] [2021-08-01 03:18:57,273:stopit] Code block execution exceeded 10 seconds timeout
+Traceback (most recent call last):
+  File "/home/riccardo/Desktop/venv/lib/python3.8/site-packages/stopit/utils.py", line 145, in wrapper
+    result = func(*args, **kwargs)
+  File "/home/riccardo/Desktop/venv/lib/python3.8/site-packages/tpot/decorators.py", line 57, in time_limited_call
+    func(*args)
+  File "/home/riccardo/Desktop/venv/lib/python3.8/site-packages/sklearn/pipeline.py", line 341, in fit
+    Xt = self._fit(X, y, **fit_params_steps)
+  File "/home/riccardo/Desktop/venv/lib/python3.8/site-packages/sklearn/pipeline.py", line 303, in _fit
+    X, fitted_transformer = fit_transform_one_cached(
+  File "/home/riccardo/Desktop/venv/lib/python3.8/site-packages/joblib/memory.py", line 352, in __call__
+    return self.func(*args, **kwargs)
+  File "/home/riccardo/Desktop/venv/lib/python3.8/site-packages/sklearn/pipeline.py", line 754, in _fit_transform_one
+    res = transformer.fit_transform(X, y, **fit_params)
+  File "/home/riccardo/Desktop/venv/lib/python3.8/site-packages/sklearn/base.py", line 702, in fit_transform
+    return self.fit(X, y, **fit_params).transform(X)
+  File "/home/riccardo/Desktop/venv/lib/python3.8/site-packages/sklearn/feature_selection/_rfe.py", line 184, in fit
+    return self._fit(X, y)
+  File "/home/riccardo/Desktop/venv/lib/python3.8/site-packages/sklearn/feature_selection/_rfe.py", line 241, in _fit
+    estimator.fit(X[:, features], y)
+  File "/home/riccardo/Desktop/venv/lib/python3.8/site-packages/sklearn/ensemble/_forest.py", line 387, in fit
+    trees = Parallel(n_jobs=self.n_jobs, verbose=self.verbose,
+  File "/home/riccardo/Desktop/venv/lib/python3.8/site-packages/joblib/parallel.py", line 1054, in __call__
+    self.retrieve()
+  File "/home/riccardo/Desktop/venv/lib/python3.8/site-packages/joblib/parallel.py", line 933, in retrieve
+    self._output.extend(job.get(timeout=self.timeout))
+  File "/usr/lib/python3.8/concurrent/futures/_base.py", line 439, in result
+    self._condition.wait(timeout)
+  File "/usr/lib/python3.8/threading.py", line 302, in wait
+    waiter.acquire()
+stopit.utils.TimeoutException
+                                                                                                                                                                        
+Generation 3 - Current best internal CV score: 0.8527272727272728
+Optimization Progress:   4%|███▊                                                                                            | 400/10100 [22:52<7:37:45,  2.83s/pipeline][WARNING] [2021-08-01 03:27:43,556:stopit] Code block execution exceeded 10 seconds timeout
+Traceback (most recent call last):
+  File "/home/riccardo/Desktop/venv/lib/python3.8/site-packages/stopit/utils.py", line 145, in wrapper
+    result = func(*args, **kwargs)
+  File "/home/riccardo/Desktop/venv/lib/python3.8/site-packages/tpot/decorators.py", line 57, in time_limited_call
+    func(*args)
+  File "/home/riccardo/Desktop/venv/lib/python3.8/site-packages/sklearn/pipeline.py", line 346, in fit
+    self._final_estimator.fit(Xt, y, **fit_params_last_step)
+  File "/home/riccardo/Desktop/venv/lib/python3.8/site-packages/sklearn/ensemble/_forest.py", line 387, in fit
+    trees = Parallel(n_jobs=self.n_jobs, verbose=self.verbose,
+  File "/home/riccardo/Desktop/venv/lib/python3.8/site-packages/joblib/parallel.py", line 1054, in __call__
+    self.retrieve()
+  File "/home/riccardo/Desktop/venv/lib/python3.8/site-packages/joblib/parallel.py", line 933, in retrieve
+    self._output.extend(job.get(timeout=self.timeout))
+  File "/usr/lib/python3.8/concurrent/futures/_base.py", line 439, in result
+    self._condition.wait(timeout)
+  File "/usr/lib/python3.8/threading.py", line 302, in wait
+    waiter.acquire()
+stopit.utils.TimeoutException
+                                                                                                                                                                        
+Generation 4 - Current best internal CV score: 0.8527272727272728
+                                                                                                                                                                        
+Generation 5 - Current best internal CV score: 0.8527272727272728
+                                                                                                                                                                        
+Generation 6 - Current best internal CV score: 0.8527272727272728
+                                                                                                                                                                        
+Generation 7 - Current best internal CV score: 0.8636363636363636
+                                                                                                                                                                        
+Generation 8 - Current best internal CV score: 0.8636363636363636
+                                                                                                                                                                        
+Generation 9 - Current best internal CV score: 0.8645454545454545
+                                                                                                                                                                        
+Generation 10 - Current best internal CV score: 0.8736363636363637
+                                                                                                                                                                        
+Generation 11 - Current best internal CV score: 0.8736363636363637
+                                                                                                                                                                        
+Generation 12 - Current best internal CV score: 0.8736363636363637
+Optimization Progress:  13%|███████████▉                                                                                 | 1300/10100 [1:36:27<9:35:26,  3.92s/pipeline][WARNING] [2021-08-01 04:41:29,663:stopit] Code block execution exceeded 10 seconds timeout
+Traceback (most recent call last):
+  File "/home/riccardo/Desktop/venv/lib/python3.8/site-packages/stopit/utils.py", line 145, in wrapper
+    result = func(*args, **kwargs)
+  File "/home/riccardo/Desktop/venv/lib/python3.8/site-packages/tpot/decorators.py", line 57, in time_limited_call
+    func(*args)
+  File "/home/riccardo/Desktop/venv/lib/python3.8/site-packages/sklearn/pipeline.py", line 346, in fit
+    self._final_estimator.fit(Xt, y, **fit_params_last_step)
+  File "/home/riccardo/Desktop/venv/lib/python3.8/site-packages/sklearn/ensemble/_forest.py", line 387, in fit
+    trees = Parallel(n_jobs=self.n_jobs, verbose=self.verbose,
+  File "/home/riccardo/Desktop/venv/lib/python3.8/site-packages/joblib/parallel.py", line 1054, in __call__
+    self.retrieve()
+  File "/home/riccardo/Desktop/venv/lib/python3.8/site-packages/joblib/parallel.py", line 928, in retrieve
+    with self._lock:
+stopit.utils.TimeoutException
+                                                                                                                                                                        
+Generation 13 - Current best internal CV score: 0.8736363636363637
+Optimization Progress:  14%|████████████▉                                                                                | 1400/10100 [1:46:49<8:54:33,  3.69s/pipeline][WARNING] [2021-08-01 04:51:52,428:stopit] Code block execution exceeded 10 seconds timeout
+Traceback (most recent call last):
+  File "/home/riccardo/Desktop/venv/lib/python3.8/site-packages/stopit/utils.py", line 145, in wrapper
+    result = func(*args, **kwargs)
+  File "/home/riccardo/Desktop/venv/lib/python3.8/site-packages/tpot/decorators.py", line 57, in time_limited_call
+    func(*args)
+  File "/home/riccardo/Desktop/venv/lib/python3.8/site-packages/sklearn/pipeline.py", line 341, in fit
+    Xt = self._fit(X, y, **fit_params_steps)
+  File "/home/riccardo/Desktop/venv/lib/python3.8/site-packages/sklearn/pipeline.py", line 303, in _fit
+    X, fitted_transformer = fit_transform_one_cached(
+  File "/home/riccardo/Desktop/venv/lib/python3.8/site-packages/joblib/memory.py", line 352, in __call__
+    return self.func(*args, **kwargs)
+  File "/home/riccardo/Desktop/venv/lib/python3.8/site-packages/sklearn/pipeline.py", line 754, in _fit_transform_one
+    res = transformer.fit_transform(X, y, **fit_params)
+  File "/home/riccardo/Desktop/venv/lib/python3.8/site-packages/sklearn/base.py", line 702, in fit_transform
+    return self.fit(X, y, **fit_params).transform(X)
+  File "/home/riccardo/Desktop/venv/lib/python3.8/site-packages/sklearn/feature_selection/_rfe.py", line 184, in fit
+    return self._fit(X, y)
+  File "/home/riccardo/Desktop/venv/lib/python3.8/site-packages/sklearn/feature_selection/_rfe.py", line 241, in _fit
+    estimator.fit(X[:, features], y)
+  File "/home/riccardo/Desktop/venv/lib/python3.8/site-packages/sklearn/ensemble/_forest.py", line 387, in fit
+    trees = Parallel(n_jobs=self.n_jobs, verbose=self.verbose,
+  File "/home/riccardo/Desktop/venv/lib/python3.8/site-packages/joblib/parallel.py", line 1054, in __call__
+    self.retrieve()
+  File "/home/riccardo/Desktop/venv/lib/python3.8/site-packages/joblib/parallel.py", line 933, in retrieve
+    self._output.extend(job.get(timeout=self.timeout))
+  File "/usr/lib/python3.8/concurrent/futures/_base.py", line 439, in result
+    self._condition.wait(timeout)
+  File "/usr/lib/python3.8/threading.py", line 302, in wait
+    waiter.acquire()
+stopit.utils.TimeoutException
+                                                                                                                                                                        
+Generation 14 - Current best internal CV score: 0.8736363636363637
+Optimization Progress:  15%|█████████████▋                                                                              | 1501/10100 [1:59:53<10:49:03,  4.53s/pipeline][WARNING] [2021-08-01 05:04:53,344:stopit] Code block execution exceeded 10 seconds timeout
+Traceback (most recent call last):
+  File "/home/riccardo/Desktop/venv/lib/python3.8/site-packages/stopit/utils.py", line 145, in wrapper
+    result = func(*args, **kwargs)
+  File "/home/riccardo/Desktop/venv/lib/python3.8/site-packages/tpot/decorators.py", line 57, in time_limited_call
+    func(*args)
+  File "/home/riccardo/Desktop/venv/lib/python3.8/site-packages/sklearn/pipeline.py", line 341, in fit
+    Xt = self._fit(X, y, **fit_params_steps)
+  File "/home/riccardo/Desktop/venv/lib/python3.8/site-packages/sklearn/pipeline.py", line 303, in _fit
+    X, fitted_transformer = fit_transform_one_cached(
+  File "/home/riccardo/Desktop/venv/lib/python3.8/site-packages/joblib/memory.py", line 352, in __call__
+    return self.func(*args, **kwargs)
+  File "/home/riccardo/Desktop/venv/lib/python3.8/site-packages/sklearn/pipeline.py", line 754, in _fit_transform_one
+    res = transformer.fit_transform(X, y, **fit_params)
+  File "/home/riccardo/Desktop/venv/lib/python3.8/site-packages/sklearn/base.py", line 702, in fit_transform
+    return self.fit(X, y, **fit_params).transform(X)
+  File "/home/riccardo/Desktop/venv/lib/python3.8/site-packages/sklearn/feature_selection/_rfe.py", line 184, in fit
+    return self._fit(X, y)
+  File "/home/riccardo/Desktop/venv/lib/python3.8/site-packages/sklearn/feature_selection/_rfe.py", line 241, in _fit
+    estimator.fit(X[:, features], y)
+  File "/home/riccardo/Desktop/venv/lib/python3.8/site-packages/sklearn/ensemble/_forest.py", line 387, in fit
+    trees = Parallel(n_jobs=self.n_jobs, verbose=self.verbose,
+  File "/home/riccardo/Desktop/venv/lib/python3.8/site-packages/joblib/parallel.py", line 1054, in __call__
+    self.retrieve()
+  File "/home/riccardo/Desktop/venv/lib/python3.8/site-packages/joblib/parallel.py", line 933, in retrieve
+    self._output.extend(job.get(timeout=self.timeout))
+  File "/usr/lib/python3.8/concurrent/futures/_base.py", line 439, in result
+    self._condition.wait(timeout)
+  File "/usr/lib/python3.8/threading.py", line 302, in wait
+    waiter.acquire()
+stopit.utils.TimeoutException
+                                                                                                                                                                        
+Generation 15 - Current best internal CV score: 0.8736363636363637
+                                                                                                                                                                        
+Generation 16 - Current best internal CV score: 0.8736363636363637
+                                                                                                                                                                        
+Generation 17 - Current best internal CV score: 0.8736363636363637
+                                                                                                                                                                        
+Generation 18 - Current best internal CV score: 0.8736363636363637
+                                                                                                                                                                        
+Generation 19 - Current best internal CV score: 0.8736363636363637
+                                                                                                                                                                        
+Generation 20 - Current best internal CV score: 0.8736363636363637
+                                                                                                                                                                        
+Generation 21 - Current best internal CV score: 0.8736363636363637
+Optimization Progress:  22%|████████████████████▎                                                                        | 2201/10100 [3:22:13<9:58:59,  4.55s/pipeline]

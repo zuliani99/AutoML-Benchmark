@@ -329,7 +329,7 @@ def create_collapses():
                 dbc.Collapse(
                     dbc.CardBody([
                             dbc.FormGroup([
-                                    dbc.Label("Running time in " + val['type'], width=5),
+                                    dbc.Label("Running time in " + val['type'] + ", (default value: " + str(val['default']) + ")", width=5),
                                     dbc.Col([
                                             dbc.InputGroup([
                                                     dbc.Input(id=key + "-timelife", type="number", value=val['default'], placeholder=val['type'], min=val['min']),
