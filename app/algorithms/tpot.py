@@ -9,25 +9,19 @@ import copy
 from termcolor import colored
 import time
 
-from dask.distributed import Client
-import joblib
-import shutil
-
-def make_classification(X_train, X_test, y_train, y_test, timelife, y, client, time_start):
+def make_classification(X_train, X_test, y_train, y_test, timelife, y, time_start):
 
   # Model Classification
   model =  TPOTClassifier(cv=10, max_time_mins=timelife, random_state=1, verbosity=2, n_jobs=-1, max_eval_time_mins=5)
   #model.fit(X_train, y_train)
 
-  with joblib.parallel_backend("dask"):
-    model.fit(np.array(X_train), np.array(y_train).ravel())
+  model.fit(np.array(X_train), np.array(y_train).ravel())
 
   y_pred = model.predict(X_test)
   pipelines = model.export() # Get the pipeline
 
   print("-----------------------------------TPOT------------------------------------\n\n")
-  client.close()
-  shutil.rmtree('./dask-worker-space')
+
 
   time_elapsed = round((time.time() - time_start)/60, 3) # Time consumed for computation
 
@@ -44,15 +38,12 @@ def make_regression(X_train, X_test, y_train, y_test, timelife, client, time_sta
   model =  TPOTRegressor(cv=10, max_time_mins=timelife, random_state=1, verbosity=2, n_jobs=-1, max_eval_time_mins=5)
   #model.fit(X_train, y_train)
 
-  with joblib.parallel_backend("dask"):
-    model.fit(np.array(X_train), np.array(y_train).ravel())
+  model.fit(np.array(X_train), np.array(y_train).ravel())
 
   y_pred = model.predict(X_test)
   pipelines = model.export() # Get the pipeline
 
   print("-----------------------------------TPOT------------------------------------\n\n")
-  client.close()
-  shutil.rmtree('./dask-worker-space')
 
   time_elapsed = round((time.time() - time_start)/60, 3) # Time consumed for computation
 
@@ -62,7 +53,6 @@ def make_regression(X_train, X_test, y_train, y_test, timelife, client, time_sta
 def TPOT(df, task, options, time_start):
   print("-----------------------------------TPOT------------------------------------")
   try:
-    client = Client(processes=False)
     df_new = copy.copy(df) # Deep copy of the DataFrame passed to parameter
     pd.options.mode.chained_assignment = None
 
@@ -72,9 +62,9 @@ def TPOT(df, task, options, time_start):
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=1)
 
     if task == 'classification':
-      return make_classification(X_train, X_test, y_train, y_test, options['time'], y, client, time_start)
+      return make_classification(X_train, X_test, y_train, y_test, options['time'], y, time_start)
     else:
-      return make_regression(X_train, X_test, y_train, y_test, options['time'], client, time_start)
+      return make_regression(X_train, X_test, y_train, y_test, options['time'], time_start)
 
   except Exception as e:
     # In case of exception

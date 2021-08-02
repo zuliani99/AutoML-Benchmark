@@ -48,7 +48,7 @@ home = dcc.Markdown(read_markdown())
 knownID = dbc.CardBody([
                         html.H4("OpenML BenchMark", className="card-title"),
                         dbc.FormGroup([
-                                    dbc.Label("Specify the sequence of DatFrame IDs that you whant to test, each ID must be followed by a comma like so: 10,52,111", width=5),
+                                    dbc.Label("Specify the sequence of DatFrame IDs that you whant to test, each ID must be followed by a comma like so: 10,52,111 (no blank space after each comma)", width=5),
                                     dbc.Col([
                                         dbc.InputGroup([
                                             dbc.Input(
