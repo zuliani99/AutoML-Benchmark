@@ -21,7 +21,7 @@ def read_md(path):
 # Function for creating the pipeline string
 def make_pipeline_mljar(pipelines, dirs):
   for index, row in pipelines.iterrows():
-    if(row['name'] != 'Ensemble'):
+    if(row['name'] not in ['Ensemble', 'Ensamble_Staked', 'folds']):
       md = re.split('## ',dirs.get(row['name']))
 
       model_parameters = re.sub('[*-]', '', md[1])
@@ -36,6 +36,7 @@ def make_pipeline_mljar(pipelines, dirs):
       pipelines.at[index, 'validation_parameters'] = validation_parameters
           
   md = re.split('## Ensemble structure|### Metric details|## Confusion matrix',dirs.get('Ensemble'))
+  # Make sure the directory exist and chek also Ensamble_Staked
 
   return str(pipelines.to_markdown() + '\n\n##### Ensemble Statistics\n' + (md[1]) + (md[2]))
 
