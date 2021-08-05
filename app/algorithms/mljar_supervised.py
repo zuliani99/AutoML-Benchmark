@@ -34,11 +34,14 @@ def make_pipeline_mljar(pipelines, dirs):
 
       pipelines.at[index, 'model_parameters'] = model_parameters
       pipelines.at[index, 'validation_parameters'] = validation_parameters
-          
-  md = re.split('## Ensemble structure|### Metric details|## Confusion matrix',dirs.get('Ensemble'))
-  # Make sure the directory exist and chek also Ensamble_Staked
 
-  return str(pipelines.to_markdown() + '\n\n##### Ensemble Statistics\n' + (md[1]) + (md[2]))
+  ens = ''
+  for dict in ['Ensemble', 'Ensamble_Staked']:
+    if dirs.get(dict) is not None:
+      md = re.split('## Ensemble structure|### Metric details|## Confusion matrix',dirs.get(dict))
+      ens += '\n\n##### ' + dict + ' Statistics\n' + md[1] + md[2]
+
+  return str(pipelines.to_markdown() + ens)
 
 # Function to get the list of folders each of which represents a tested opipeline
 def get_dirs():
