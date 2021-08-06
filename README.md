@@ -5,7 +5,7 @@ Benchmark for some usual automated machine learning, such as: [AutoSklearn](http
 ## Installation
 First of all install the python3-pip package and then the virtual environment for safety reason: 
 ```bash
-sudo apt install install python3-pip
+sudo apt install python3-pip
 sudo apt install default-jre
 sudo pip3 install virtualenv 
 ```
