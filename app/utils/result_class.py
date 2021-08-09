@@ -94,7 +94,7 @@ class Result:
             self.res_reg_rmse.to_csv(pathreg + '/rmse.csv', index = False)
             self.res_reg_r2.to_csv(pathreg + '/r2_score.csv', index = False)
             self.pipelines_reg.to_csv(pathreg + '/pipelines.csv', sep='@', index = False)
-            self.options_end_reg.to_csv(pathcla + '/timelife_end.csv', index = False)
+            self.options_end_reg.to_csv(pathreg + '/timelife_end.csv', index = False)
 
         self.options_start.to_csv('./results/' + self.t + '/' + date + '/options_start.csv', index = False)
 

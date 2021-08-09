@@ -184,8 +184,9 @@ def retrun_graph_table(dfs, pipelines, title, task, t, options_start, options_en
         return {'scatter_'+scores[0]: None, 'histo_'+scores[0]: None, 'scatter_'+scores[1]: None, 'histo_'+scores[1]: None, 'options': None}, None, dbc.Tabs( 
                 [], id="tabs-class" if task == "class" else "tabs-reg", active_tab="", style={'hidden':'true'} 
             )
+            
     options_end = options_end_class if task == 'class' else options_end_reg
-    table = [html.H3('Timelifes algorithms'), html.H4('Initial time limit'), create_table(options_start), html.H4('Effective time spent for cmputation'), create_table(options_end), html.H3(title)]
+    table = [html.H3('Timelifes algorithms'), html.H4('Initial time limit'), create_table(options_start), html.H4('Actual time spent on computation'), create_table(options_end), html.H3(title)]
     scatters = []
     histos = []
     for index, df in enumerate(dfs):

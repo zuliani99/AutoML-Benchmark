@@ -38,8 +38,8 @@ def make_pipeline_mljar(pipelines, dirs):
   ens = ''
   for dict in ['Ensemble', 'Ensamble_Staked']:
     if dirs.get(dict) is not None:
-      md = re.split('## Ensemble structure|### Metric details|## Confusion matrix',dirs.get(dict))
-      ens += '\n\n##### ' + dict + ' Statistics\n' + md[1] + md[2]
+      md = re.split('## Ensemble structure|## Metric details|## Confusion matrix',dirs.get(dict))
+      ens += '\n\n#### ' + dict + ' Statistics\n' + md[1] + md[2]
 
   return str(pipelines.to_markdown() + ens)
 
@@ -79,7 +79,7 @@ def do_mljar(df, options, task, time_start):
  
   dirs = get_dirs()
   pipelines = make_pipeline_mljar(pd.read_csv('AutoML_1/leaderboard.csv'), dirs) # Pipelines
-  shutil.rmtree('./AutoML_1') # Deleting the folder created for saving the models tested by MLJAR
+  #shutil.rmtree('./AutoML_1') # Deleting the folder created for saving the models tested by MLJAR
 
   print('---------------------------------MLJAR---------------------------------\n\n')
 

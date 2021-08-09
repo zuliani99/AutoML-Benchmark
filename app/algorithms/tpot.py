@@ -32,7 +32,7 @@ def make_classification(X_train, X_test, y_train, y_test, timelife, y, time_star
     return round(accuracy_score(y_test, y_pred), 3), round(f1_score(y_test, y_pred, pos_label=np.unique(y)[0]), 3), pipelines, time_elapsed
 
 
-def make_regression(X_train, X_test, y_train, y_test, timelife, client, time_start):
+def make_regression(X_train, X_test, y_train, y_test, timelife, time_start):
 
   # Regression model
   model =  TPOTRegressor(cv=10, max_time_mins=timelife, random_state=1, verbosity=2, n_jobs=-1, max_eval_time_mins=5)
