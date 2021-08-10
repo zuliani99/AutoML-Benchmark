@@ -58,7 +58,7 @@ def autogluon(df, task, options, time_start):
       train_data=X_train,
       time_limit=options['time']*60,
       presets=['best_quality'],
-      auto_stack=True
+      #auto_stack=True
       #hyperparameters=hyperparameters    # -> Questo aggiunge le NN 
     )
     

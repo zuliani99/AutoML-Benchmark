@@ -21,7 +21,8 @@ def read_md(path):
 # Function for creating the pipeline string
 def make_pipeline_mljar(pipelines, dirs):
   for index, row in pipelines.iterrows():
-    if(row['name'] not in ['Ensemble', 'Ensamble_Staked', 'folds']):
+    #if(row['name'] not in ['Ensemble', 'Ensamble_Staked', 'folds']):
+    if(row['name'].split('_')[-1] != 'Staked' and row['name'] != 'folds' and row['name'] != 'Ensemble'):
       md = re.split('## ',dirs.get(row['name']))
 
       model_parameters = re.sub('[*-]', '', md[1])
@@ -49,7 +50,7 @@ def get_dirs():
   directory_contents = os.listdir(path)
   return {
     item: read_md(path + '/' + item + '/README.md')
-    for item in directory_contents if os.path.isdir(path + '/' + item)
+    for item in directory_contents if os.path.isfile(path + '/' + item + '/README.md')
   }
 
 
