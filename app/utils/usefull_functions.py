@@ -60,7 +60,7 @@ def get_df_list(datalist, n_df, task):
         name = str(row['did']) + '_' + str(row['name']) + '.csv'
         try:
             if not os.path.exists('./dataframes/OpenML/'+ task +'/' + name):
-                X, y = fetch_openml(data_id=row['did'], as_frame=True, return_X_y=True, cache=True)
+                X, y = fetch_openml(data_id=row['did'], as_frame=True, return_X_y=True, cache=False)
                 if y is not None:
                     if not isinstance(y, pd.DataFrame):
                         y = y.to_frame()
