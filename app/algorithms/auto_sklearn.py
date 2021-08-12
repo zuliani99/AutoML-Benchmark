@@ -17,7 +17,7 @@ def make_classification(X_train, X_test, y_train, y_test, timelife, y, time_star
   automl = autosklearn.classification.AutoSklearnClassifier(
           time_left_for_this_task=timelife*60,
           per_run_time_limit=30,
-          memory_limit=(psutil.virtual_memory().available*75)/100,
+          memory_limit=int(int(psutil.virtual_memory.available * 1e-6) * 0.75),
           n_jobs=-1,
           resampling_strategy_arguments = {'cv': 10}
     )
@@ -40,7 +40,7 @@ def make_regression(X_train, X_test, y_train, y_test, timelife, time_start):
   automl = autosklearn.regression.AutoSklearnRegressor(
           time_left_for_this_task=timelife*60,
           per_run_time_limit=30,
-          memory_limit=(psutil.virtual_memory().available*75)/100,
+          memory_limit=int(int(psutil.virtual_memory.available * 1e-6) * 0.75),
           n_jobs=-1,
           resampling_strategy_arguments = {'cv': 10}
     )
