@@ -10,17 +10,18 @@ import copy
 from termcolor import colored
 import psutil
 import time
+import os
 
 
 def make_classification(X_train, X_test, y_train, y_test, timelife, y, time_start):
   # Classification model
   automl = autosklearn.classification.AutoSklearnClassifier(
-          time_left_for_this_task=timelife*60,
-          per_run_time_limit=30,
-          memory_limit=int(int(psutil.virtual_memory().available * 1e-6) * 0.75),
-          n_jobs=-1,
-          resampling_strategy_arguments = {'cv': 10}
-    )
+    time_left_for_this_task=timelife*60,
+    per_run_time_limit=30,
+    memory_limit=int(int(psutil.virtual_memory().available * 1e-6) * 0.75)/os.cpu_count(),
+    n_jobs=-1,
+    resampling_strategy_arguments = {'cv': 10}
+  )
   automl.fit(X_train, y_train)
   y_pred = automl.predict(X_test)
   pipelines = str(pd.DataFrame(pd.Series(automl.show_models())).iloc[0].squeeze()) # Pipeline
@@ -38,12 +39,12 @@ def make_classification(X_train, X_test, y_train, y_test, timelife, y, time_star
 def make_regression(X_train, X_test, y_train, y_test, timelife, time_start):
   # Regression model
   automl = autosklearn.regression.AutoSklearnRegressor(
-          time_left_for_this_task=timelife*60,
-          per_run_time_limit=30,
-          memory_limit=int(int(psutil.virtual_memory().available * 1e-6) * 0.75),
-          n_jobs=-1,
-          resampling_strategy_arguments = {'cv': 10}
-    )
+    time_left_for_this_task=timelife*60,
+    per_run_time_limit=30,
+    memory_limit=int(int(psutil.virtual_memory().available * 1e-6) * 0.75)/os.cpu_count(),
+    n_jobs=-1,
+    resampling_strategy_arguments = {'cv': 10}
+  )
   automl.fit(X_train, y_train)
   y_pred = automl.predict(X_test)
   pipelines = str(pd.DataFrame(pd.Series(automl.show_models())).iloc[0].squeeze().split('\n')) # Pipeline
