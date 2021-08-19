@@ -14,7 +14,7 @@ dataframes = {
 
     'commonlitreadabilityprize': {'task': 'regression', 'measure': 'rmse'},
     'bigquery-geotab-intersection-congestion': {'task': 'regression', 'measure': 'rmse'},
-    'tabular-playground-series-feb-2021': {'task': 'regression', 'measure': 'rmse'},
+    'mercedes-benz-greener-manufacturing': {'task': 'regression', 'measure': 'r2'},
     'GEF2012-wind-forecasting': {'task': 'regression', 'measure': 'rmse'}, 
 }
 

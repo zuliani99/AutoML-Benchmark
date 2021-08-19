@@ -189,15 +189,26 @@ def retrun_graph_table(dfs, pipelines, title, task, t, options_start, options_en
     table = [html.H3('Timelifes algorithms'), html.H4('Initial time limit'), create_table(options_start), html.H4('Actual time spent on computation'), create_table(options_end), html.H3(title)]
     scatters = []
     histos = []
+    limitKaggle = None
+    dictToReturn = {}
     for index, df in enumerate(dfs):
         df['pipelines'] = get_pipelines_button(df[['date', 'dataframe']], df.columns[2].split('-')[1])
 
         # Population of arrays with related graphics and tables
-        for col in df.columns[2:-1]:
+        for i, col in enumerate(df.columns[2:-1]):
+            print(index, i, df[col].name)
             if isinstance(df[col][0], float): # Update arrays only if it is a float instance, so I exclude cells with "no value"
                 scatters.append(go.Scatter(x=(df['date'], df['dataframe']), y=df[col], name=col.split('-')[0], mode='lines+markers'))
                 histos.append(go.Bar(x=(df['date'], df['dataframe']), y=df[col], name=col.split('-')[0]))
         table.extend((html.H4(scores[index] + ' Score'), create_table(df)))
+
+    # Creation of the dictionary to return which it depends on the type of problem and if it's a Kaggle benchmark also on the location of the leader score
+    if t == 'Kaggle':
+        if dfs[0][dfs[0].columns[dfs[0].shape[1]-2]].name == 'leader' and dfs[0][dfs[0].columns[dfs[0].shape[1]-2]][0] == 'No value': limitKaggle = 5
+        else: limitKaggle = 6
+        dictToReturn = { 'scatter_'+scores[0]: scatters[:limitKaggle], 'histo_'+scores[0]: histos[:limitKaggle], 'scatter_'+scores[1]: scatters[limitKaggle:], 'histo_'+scores[1]: histos[limitKaggle:] }
+    else:
+        dictToReturn = { 'scatter_'+scores[0]: scatters[:5], 'histo_'+scores[0]: histos[:5], 'scatter_'+scores[1]: scatters[5:], 'histo_'+scores[1]: histos[5:] }
 
     table.append(
         dbc.Tabs(
@@ -209,12 +220,8 @@ def retrun_graph_table(dfs, pipelines, title, task, t, options_start, options_en
             active_tab="histogram",
         ) 
     )
-
-    limit = 5 if t == 'OpenML' else 6 # Limit set to 5 if we are in the case of an OpenML Benchmark otherwise to 6 in the case of a Kaggle Benchmark because there is also the presence of the leader
-
-    return {
-        'scatter_'+scores[0]: scatters[:limit], 'histo_'+scores[0]: histos[:limit], 'scatter_'+scores[1]: scatters[limit:], 'histo_'+scores[1]: histos[limit:]
-    }, pipelines, table
+    # Limit set to 5 if we are in the case of an OpenML Benchmark otherwise to 6 in the case of a Kaggle Benchmark because there is also the presence of the leader score
+    return dictToReturn, pipelines, table
 
 
 # Function for displaying an error message if present

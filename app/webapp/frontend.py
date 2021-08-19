@@ -139,7 +139,7 @@ kagglebenchmark = html.Div([
                                         
                                         {'label': 'BigQuery-Geotab Intersection Congestion - Regression', 'value': 'bigquery-geotab-intersection-congestion'},
                                         {'label': 'CommonLit Readability Prize - Regression', 'value': 'commonlitreadabilityprize'},
-                                        {'label': 'Tabular Playground Series - Feb 2021 - Regression', 'value': 'tabular-playground-series-feb-2021'},
+                                        {'label': 'Mercedes Benz Greener Manufacturing - Regression', 'value': 'mercedes-benz-greener-manufacturing'},
                                         {'label': 'Global Energy Forecasting Competition 2012 - Regression', 'value': 'GEF2012-wind-forecasting'},
 
                                     ],
