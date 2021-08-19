@@ -34,11 +34,11 @@ def displaying_error(error):
 # Function by definition of the dictionary containing the options entered by the user
 def make_options(as_tl=1, h2o_tl=1, t_tl=1, mj_tl=1, ag_tl=1, as_f=False, h2o_f=False, t_f=False, mj_f=False, ag_f=False):
     return {
-        'autosklearn': {'min': 1, 'default': 60, 'time': as_tl, 'rerun': as_f, 'type': 'minute/s'},
-        'h2o': {'min': 1, 'default': None, 'time': h2o_tl, 'rerun': h2o_f, 'type': 'minute/s'},
-        'tpot': {'min': 1, 'default': None,'time': t_tl, 'rerun': t_f, 'type': 'minute/s'},
-        'mljar': {'min': 1, 'default': 60,'time': mj_tl, 'rerun': mj_f, 'type': 'minute/s'},
-        'autogluon': {'min': 1, 'default': None,'time': ag_tl, 'rerun': ag_f, 'type': 'minute/s'},
+        'autosklearn': {'min': 1, 'default': 60, 'time': as_tl, 'rerun': as_f},
+        'tpot': {'min': 1, 'default': None,'time': t_tl, 'rerun': t_f},
+        'h2o': {'min': 1, 'default': None, 'time': h2o_tl, 'rerun': h2o_f},
+        'mljar': {'min': 1, 'default': 60,'time': mj_tl, 'rerun': mj_f},
+        'autogluon': {'min': 1, 'default': None,'time': ag_tl, 'rerun': ag_f},
     }
 
 # Function for checking that the options entered by the user are valid
@@ -110,6 +110,23 @@ def get_dfs_from_timestamp(timestamp, type_bench): # Return a list of lists of d
 
     return dfs
 
+# Function to set benchmarks comparable to the one just selected
+def get_dfs_to_compare(dfs_class, dfs_reg, options_start, type, all_list):
+    dfs_comapre = []
+    for past_bench in all_list:
+        if os.path.exists('./results/'+ type +'/'+past_bench+'/classification/acc.csv'):
+            cls = (pd.read_csv('./results/'+ type +'/'+past_bench+'/classification/acc.csv')['dataframe'].to_list())
+        else: cls = [None]
+        if os.path.exists('./results/'+ type +'/'+past_bench+'/regression/rmse.csv'):
+            reg = (pd.read_csv('./results/'+ type +'/'+past_bench+'/regression/rmse.csv')['dataframe'].to_list())
+        else: reg = [None]
+        time_limit = (pd.read_csv('./results/'+ type +'/'+past_bench+'/options_start.csv')).iloc[0].to_list()
+        
+        # Check if the benchmark is comparable to the one selected initially
+        if collections.Counter(cls) == collections.Counter(dfs_class) and collections.Counter(reg) == collections.Counter(dfs_reg) and collections.Counter(time_limit) != collections.Counter(options_start):
+            dfs_comapre.append({'label': past_bench, 'value': past_bench})
+    return dfs_comapre
+
 
 # Function for managing the display of tables and graphs of the benchmarks
 def get_store_past_bech_function(timestamp, type, compare_with):
@@ -154,28 +171,16 @@ def get_store_and_tables(dfs, type, compare_with):
     return store_dict['class'], store_dict['reg'], store_pipelines['class'], store_pipelines['reg'], tables[0], tables[1]
 
 
-# Function to set benchmarks comparable to the one just selected
-def get_dfs_to_compare(dfs_class, dfs_reg, options_start, type, all_list):
-    dfs_comapre = []
-    for past_bench in all_list:
-        if os.path.exists('./results/'+ type +'/'+past_bench+'/classification/acc.csv'):
-            cls = (pd.read_csv('./results/'+ type +'/'+past_bench+'/classification/acc.csv')['dataframe'].to_list())
-        else: cls = [None]
-        if os.path.exists('./results/'+ type +'/'+past_bench+'/regression/rmse.csv'):
-            reg = (pd.read_csv('./results/'+ type +'/'+past_bench+'/regression/rmse.csv')['dataframe'].to_list())
-        else: reg = [None]
-        time_limit = (pd.read_csv('./results/'+ type +'/'+past_bench+'/options_start.csv')).iloc[0].to_list()
-        
-        
-        #if collections.Counter(cls) == collections.Counter(dfs_class) and collections.Counter(reg) == collections.Counter(dfs_reg) and collections.Counter(pip) != collections.Counter(options_end):
+# Function that return the dictionary od scater and histograms 
+def retrun_dict_of_ScatterHisto(t, dfs, scores, scatters, histos):
+    limitKaggle = None
+    if t == 'OpenML':
+        return { 'scatter_'+scores[0]: scatters[:5], 'histo_'+scores[0]: histos[:5], 'scatter_'+scores[1]: scatters[5:], 'histo_'+scores[1]: histos[5:] }
 
-        # Ora ho messo che posso comparare dei benchmark aventi gli stessi dataframe ma con start time limit diiferenti, conmfronti effettuati tutti sul primo benchmark scelto
-        # Devo decidere se implementare il confronto tra tutti quelli selezionati
-        
-        # Check if the benchmark is comparable to the one selected initially
-        if collections.Counter(cls) == collections.Counter(dfs_class) and collections.Counter(reg) == collections.Counter(dfs_reg) and collections.Counter(time_limit) != collections.Counter(options_start):
-            dfs_comapre.append({'label': past_bench, 'value': past_bench})
-    return dfs_comapre
+    # If it's a Kaggle benchmark we have to manage also the location of the leader score
+    if dfs[0][dfs[0].columns[dfs[0].shape[1]-2]].name == 'leader' and dfs[0][dfs[0].columns[dfs[0].shape[1]-2]][0] == 'No value': limitKaggle = 5
+    else: limitKaggle = 6
+    return { 'scatter_'+scores[0]: scatters[:limitKaggle], 'histo_'+scores[0]: histos[:limitKaggle], 'scatter_'+scores[1]: scatters[limitKaggle:], 'histo_'+scores[1]: histos[limitKaggle:] }
 
 
 # Function for rendering and displaying the results relating to the Benchmark under consideration
@@ -189,8 +194,7 @@ def retrun_graph_table(dfs, pipelines, title, task, t, options_start, options_en
     table = [html.H3('Timelifes algorithms'), html.H4('Initial time limit'), create_table(options_start), html.H4('Actual time spent on computation'), create_table(options_end), html.H3(title)]
     scatters = []
     histos = []
-    limitKaggle = None
-    dictToReturn = {}
+    
     for index, df in enumerate(dfs):
         df['pipelines'] = get_pipelines_button(df[['date', 'dataframe']], df.columns[2].split('-')[1])
 
@@ -201,15 +205,7 @@ def retrun_graph_table(dfs, pipelines, title, task, t, options_start, options_en
                 scatters.append(go.Scatter(x=(df['date'], df['dataframe']), y=df[col], name=col.split('-')[0], mode='lines+markers'))
                 histos.append(go.Bar(x=(df['date'], df['dataframe']), y=df[col], name=col.split('-')[0]))
         table.extend((html.H4(scores[index] + ' Score'), create_table(df)))
-
-    # Creation of the dictionary to return which it depends on the type of problem and if it's a Kaggle benchmark also on the location of the leader score
-    if t == 'Kaggle':
-        if dfs[0][dfs[0].columns[dfs[0].shape[1]-2]].name == 'leader' and dfs[0][dfs[0].columns[dfs[0].shape[1]-2]][0] == 'No value': limitKaggle = 5
-        else: limitKaggle = 6
-        dictToReturn = { 'scatter_'+scores[0]: scatters[:limitKaggle], 'histo_'+scores[0]: histos[:limitKaggle], 'scatter_'+scores[1]: scatters[limitKaggle:], 'histo_'+scores[1]: histos[limitKaggle:] }
-    else:
-        dictToReturn = { 'scatter_'+scores[0]: scatters[:5], 'histo_'+scores[0]: histos[:5], 'scatter_'+scores[1]: scatters[5:], 'histo_'+scores[1]: histos[5:] }
-
+    
     table.append(
         dbc.Tabs(
             [
@@ -220,8 +216,8 @@ def retrun_graph_table(dfs, pipelines, title, task, t, options_start, options_en
             active_tab="histogram",
         ) 
     )
-    # Limit set to 5 if we are in the case of an OpenML Benchmark otherwise to 6 in the case of a Kaggle Benchmark because there is also the presence of the leader score
-    return dictToReturn, pipelines, table
+    
+    return retrun_dict_of_ScatterHisto(t, dfs, scores, scatters, histos), pipelines, table
 
 
 # Function for displaying an error message if present
@@ -337,10 +333,10 @@ def create_collapses():
                 dbc.Collapse(
                     dbc.CardBody([
                             dbc.FormGroup([
-                                    dbc.Label("Running time in " + val['type'] + ", (default value: " + str(val['default']) + ")", width=5),
+                                    dbc.Label("Running time in minute/s, (default value: " + str(val['default']) + ")", width=5),
                                     dbc.Col([
                                             dbc.InputGroup([
-                                                    dbc.Input(id=key + "-timelife", type="number", value=val['default'], placeholder=val['type'], min=val['min']),
+                                                    dbc.Input(id=key + "-timelife", type="number", value=val['default'], placeholder='minute/s', min=val['min']),
                                                     dbc.InputGroupAddon("at least " + str(val['min']), addon_type="prepend"),
                                             ]),
                                         ],width=5,

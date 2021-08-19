@@ -48,7 +48,7 @@ home = dcc.Markdown(read_markdown())
 knownID = dbc.CardBody([
                         html.H4("OpenML BenchMark", className="card-title"),
                         dbc.FormGroup([
-                                    dbc.Label("Specify the sequence of DatFrame IDs that you whant to test, each ID must be followed by a comma like so: 10,52,111 (no blank space after each comma)", width=5),
+                                    dbc.Label("Specify the sequence of DataFrame IDs that you whant to test, each ID must be followed by a comma like so: 10,52,111 (no blank space after each comma)", width=5),
                                     dbc.Col([
                                         dbc.InputGroup([
                                             dbc.Input(
@@ -64,7 +64,7 @@ knownID = dbc.CardBody([
 unknownID = dbc.CardBody([
                                 html.H4("OpenML BenchMark", className="card-title"),
                                 dbc.FormGroup([
-                                    dbc.Label("Number of DataFrame to test each for classification tasks and regression tasks or ", width=5),
+                                    dbc.Label("Number of DataFrames to test for classification problems and regression problems", width=5),
                                     dbc.Col([
                                         dbc.InputGroup([
                                             dbc.Input(
@@ -189,9 +189,9 @@ testbenchmark = html.Div([
                                 dcc.Dropdown(
                                     id='algorithms',
                                     options=[
-                                        {'label': 'Autosklearn', 'value': 'autosklearn'},
-                                        {'label': 'H2O', 'value': 'h2o'},
+                                        {'label': 'AutoSklearn', 'value': 'autosklearn'},
                                         {'label': 'TPOT', 'value': 'tpot'},
+                                        {'label': 'H2O', 'value': 'h2o'},
                                         {'label': 'MLJAR', 'value': 'mljar'},
                                         {'label': 'AutoGluon', 'value': 'autogluon'},
                                         {'label': 'All', 'value': 'all'}
