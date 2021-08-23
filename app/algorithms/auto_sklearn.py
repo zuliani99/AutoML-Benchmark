@@ -15,11 +15,13 @@ import os
 
 def make_classification(X_train, X_test, y_train, y_test, timelife, y, time_start):
   # Classification model
+  jobs = int(int(int(psutil.virtual_memory().total * 1e-9))/4)
+  
   automl = autosklearn.classification.AutoSklearnClassifier(
     time_left_for_this_task=timelife*60,
     per_run_time_limit=30,
-    memory_limit=int(int(psutil.virtual_memory().available * 1e-6) * 0.75)/os.cpu_count(),
-    n_jobs=-1,
+    memory_limit=int(int(psutil.virtual_memory().available * 1e-6) * 0.75)/jobs,
+    n_jobs=jobs,
     resampling_strategy_arguments = {'cv': 10}
   )
   automl.fit(X_train, y_train)
@@ -38,11 +40,13 @@ def make_classification(X_train, X_test, y_train, y_test, timelife, y, time_star
 
 def make_regression(X_train, X_test, y_train, y_test, timelife, time_start):
   # Regression model
+  jobs = int(int(int(psutil.virtual_memory().total * 1e-9))/4)
+
   automl = autosklearn.regression.AutoSklearnRegressor(
     time_left_for_this_task=timelife*60,
     per_run_time_limit=30,
-    memory_limit=int(int(psutil.virtual_memory().available * 1e-6) * 0.75)/os.cpu_count(),
-    n_jobs=-1,
+    memory_limit=int(int(psutil.virtual_memory().available * 1e-6) * 0.75)/jobs,
+    n_jobs=jobs,
     resampling_strategy_arguments = {'cv': 10}
   )
   automl.fit(X_train, y_train)

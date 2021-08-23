@@ -137,7 +137,7 @@ kagglebenchmark = html.Div([
                                         {'label': "Forest Cover Type Prediction - Classification", 'value': 'forest-cover-type-prediction'},
                                         {'label': "Ghouls Goblins and Ghosts Boo - Classification", 'value': 'ghouls-goblins-and-ghosts-boo'},
                                         
-                                        {'label': 'BigQuery-Geotab Intersection Congestion - Regression', 'value': 'bigquery-geotab-intersection-congestion'},
+                                        {'label': 'Tabular Playground Series Jan 2021 - Regression', 'value': 'tabular-playground-series-jan-2021'},
                                         {'label': 'CommonLit Readability Prize - Regression', 'value': 'commonlitreadabilityprize'},
                                         {'label': 'Mercedes Benz Greener Manufacturing - Regression', 'value': 'mercedes-benz-greener-manufacturing'},
                                         {'label': 'Global Energy Forecasting Competition 2012 - Regression', 'value': 'GEF2012-wind-forecasting'},

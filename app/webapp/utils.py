@@ -200,7 +200,6 @@ def retrun_graph_table(dfs, pipelines, title, task, t, options_start, options_en
 
         # Population of arrays with related graphics and tables
         for i, col in enumerate(df.columns[2:-1]):
-            print(index, i, df[col].name)
             if isinstance(df[col][0], float): # Update arrays only if it is a float instance, so I exclude cells with "no value"
                 scatters.append(go.Scatter(x=(df['date'], df['dataframe']), y=df[col], name=col.split('-')[0], mode='lines+markers'))
                 histos.append(go.Bar(x=(df['date'], df['dataframe']), y=df[col], name=col.split('-')[0]))
@@ -377,8 +376,6 @@ def set_body(name, pipeline):
     elif name == 'dataframe':
         return html.Div(pipeline)
     elif name == 'mljar':
-        #print(type(pipeline), pipeline)
-        #return html.Div([dbc.Table(dcc.Markdown(pipeline[0])), html.H6('Ensemble Statistics'), dbc.Table(dcc.Markdown(pipeline[1])), dbc.Table(dcc.Markdown(pipeline[2]))])
         return dcc.Markdown(pipeline)
     else:
         return dbc.Table(dcc.Markdown(pipeline))
