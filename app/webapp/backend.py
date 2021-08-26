@@ -81,7 +81,7 @@ def start_test_function(dfid, algorithms, options):
     s1, s2, pipeline, timelife = res
     if pipeline[0:5] == 'Error': # If the first 5 characters of the pipeline variable are Error it means that an exception was thrown during the execution of the algorithm
         return [html.Div([
-                        html.P('The execution of the benchmark for the dataframe: ' + str(dfid) + ' whit the algorithm: ' + algorithms + ' for ' + str(options[algorithms]['time']) + ' ' + options[algorithms]['type'] + ' throw an exception.'),
+                        html.P('The execution of the benchmark for the dataframe: ' + str(dfid) + ' with: ' + algorithms + ', for: ' + str(options[algorithms]['time']) + ' minute/s throw an exception.'),
                         html.P(pipeline)
                     ], style={'color':'red'}
                 )]
@@ -92,7 +92,7 @@ def start_test_function(dfid, algorithms, options):
     # Complete display of the result
     return [html.Div([
             html.P(
-                'Dataframe results ' + str(dfid) + ' by using the algorithm: ' + str(algorithms) + ' with starting running time: ' + str(options[algorithms]['time']) + ' ' + options[algorithms]['type']
+                'Dataframe results ' + str(dfid) + ' by using the algorithm: ' + str(algorithms) + ' with starting running time: ' + str(options[algorithms]['time']) + ' minute/s' 
                 + ' and with final running time: ' + str(timelife) + ' ' + str(options[algorithms]['type'])
             ),
             html.P(text),
