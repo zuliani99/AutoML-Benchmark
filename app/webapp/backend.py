@@ -93,7 +93,7 @@ def start_test_function(dfid, algorithms, options):
     return [html.Div([
             html.P(
                 'Dataframe results ' + str(dfid) + ' by using the algorithm: ' + str(algorithms) + ' with starting running time: ' + str(options[algorithms]['time']) + ' minute/s' 
-                + ' and with final running time: ' + str(timelife) + ' ' + str(options[algorithms]['type'])
+                + ' and with final running time: ' + str(timelife) + ' minute/s'
             ),
             html.P(text),
             set_body(str(algorithms), pipeline) # View the pipeline for that algorithm
