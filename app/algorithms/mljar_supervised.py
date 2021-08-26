@@ -14,13 +14,13 @@ import time
 
 
 def mljar(df, task, options, time_start):
-  print(colored("--------------------------------- MLJAR ---------------------------------", "blue"))
+  print(colored("--------------------------------- MLJAR ---------------------------------", "cyan"))
   try:
     return do_mljar(df, options, task, time_start)
   except Exception as e:
     # In case of exception
     print(colored('Error: ' + str(e), 'red'))
-    print(colored("--------------------------------- MLJAR ---------------------------------\n\n", "blue"))
+    print(colored("--------------------------------- MLJAR ---------------------------------\n\n", "cyan"))
     # Return of None with the exception placed on the pipeline
     return None, None, 'Error: ' + str(e), None
 
@@ -50,7 +50,7 @@ def do_mljar(df, options, task, time_start):
   pipelines = make_pipeline_mljar(pd.read_csv('AutoML_1/leaderboard.csv'), dirs) # Pipelines
   shutil.rmtree('./AutoML_1') # Deleting the folder created for saving the models tested by MLJAR
 
-  print(colored("--------------------------------- MLJAR ---------------------------------\n\n", "blue"))
+  print(colored("--------------------------------- MLJAR ---------------------------------\n\n", "cyan"))
 
   time_elapsed = round((time.time() - time_start)/60, 3) # Time consumed for computation
 

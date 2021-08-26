@@ -138,8 +138,9 @@ def download_dfs(ids):
 
                 df = X
 
+                print('\n------------------ Dataframe : ' + name + ' ------------------')
                 print(df.info())
-                print(df.head())
+                print('------------------ Download Done ------------------\n')
                 
                 # Save the DataFrame in the corresponding folder
                 df.to_csv(fullname, index=False, header=True)
@@ -148,7 +149,11 @@ def download_dfs(ids):
                 # If it is already present I save it and get the task
                 fullname = search
                 task = search.split('/')[3]
-                print(pd.read_csv(fullname).head())
+
+                print('\n------------------ Dataframe: ' + fullname + ' ------------------')
+                print(pd.read_csv(fullname).info())
+                print('------------------------- Dataset already downloaded -------------------------\n')
+                
 
             list_df[task].append(fullname) # Add the dataframe path to its list_df dictionary array
 

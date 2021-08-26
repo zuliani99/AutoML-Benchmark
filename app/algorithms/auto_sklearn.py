@@ -12,7 +12,7 @@ import psutil
 import time
 
 def auto_sklearn(df, task, options, time_start):
-  print(colored("-------------------------------- AUTOSKLEARN --------------------------------", "blue"))
+  print(colored("-------------------------------- AUTOSKLEARN --------------------------------", "cyan"))
   try:
     df_new = copy.copy(df) # Deep copy of the DataFrame passed to parameter
     pd.options.mode.chained_assignment = None
@@ -35,10 +35,10 @@ def auto_sklearn(df, task, options, time_start):
       if options['rerun'] == True:
         # If the exception is caused by the short time made available to the user but it has ticked the checkbox for the re-execution by the algorithm, it will be re-executed with a longer time
         return auto_sklearn(df, task, {'time': options['time']+1, 'rerun': options['rerun']}, time_start)
-      print(colored("-------------------------------- AUTOSKLEARN --------------------------------\n\n", "blue"))
+      print(colored("-------------------------------- AUTOSKLEARN --------------------------------\n\n", "cyan"))
       return (None, None, 'Error duo to short algorithm timelife: ' + str(e), None)
     # Otherwise, None are returned with the exception placed on the pipeline
-    print(colored("-------------------------------- AUTOSKLEARN --------------------------------\n\n", "blue"))
+    print(colored("-------------------------------- AUTOSKLEARN --------------------------------\n\n", "cyan"))
     return (None, None, 'Error: ' + str(e), None)
     
 
@@ -57,7 +57,7 @@ def make_classification(X_train, X_test, y_train, y_test, timelife, y, time_star
   automl.fit(X_train, y_train)
   y_pred = automl.predict(X_test)
   pipelines = str(pd.DataFrame(pd.Series(automl.show_models())).iloc[0].squeeze()) # Pipeline
-  print(colored("-------------------------------- AUTOSKLEARN --------------------------------\n\n", "blue"))
+  print(colored("-------------------------------- AUTOSKLEARN --------------------------------\n\n", "cyan"))
 
   time_elapsed = round((time.time() - time_start)/60, 3) # Time consumed for computation
 
@@ -82,7 +82,7 @@ def make_regression(X_train, X_test, y_train, y_test, timelife, time_start):
   automl.fit(X_train, y_train)
   y_pred = automl.predict(X_test)
   pipelines = str(pd.DataFrame(pd.Series(automl.show_models())).iloc[0].squeeze().split('\n')) # Pipeline
-  print(colored("-------------------------------- AUTOSKLEARN --------------------------------\n\n", "blue"))
+  print(colored("-------------------------------- AUTOSKLEARN --------------------------------\n\n", "cyan"))
 
   time_elapsed = round((time.time() - time_start)/60, 3) # Time consumed for computation
 

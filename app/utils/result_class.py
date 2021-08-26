@@ -71,7 +71,7 @@ class Result:
         if(not self.res_class_acc.empty and not self.res_class_f1.empty):
             pathcla = './results/' + self.t + '/' + date + '/classification'
             os.makedirs(pathcla)
-            print('---------------------------------CLASSIFICATION RESULTS ' + self.t + '---------------------------------')
+            print('--------------------------------- CLASSIFICATION RESULTS ' + self.t.upper() + ' ---------------------------------')
             print(self.res_class_acc)
             print(self.res_class_f1)
 
@@ -85,7 +85,7 @@ class Result:
         if(not self.res_reg_rmse.empty and not self.res_reg_r2.empty):
             pathreg = './results/' + self.t + '/' + date + '/regression'
             os.makedirs(pathreg)
-            print('\n\n---------------------------------REGRESSION RESULTS ' + self.t +'---------------------------------')
+            print('\n\n--------------------------------- REGRESSION RESULTS ' + self.t.upper() +' ---------------------------------')
             print(self.res_reg_rmse)
             print(self.res_reg_r2)
 

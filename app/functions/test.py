@@ -27,7 +27,7 @@ def switch(algo, df, name, task, options):
     }.get(algo)(df, task)
 
 def test(id, algo, options):
-    print("--------------------------------- Starting Test Benchmark ---------------------------------")
+    print("\n\n--------------------------------- Starting Test Benchmark ---------------------------------")
     print('---------------- ' + str(id) + ' ----------- ' + str(algo) + ' -------------')
     # Download the dataframe
     df = download_dfs([id])

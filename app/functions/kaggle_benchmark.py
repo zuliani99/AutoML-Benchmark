@@ -39,7 +39,7 @@ def get_leader(leaderboard):
 
 # Function for running the Kaggle Benchmark
 def kaggle_benchmark(list_df, options):
-    print("--------------------------------- Starting Kaggle Benchmark ---------------------------------")
+    print("\n\n--------------------------------- Starting Kaggle Benchmark ---------------------------------")
 
     # Initializing the Kaggle API
     api = KaggleApi()

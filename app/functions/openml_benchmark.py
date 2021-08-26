@@ -8,14 +8,16 @@ from termcolor import colored
 
 # Function responsible for executing the OpenML Benchmark
 def openml_benchmark(options, algo_options):
-    print("--------------------------------- Starting OpenML Benchmark ---------------------------------")
+    print("\n\n--------------------------------- Starting OpenML Benchmark ---------------------------------")
     res_openml = Result('OpenML') # Creation of a new Result of type OpenML
 
     if (isinstance(options, tuple)): # If options is of type tuple then I start the benchmark with dataframes filtered by openml through the options inseirte
         list_df = openml_benchmark_unknowID(options)
     else:
         list = options.split(',')
+        print(colored('\n-------------------------------- Starting Dataframes Download --------------------------------', 'yellow'))
         list_df = download_dfs([df for df in list]) # Otherwise I start the benchmark for OpenML with the list of DataFrames entered by the user
+        print(colored('-------------------------------- Ended Dataframes Download --------------------------------', 'yellow'))
 
     if isinstance(list_df, str):
         return list_df # If the return value is a list it means that there was an error while downloading one of the DataFrame
@@ -25,9 +27,9 @@ def openml_benchmark(options, algo_options):
         str_path = d.split('/')
         df = pd.read_csv(d)
 
-        print('--------------------------------- Dataframe: ' + d + ' ---------------------------------')
+        print('\n\n--------------------------------- Dataframe: ' + d + ' ---------------------------------\n')
         res_openml.run_benchmark(df, str_path[3], str_path[4], None, algo_options)
-        print(colored('--------------------------------- Row Inserted ---------------------------------', 'green'))
+        print(colored('--------------------------------- Row Inserted ---------------------------------\n\n', 'green'))
 
     return res_openml.print_res()
 

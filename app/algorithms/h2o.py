@@ -13,7 +13,7 @@ import psutil
 
 
 def H2O(df, task, options, time_start):
-  print(colored("------------------------------------ H2O ------------------------------------", "blue"))
+  print(colored("------------------------------------ H2O ------------------------------------", "cyan"))
   try:
     return do_h20(df, task, options['time'], time_start)
 
@@ -24,10 +24,10 @@ def H2O(df, task, options, time_start):
       if options['rerun'] == True:
         # If the exception is caused by the short time made available by the user but it has ticked the checkbox for the re-execution of the algorithm, it is re-executed with a longer time
         return H2O(df, task, {'time': options['time'] + 1, 'rerun': options['rerun']}, time_start)
-      print(colored("------------------------------------ H2O ------------------------------------\n\n", "blue"))
+      print(colored("------------------------------------ H2O ------------------------------------\n\n", "cyan"))
       return None, None, 'Error duo to short algorithm timelife: ' + str(e), None
     # Otherwise, None are returned with the exception placed on the pipeline
-    print(colored("------------------------------------ H2O ------------------------------------\n\n", "blue"))
+    print(colored("------------------------------------ H2O ------------------------------------\n\n", "cyan"))
     return None, None, 'Error: ' + str(e), None
 
 
@@ -87,7 +87,7 @@ def prepare_and_test(train, test, task, timelife, time_start):
   pipelines = (h2o.as_list(h2o.automl.get_leaderboard(aml, extra_columns = 'ALL'))).to_markdown() # Pipeline
   h2o.shutdown() # Termination of the H2O cluster
   
-  print(colored("------------------------------------ H2O ------------------------------------\n\n", "blue"))
+  print(colored("------------------------------------ H2O ------------------------------------\n\n", "cyan"))
 
   time_elapsed = round((time.time() - time_start)/60, 3) # Time consumed for computation
   
