@@ -12,7 +12,7 @@ import psutil
 import time
 
 def auto_sklearn(df, task, options, time_start):
-  print(colored("-------------------------------- AUTOSKLEARN --------------------------------\n\n", "blue"))
+  print(colored("-------------------------------- AUTOSKLEARN --------------------------------", "blue"))
   try:
     df_new = copy.copy(df) # Deep copy of the DataFrame passed to parameter
     pd.options.mode.chained_assignment = None

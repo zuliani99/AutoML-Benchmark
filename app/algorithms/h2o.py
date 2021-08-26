@@ -9,6 +9,7 @@ from sklearn.metrics import accuracy_score, mean_squared_error, f1_score, r2_sco
 import copy
 from termcolor import colored
 import time
+import psutil
 
 
 def H2O(df, task, options, time_start):
@@ -23,16 +24,16 @@ def H2O(df, task, options, time_start):
       if options['rerun'] == True:
         # If the exception is caused by the short time made available by the user but it has ticked the checkbox for the re-execution of the algorithm, it is re-executed with a longer time
         return H2O(df, task, {'time': options['time'] + 1, 'rerun': options['rerun']}, time_start)
-      print(colored("------------------------------------ H2O ------------------------------------", "blue"))
+      print(colored("------------------------------------ H2O ------------------------------------\n\n", "blue"))
       return None, None, 'Error duo to short algorithm timelife: ' + str(e), None
     # Otherwise, None are returned with the exception placed on the pipeline
-    print(colored("------------------------------------ H2O ------------------------------------", "blue"))
+    print(colored("------------------------------------ H2O ------------------------------------\n\n", "blue"))
     return None, None, 'Error: ' + str(e), None
 
 
 def do_h20(df, task, timelife, time_start):
   pd.options.mode.chained_assignment = None
-  h2o.init()  # Starting the H2O cluster
+  h2o.init(max_mem_size = str(int(int(psutil.virtual_memory().available * 1e-6) * 0.75)) + "M")  # Starting the H2O cluster
   df_new = copy.copy(df) # Deep copy of the DataFrame passed to parameter
 
   df_new = get_list_single_df(df_new)
@@ -86,7 +87,7 @@ def prepare_and_test(train, test, task, timelife, time_start):
   pipelines = (h2o.as_list(h2o.automl.get_leaderboard(aml, extra_columns = 'ALL'))).to_markdown() # Pipeline
   h2o.shutdown() # Termination of the H2O cluster
   
-  print(colored("------------------------------------ H2O ------------------------------------", "blue"))
+  print(colored("------------------------------------ H2O ------------------------------------\n\n", "blue"))
 
   time_elapsed = round((time.time() - time_start)/60, 3) # Time consumed for computation
   

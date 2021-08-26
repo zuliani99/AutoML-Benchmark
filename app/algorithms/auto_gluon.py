@@ -57,7 +57,7 @@ def autogluon(df, task, options, time_start):
 
     shutil.rmtree('./AutogluonModels') # Deleting the folder created for saving the models tested by AutoGluon
 
-    print(colored("---------------------------------- AUTOGLUON --------------------------------", "blue"))
+    print(colored("---------------------------------- AUTOGLUON --------------------------------\n\n", "blue"))
 
     time_elapsed = round((time.time() - time_start)/60, 3) # Time consumed for computation
 
@@ -74,10 +74,10 @@ def autogluon(df, task, options, time_start):
       if options['rerun'] == True:
         # If the exception is caused by the short time made available by the user but it has ticked the checkbox for the re-execution of the algorithm, it is re-executed with a longer time
         return autogluon(df, task, {'time': options['time']+1, 'rerun': options['rerun']}, time_start)
-      print(colored("---------------------------------- AUTOGLUON --------------------------------", "blue"))
+      print(colored("---------------------------------- AUTOGLUON --------------------------------\n\n", "blue"))
       return (None, None, 'Error duo to short algorithm timelife: ' + str(e), None)
     # Otherwise, None are returned with the exception placed on the pipeline
-    print(colored("---------------------------------- AUTOGLUON --------------------------------", "blue"))
+    print(colored("---------------------------------- AUTOGLUON --------------------------------\n\n", "blue"))
     return (None, None, 'Error: ' + str(e), None)
 
 

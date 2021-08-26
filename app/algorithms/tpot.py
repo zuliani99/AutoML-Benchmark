@@ -33,11 +33,11 @@ def TPOT(df, task, options, time_start):
       if options['rerun'] == True:
         # If the exception is caused by the short time made available by the user but it has ticked the checkbox for the re-execution of the algorithm, it is re-executed with a longer time
         return TPOT(df, task, {'time': options['time']+5, 'rerun': options['rerun']}, time_start)
-      print(colored("----------------------------------- TPOT ------------------------------------", "blue"))
+      print(colored("----------------------------------- TPOT ------------------------------------\n\n", "blue"))
       return (None, None, 'Error duo to short algorithm timelife: ' + str(e), None)
 
     # Otherwise, None are returned with the exception placed on the pipeline
-    print(colored("----------------------------------- TPOT ------------------------------------", "blue"))
+    print(colored("----------------------------------- TPOT ------------------------------------\n\n", "blue"))
     return (None, None, 'Error: ' + str(e), None)
 
 
@@ -52,7 +52,7 @@ def make_classification(X_train, X_test, y_train, y_test, timelife, y, time_star
   y_pred = model.predict(X_test)
   pipelines = model.export() # Get the pipeline
 
-  print(colored("----------------------------------- TPOT ------------------------------------", "blue"))
+  print(colored("----------------------------------- TPOT ------------------------------------\n\n", "blue"))
 
   time_elapsed = round((time.time() - time_start)/60, 3) # Time consumed for computation
 
@@ -74,7 +74,7 @@ def make_regression(X_train, X_test, y_train, y_test, timelife, time_start):
   y_pred = model.predict(X_test)
   pipelines = model.export() # Get the pipeline
 
-  print(colored("----------------------------------- TPOT ------------------------------------", "blue"))
+  print(colored("----------------------------------- TPOT ------------------------------------\n\n", "blue"))
 
   time_elapsed = round((time.time() - time_start)/60, 3) # Time consumed for computation
 
