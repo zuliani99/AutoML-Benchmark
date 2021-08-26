@@ -10,6 +10,7 @@ import numpy as np
 from termcolor import colored
 import time
 
+
 # Definition of the algorithms that autogluon will test
 hyperparameters = {
   'GBM': {'num_boost_round': 10000},
@@ -19,22 +20,9 @@ hyperparameters = {
   'KNN': {},
 }
 
-def get_options(task, y):
-  f1 = None
-  if task == 'classification':
-    # Check if it is a case of binary or multilables classification
-    if len(y[y.columns[0]].unique()) > 2:
-      pt = 'multiclass'
-      f1 = lambda y_test, y_pred : f1_score(y_test, y_pred, average='weighted')
-    else:
-      pt = 'binary'
-      f1 = lambda y_test, y_pred : f1_score(y_test, y_pred, pos_label=np.unique(y)[0])
-  else:
-    pt = 'regression'
-  return pt, f1
 
 def autogluon(df, task, options, time_start):
-  print("----------------------------------AUTOGLUON--------------------------------")
+  print(colored("---------------------------------- AUTOGLUON --------------------------------", "blue"))
   try:
     pd.options.mode.chained_assignment = None
     df_new = copy.copy(df) # Deep copy of the DataFrame passed to parameter
@@ -69,7 +57,7 @@ def autogluon(df, task, options, time_start):
 
     shutil.rmtree('./AutogluonModels') # Deleting the folder created for saving the models tested by AutoGluon
 
-    print("----------------------------------AUTOGLUON--------------------------------\n\n")
+    print(colored("---------------------------------- AUTOGLUON --------------------------------", "blue"))
 
     time_elapsed = round((time.time() - time_start)/60, 3) # Time consumed for computation
 
@@ -86,9 +74,24 @@ def autogluon(df, task, options, time_start):
       if options['rerun'] == True:
         # If the exception is caused by the short time made available by the user but it has ticked the checkbox for the re-execution of the algorithm, it is re-executed with a longer time
         return autogluon(df, task, {'time': options['time']+1, 'rerun': options['rerun']}, time_start)
-      print("----------------------------------AUTOGLUON--------------------------------\n\n")
+      print(colored("---------------------------------- AUTOGLUON --------------------------------", "blue"))
       return (None, None, 'Error duo to short algorithm timelife: ' + str(e), None)
     # Otherwise, None are returned with the exception placed on the pipeline
-    print("----------------------------------AUTOGLUON--------------------------------\n\n")
+    print(colored("---------------------------------- AUTOGLUON --------------------------------", "blue"))
     return (None, None, 'Error: ' + str(e), None)
+
+
+def get_options(task, y):
+  f1 = None
+  if task == 'classification':
+    # Check if it is a case of binary or multilables classification
+    if len(y[y.columns[0]].unique()) > 2:
+      pt = 'multiclass'
+      f1 = lambda y_test, y_pred : f1_score(y_test, y_pred, average='weighted')
+    else:
+      pt = 'binary'
+      f1 = lambda y_test, y_pred : f1_score(y_test, y_pred, pos_label=np.unique(y)[0])
+  else:
+    pt = 'regression'
+  return pt, f1
 

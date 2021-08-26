@@ -39,6 +39,8 @@ def get_leader(leaderboard):
 
 # Function for running the Kaggle Benchmark
 def kaggle_benchmark(list_df, options):
+    print("--------------------------------- Starting Kaggle Benchmark ---------------------------------")
+
     # Initializing the Kaggle API
     api = KaggleApi()
     api.authenticate()
@@ -46,7 +48,7 @@ def kaggle_benchmark(list_df, options):
     res_kaggle = Result('Kaggle') # Initialization of a new Result of type Kaggle
     if not isinstance(list_df, list): list_df = [list_df]
     for df in list_df: # For all DataFrames that the user has chosen
-        print('------------------Dataset name: ' + df + ' - Task: ' + dataframes[df]['task'] + '------------------')
+        print('------------------ Dataframe name: ' + df + ' - Task: ' + dataframes[df]['task'] + ' ------------------')
         path = './dataframes/Kaggle/' + df
 
         if(not os.path.isdir(path)): # If the DataFrame is not present I have to download and unzip it

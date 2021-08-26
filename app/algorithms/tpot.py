@@ -9,49 +9,9 @@ import copy
 from termcolor import colored
 import time
 
-def make_classification(X_train, X_test, y_train, y_test, timelife, y, time_start):
-
-  # Model Classification
-  model =  TPOTClassifier(cv=10, max_time_mins=timelife, random_state=1, verbosity=2, n_jobs=-1, max_eval_time_mins=5)
-  #model.fit(X_train, y_train)
-
-  model.fit(np.array(X_train), np.array(y_train).ravel())
-
-  y_pred = model.predict(X_test)
-  pipelines = model.export() # Get the pipeline
-
-  print("-----------------------------------TPOT------------------------------------\n\n")
-
-
-  time_elapsed = round((time.time() - time_start)/60, 3) # Time consumed for computation
-
-  # Check if it is a binary or multilables case
-  if len(np.unique(y)) > 2:
-    return round(accuracy_score(y_test, y_pred), 3), round(f1_score(y_test, y_pred, average='weighted'), 3), pipelines, time_elapsed
-  else:
-    return round(accuracy_score(y_test, y_pred), 3), round(f1_score(y_test, y_pred, pos_label=np.unique(y)[0]), 3), pipelines, time_elapsed
-
-
-def make_regression(X_train, X_test, y_train, y_test, timelife, time_start):
-
-  # Regression model
-  model =  TPOTRegressor(cv=10, max_time_mins=timelife, random_state=1, verbosity=2, n_jobs=-1, max_eval_time_mins=5)
-  #model.fit(X_train, y_train)
-
-  model.fit(np.array(X_train), np.array(y_train).ravel())
-
-  y_pred = model.predict(X_test)
-  pipelines = model.export() # Get the pipeline
-
-  print("-----------------------------------TPOT------------------------------------\n\n")
-
-  time_elapsed = round((time.time() - time_start)/60, 3) # Time consumed for computation
-
-  return round(np.sqrt(mean_squared_error(y_test, y_pred)), 3), round(r2_score(y_test, y_pred), 3), pipelines, time_elapsed
-
 
 def TPOT(df, task, options, time_start):
-  print("-----------------------------------TPOT------------------------------------")
+  print(colored("-----------------------------------TPOT------------------------------------"), "blue")
   try:
     df_new = copy.copy(df) # Deep copy of the DataFrame passed to parameter
     pd.options.mode.chained_assignment = None
@@ -73,10 +33,49 @@ def TPOT(df, task, options, time_start):
       if options['rerun'] == True:
         # If the exception is caused by the short time made available by the user but it has ticked the checkbox for the re-execution of the algorithm, it is re-executed with a longer time
         return TPOT(df, task, {'time': options['time']+5, 'rerun': options['rerun']}, time_start)
-      print("-----------------------------------TPOT------------------------------------\n\n")
+      print(colored("-----------------------------------TPOT------------------------------------"), "blue")
       return (None, None, 'Error duo to short algorithm timelife: ' + str(e), None)
 
     # Otherwise, None are returned with the exception placed on the pipeline
-    print("-----------------------------------TPOT------------------------------------\n\n")
+    print(colored("-----------------------------------TPOT------------------------------------"), "blue")
     return (None, None, 'Error: ' + str(e), None)
 
+
+def make_classification(X_train, X_test, y_train, y_test, timelife, y, time_start):
+
+  # Model Classification
+  model =  TPOTClassifier(cv=10, max_time_mins=timelife, random_state=1, verbosity=2, n_jobs=-1, max_eval_time_mins=5)
+  #model.fit(X_train, y_train)
+
+  model.fit(np.array(X_train), np.array(y_train).ravel())
+
+  y_pred = model.predict(X_test)
+  pipelines = model.export() # Get the pipeline
+
+  print(colored("-----------------------------------TPOT------------------------------------"), "blue")
+
+  time_elapsed = round((time.time() - time_start)/60, 3) # Time consumed for computation
+
+  # Check if it is a binary or multilables case
+  if len(np.unique(y)) > 2:
+    return round(accuracy_score(y_test, y_pred), 3), round(f1_score(y_test, y_pred, average='weighted'), 3), pipelines, time_elapsed
+  else:
+    return round(accuracy_score(y_test, y_pred), 3), round(f1_score(y_test, y_pred, pos_label=np.unique(y)[0]), 3), pipelines, time_elapsed
+
+
+def make_regression(X_train, X_test, y_train, y_test, timelife, time_start):
+
+  # Regression model
+  model =  TPOTRegressor(cv=10, max_time_mins=timelife, random_state=1, verbosity=2, n_jobs=-1, max_eval_time_mins=5)
+  #model.fit(X_train, y_train)
+
+  model.fit(np.array(X_train), np.array(y_train).ravel())
+
+  y_pred = model.predict(X_test)
+  pipelines = model.export() # Get the pipeline
+
+  print(colored("-----------------------------------TPOT------------------------------------"), "blue")
+
+  time_elapsed = round((time.time() - time_start)/60, 3) # Time consumed for computation
+
+  return round(np.sqrt(mean_squared_error(y_test, y_pred)), 3), round(r2_score(y_test, y_pred), 3), pipelines, time_elapsed

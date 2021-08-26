@@ -1,6 +1,5 @@
 # Import needed
 import pandas as pd
-import os
 from algorithms.auto_sklearn import auto_sklearn
 from algorithms.auto_gluon import autogluon
 from algorithms.tpot import TPOT
@@ -28,7 +27,8 @@ def switch(algo, df, name, task, options):
     }.get(algo)(df, task)
 
 def test(id, algo, options):
-    print('----------------'+str(id)+'-----------'+str(algo)+'-------------')
+    print("--------------------------------- Starting Test Benchmark ---------------------------------")
+    print('---------------- ' + str(id) + ' ----------- ' + str(algo) + ' -------------')
     # Download the dataframe
     df = download_dfs([id])
     if isinstance(df, str):

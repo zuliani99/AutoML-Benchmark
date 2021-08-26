@@ -188,7 +188,6 @@ def start():
     app.run_server(debug=True)
     
     
-
 if __name__ == '__main__':
     start() # Starting the application
     

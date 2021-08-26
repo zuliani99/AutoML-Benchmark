@@ -8,7 +8,7 @@ from termcolor import colored
 
 # Function responsible for executing the OpenML Benchmark
 def openml_benchmark(options, algo_options):
-    print('openml_benchmark', options)
+    print("--------------------------------- Starting OpenML Benchmark ---------------------------------")
     res_openml = Result('OpenML') # Creation of a new Result of type OpenML
 
     if (isinstance(options, tuple)): # If options is of type tuple then I start the benchmark with dataframes filtered by openml through the options inseirte
@@ -25,9 +25,9 @@ def openml_benchmark(options, algo_options):
         str_path = d.split('/')
         df = pd.read_csv(d)
 
-        print('---------------------------------Dataset: ' + d + '---------------------------------')
+        print('--------------------------------- Dataframe: ' + d + ' ---------------------------------')
         res_openml.run_benchmark(df, str_path[3], str_path[4], None, algo_options)
-        print(colored('--------------------------------- Riga inserita ---------------------------------', 'green'))
+        print(colored('--------------------------------- Row Inserted ---------------------------------', 'green'))
 
     return res_openml.print_res()
 
@@ -45,7 +45,7 @@ def openml_benchmark_unknowID(options):
     datalist_class = filtered_tasks_class[["did", "name"]].drop_duplicates(subset=['did' and 'name'], inplace=False)
     datalist_reg = filtered_tasks_reg[["did", "name"]].drop_duplicates(subset=['did' and 'name'], inplace=False)
 
-    print(colored('--------------------------------Inizio Download Dataset --------------------------------', 'yellow'))
+    print(colored('-------------------------------- Starting Dataframes Download --------------------------------', 'yellow'))
 
     # Create a single DataFrame given by the download of df_n Dataframe for the classification case and df_n Dataframe for the regression
     result = get_df_list(datalist_class, df_n, 'classification')
@@ -53,5 +53,5 @@ def openml_benchmark_unknowID(options):
 
     print(result)
 
-    print(colored('--------------------------------Fine Dataset Download --------------------------------', 'yellow'))
+    print(colored('-------------------------------- Ended Dataframes Download --------------------------------', 'yellow'))
     return result

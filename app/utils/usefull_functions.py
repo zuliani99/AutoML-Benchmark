@@ -68,7 +68,7 @@ def get_df_list(datalist, n_df, task):
                     X[y.columns[0]] = y
 
                     if n_df > 0:
-                        print('------------------Dataset : ' + name + '------------------')
+                        print('------------------ Dataframe : ' + name + ' ------------------')
 
                         print(y.info())
                         fullname = os.path.join(file_dir, name)
@@ -83,8 +83,8 @@ def get_df_list(datalist, n_df, task):
                         n_df-=1
 
             elif n_df > 0:
-                print('------------------Dataset: ' + name + '------------------')
-                print('-------------------------Dataset già presente-------------------------\n')
+                print('------------------ Dataframe: ' + name + ' ------------------')
+                print('------------------------- Dataset already downloaded -------------------------\n')
                 list_df.append(file_dir + name)
                 n_df-=1
 
