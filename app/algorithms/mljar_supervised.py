@@ -41,7 +41,7 @@ def do_mljar(df, options, task, time_start):
     else: ml_task = 'binary_classification'
   else: ml_task=task
 
-  automl = AutoML(mode="Compete", total_time_limit=60*options['time'], ml_task=ml_task)
+  automl = AutoML(mode="Compete", total_time_limit=60*options['time'], ml_task=ml_task, algorithms=["Baseline", "Linear", "Decision Tree", "Random Forest", "Extra Trees", "LightGBM", "Xgboost", "CatBoost"])
   
   automl.fit(X_train, y_train)
   y_pred = automl.predict_all(X_test)

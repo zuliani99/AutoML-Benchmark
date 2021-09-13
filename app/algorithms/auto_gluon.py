@@ -47,7 +47,7 @@ def autogluon(df, task, options, time_start):
       time_limit=options['time']*60,
       presets=['best_quality'],
       #auto_stack=True
-      #hyperparameters=hyperparameters    # -> Questo aggiunge le NN 
+      hyperparameters=hyperparameters    # -> Comment this line to add te Neural Network
     )
     
     predictor.fit_summary()
