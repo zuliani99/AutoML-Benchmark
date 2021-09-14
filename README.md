@@ -18,7 +18,7 @@ virtualenv my_venv
 Access at it and activate it:
 ```bash
 cd my_venv
-source bin/activate.fish
+source bin/activate
 ```
 
 Clone my repository and install all dependencies with:
