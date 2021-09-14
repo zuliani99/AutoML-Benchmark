@@ -4,7 +4,7 @@ from h2o.automl import H2OAutoML
 import numpy as np
 import pandas as pd
 from sklearn.model_selection import train_test_split
-from utils.usefull_functions import return_X_y, get_list_single_df
+from utils.usefull_functions import fill_and_to_category, return_X_y
 from sklearn.metrics import accuracy_score, mean_squared_error, f1_score, r2_score
 import copy
 from termcolor import colored
@@ -36,7 +36,7 @@ def do_h20(df, task, timelife, time_start):
   h2o.init(max_mem_size = str(int(int(psutil.virtual_memory().available * 1e-6) * 0.75)) + "M")  # Starting the H2O cluster
   df_new = copy.copy(df) # Deep copy of the DataFrame passed to parameter
 
-  df_new = get_list_single_df(df_new)
+  df_new = fill_and_to_category(df_new)
   X, y = return_X_y(df_new) # Obtain the two DataFrame X and y needed to execute the train_test_split
   X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=1)
 

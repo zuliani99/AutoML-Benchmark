@@ -118,6 +118,8 @@ def download_dfs(ids):
             if search is None:
                 # If there is no download through the appropriate API
                 X, y = fetch_openml(data_id=id, as_frame=True, return_X_y=True, cache=True)
+                if y is None:
+                    return 'Error: dataframe ' + str(id) + " haven't any target feature"  
                 name = str(id)+ '_' +openml.datasets.get_dataset(id).name + '.csv'
                 
                 # Get the type of tasks
