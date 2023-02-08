@@ -1,7 +1,7 @@
 # Import needed
 import os
-import dash_core_components as dcc
-import dash_html_components as html
+from dash import dcc
+from dash import html
 import dash_bootstrap_components as dbc
 import plotly.graph_objects as go
 import math
@@ -331,12 +331,12 @@ def create_collapses():
                 ),
                 dbc.Collapse(
                     dbc.CardBody([
-                            dbc.FormGroup([
+                            html.Div([
                                     dbc.Label("Running time in minute/s, (default value: " + str(val['default']) + ")", width=5),
                                     dbc.Col([
                                             dbc.InputGroup([
                                                     dbc.Input(id=key + "-timelife", type="number", value=val['default'], placeholder='minute/s', min=val['min']),
-                                                    dbc.InputGroupAddon("at least " + str(val['min']), addon_type="prepend"),
+                                                    dbc.InputGroupText("at least " + str(val['min'])),
                                             ]),
                                         ],width=5,
                                     ),
@@ -351,7 +351,6 @@ def create_collapses():
                                         labelStyle={'display': 'inline-block'},
                                     ),
                                 ],
-                                row=True,
                             ),
                         ]
                     ),

@@ -2,17 +2,19 @@
 Benchmark for some usual automated machine learning, such as: [AutoSklearn](https://automl.github.io/auto-sklearn/master/), [MLJAR](https://supervised.mljar.com/), [H2O](https://docs.h2o.ai/h2o/latest-stable/h2o-docs/automl.html), [TPOT](http://epistasislab.github.io/tpot/) and [AutoGluon](https://auto.gluon.ai/stable/index.html). All visualized via a responsive [Dash Ploty](https://dash.plotly.com/) Web Application.
 
 
-## Installation
-First of all install the python3-pip package and then the virtual environment for safety reason: 
+## Requirements and Installation
+The python version for this project is the 3.9, so make sure to have installed
+First of all install the python3.9 pip package and then the virtual environment for safety reason: 
 ```bash
-sudo apt install python3-pip
+curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py
+python3.9 get-pip.py
 sudo apt install default-jre
-sudo pip3 install virtualenv 
+sudo apt install python3.9-venv
 ```
 
 Then create a new virtual environment:
 ```bash
-virtualenv my_venv
+python3.9 -m venv my_venv
 ```
 
 Access at it and activate it:
