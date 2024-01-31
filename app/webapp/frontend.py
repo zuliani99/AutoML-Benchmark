@@ -1,6 +1,6 @@
 # Import needed
-import dash_core_components as dcc
-import dash_html_components as html
+from dash import dcc
+from dash import html
 import dash_bootstrap_components as dbc
 
 from .utils import get_lisd_dir, create_collapses, read_markdown
@@ -47,7 +47,7 @@ home = dcc.Markdown(read_markdown())
 # Definition of the OpenML Benchmark Tab for a specific DataFrame sequence
 knownID = dbc.CardBody([
                         html.H4("OpenML BenchMark", className="card-title"),
-                        dbc.FormGroup([
+                        html.Div([
                                     dbc.Label("Specify the sequence of DataFrame IDs that you whant to test, each ID must be followed by a comma like so: 10,52,111 (no blank space after each comma)", width=5),
                                     dbc.Col([
                                         dbc.InputGroup([
@@ -56,35 +56,35 @@ knownID = dbc.CardBody([
                                             ),
                                         ])
                                     ],width=5)
-                                ],row=True),
+                                ]),
                     ])
 
             
 # Definition of the OpenML Benchmark Tab for a sequence of n classification and regression Dataframes with a greater number of x instances
 unknownID = dbc.CardBody([
                                 html.H4("OpenML BenchMark", className="card-title"),
-                                dbc.FormGroup([
+                                html.Div([
                                     dbc.Label("Number of DataFrames to test for classification problems and regression problems", width=5),
                                     dbc.Col([
                                         dbc.InputGroup([
                                             dbc.Input(
                                                 id="ndf", type="number", placeholder="Number of DF", min=1
                                             ),
-                                            dbc.InputGroupAddon("at least 1", addon_type="prepend"),
+                                            dbc.InputGroupText("at least 1"),
                                         ])
                                     ],width=5)
-                                ],row=True),
-                                dbc.FormGroup([
+                                ]),
+                                html.Div([
                                     dbc.Label("Minimum number of instances for each DataFrame",  width=5),
                                     dbc.Col([
                                         dbc.InputGroup([
                                             dbc.Input(
                                                 id="nmore", type="number", placeholder="Number of instances", min=50, max=100000
                                             ),
-                                            dbc.InputGroupAddon("at least 50", addon_type="prepend"),
+                                            dbc.InputGroupText("at least 50"),
                                         ])
                                     ],width=5),
-                                ],row=True),
+                                ]),
                     ])
             
 
@@ -98,7 +98,7 @@ openmlbenchmark = html.Div([
                                     dbc.Tab(unknownID, label="Benchmark for unknown DataFrame IDs", tab_id='unknownID'),
                                 ],
                                 id='openmlbenchmark-tabs',
-                                card=True,
+                                #card=True,
                                 active_tab="knownID"
                             ),
                             html.Div(create_collapses()),
@@ -126,7 +126,7 @@ kagglebenchmark = html.Div([
                 dbc.Card([
                     dbc.CardBody([
                         html.H4("Kaggle BenchMark", className="card-title"),
-                        dbc.FormGroup([
+                        html.Div([
                             dbc.Label("Competition's Dataframe to test", width=5),
                             dbc.Col(
                                 dcc.Dropdown(
@@ -149,7 +149,7 @@ kagglebenchmark = html.Div([
                                 ),
                                 width=5,
                             )
-                        ],row=True),
+                        ]),
                         html.Div(create_collapses()),
 
                         dbc.Button("Start BenchMark", id='submit-kaggle', color="primary", className="mr-1")
@@ -174,7 +174,7 @@ testbenchmark = html.Div([
         dbc.Card([
                     dbc.CardBody([
                         html.H4("Test BenchMark", className="card-title"),
-                        dbc.FormGroup([
+                        html.Div([
                             dbc.Label("OpenML DataFrame ID to test", width=5),
                             dbc.Col(
                                 dbc.Input(
@@ -182,8 +182,8 @@ testbenchmark = html.Div([
                                 ),
                                 width=5,
                             )
-                        ],row=True),
-                        dbc.FormGroup([
+                        ]),
+                        html.Div([
                             dbc.Label("Algorithms to use",  width=5),
                             dbc.Col(
                                 dcc.Dropdown(
@@ -201,7 +201,7 @@ testbenchmark = html.Div([
                                 ),
                                 width=5,
                             ),
-                        ],row=True),
+                        ]),
                         html.Div(create_collapses()),
                         
                         dbc.Button("Start BenchMark", id='submit-test', color="primary", className="mr-1"),
