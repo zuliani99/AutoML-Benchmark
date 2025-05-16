@@ -1,3 +1,4 @@
+# NO LONGER MANTAINED, TOO MANY DEPENDENIES ERROR
 # AutoML-Benchmark
 Benchmark for some usual automated machine learning, such as: [AutoSklearn](https://automl.github.io/auto-sklearn/master/), [MLJAR](https://supervised.mljar.com/), [H2O](https://docs.h2o.ai/h2o/latest-stable/h2o-docs/automl.html), [TPOT](http://epistasislab.github.io/tpot/) and [AutoGluon](https://auto.gluon.ai/stable/index.html). All visualized via a responsive [Dash Ploty](https://dash.plotly.com/) Web Application.
 
